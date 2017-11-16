@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    android:layout_marginLeft="5dp"
+    android:backgroundTint="@color/cardview_shadow_end_color"
+    android:layout_marginRight="5dp"
+
+    android:gravity="center_vertical">
+
+    <TextView
+        android:id="@+id/textView"
+        android:textSize="20sp"
+        android:layout_gravity="center|left"
+        android:layout_marginLeft="20dp"
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="fffffff" />
+</FrameLayout>
