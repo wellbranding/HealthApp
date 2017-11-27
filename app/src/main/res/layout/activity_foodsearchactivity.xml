@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.vvost.urljsontest.MainActivity">
+
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:id="@+id/listViewCountry"
+        android:layout_weight="1" />
+
+    <TextView
+        android:layout_width="200dp"
+        android:layout_height="400dp"
+        android:text=""
+        android:id="@+id/textView2" />
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="47dp"
+        android:layout_marginStart="47dp"
+        android:layout_marginTop="109dp"
+        android:layout_toEndOf="@+id/textView2"
+        android:layout_toRightOf="@+id/textView2"
+        android:text="Button"
+        tools:layout_editor_absoluteX="53dp"
+        tools:layout_editor_absoluteY="58dp" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:gravity="center_horizontal"
+        android:layout_marginTop="71dp"
+
+        android:text="TextView" />
+
+
+</RelativeLayout>
+
