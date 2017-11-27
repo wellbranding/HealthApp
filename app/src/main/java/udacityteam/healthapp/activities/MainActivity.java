@@ -14,7 +14,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import udacityteam.healthapp.Main2Activity;
 import udacityteam.healthapp.R;
 
 public class MainActivity extends AppCompatActivity

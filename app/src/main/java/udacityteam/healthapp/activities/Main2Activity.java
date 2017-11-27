@@ -1,4 +1,4 @@
-package udacityteam.healthapp;
+package udacityteam.healthapp.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import udacityteam.healthapp.R;
 import udacityteam.healthapp.fragments.Tab1Contacts;
 import udacityteam.healthapp.fragments.Tab2chat;
 import udacityteam.healthapp.fragments.Tab3online;
