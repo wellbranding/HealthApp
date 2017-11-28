@@ -10,6 +10,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,6 +19,8 @@ import udacityteam.healthapp.R;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    private final static String TAG = "MainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,42 +86,57 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            Intent intent = new Intent(this, Main2Activity.class);
-            Bundle extras = intent.getExtras();
-            intent.putExtra("titlename", "Community Breakfasts");
-            startActivity(intent);
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-            Intent intent = new Intent(this, Main2Activity.class);
-            Bundle extras = intent.getExtras();
-            intent.putExtra("titlename", "Community Dinners");
-            startActivity(intent);
+        switch (id) {
+            case R.id.nav_camera: {
+                Intent intent = new Intent(this, Main2Activity.class);
+                Bundle extras = intent.getExtras();
+                intent.putExtra("titlename", "Community Breakfasts");
+                startActivity(intent);
+                // Handle the camera action
+                break;
+            }
+            case R.id.nav_gallery: {
+                Intent intent = new Intent(this, Main2Activity.class);
+                Bundle extras = intent.getExtras();
+                intent.putExtra("titlename", "Community Dinners");
+                startActivity(intent);
 
 
-        } else if (id == R.id.nav_slideshow) {
-            Intent intent = new Intent(this, Main2Activity.class);
-            Bundle extras = intent.getExtras();
-            intent.putExtra("titlename", "Community Lunches");
-            startActivity(intent);
+                break;
+            }
+            case R.id.nav_slideshow: {
+                Intent intent = new Intent(this, Main2Activity.class);
+                Bundle extras = intent.getExtras();
+                intent.putExtra("titlename", "Community Lunches");
+                startActivity(intent);
 
-        } else if (id == R.id.nav_manage) {
-            Intent intent = new Intent(this, Main2Activity.class);
-            Bundle extras = intent.getExtras();
-            intent.putExtra("titlename", "Community Daily Diet Plan");
-            startActivity(intent);
+                break;
+            }
+            case R.id.nav_manage: {
+                Intent intent = new Intent(this, Main2Activity.class);
+                Bundle extras = intent.getExtras();
+                intent.putExtra("titlename", "Community Daily Diet Plan");
+                startActivity(intent);
 
-        } else if (id == R.id.nav_share) {
-            Intent intent = new Intent(this, Main2Activity.class);
-            Bundle extras = intent.getExtras();
-            intent.putExtra("titlename", "Snacks");
-            startActivity(intent);
+                break;
+            }
+            case R.id.nav_share: {
+                Intent intent = new Intent(this, Main2Activity.class);
+                Bundle extras = intent.getExtras();
+                intent.putExtra("titlename", "Snacks");
+                startActivity(intent);
 
-        } else if (id == R.id.nav_send) {
-            Intent intent = new Intent(this, Main2Activity.class);
-            Bundle extras = intent.getExtras();
-            intent.putExtra("titlename", "Drinks/Coctails");
-            startActivity(intent);
+                break;
+            }
+            case R.id.nav_send: {
+                Intent intent = new Intent(this, Main2Activity.class);
+                Bundle extras = intent.getExtras();
+                intent.putExtra("titlename", "Drinks/Cocktails");
+                startActivity(intent);
+                break;
+            }
+            default:
+                Log.e(TAG, "NavigationItemSelected not handled properly");
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);

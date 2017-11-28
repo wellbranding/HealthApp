@@ -17,8 +17,8 @@ import android.view.View;
 
 import udacityteam.healthapp.R;
 import udacityteam.healthapp.fragments.Tab1Contacts;
-import udacityteam.healthapp.fragments.Tab2chat;
-import udacityteam.healthapp.fragments.Tab3online;
+import udacityteam.healthapp.fragments.Tab2Chat;
+import udacityteam.healthapp.fragments.Tab3Online;
 
 public class Main2Activity extends AppCompatActivity {
 
@@ -43,9 +43,9 @@ public class Main2Activity extends AppCompatActivity {
         setContentView(R.layout.activity_main2);
         //String value = getIntent().getExtras().getString("titlename");
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        Intent iin= getIntent();
+        Intent iin = getIntent();
         Bundle b = iin.getExtras();
         String value;
         if(b!=null) {
@@ -59,15 +59,16 @@ public class Main2Activity extends AppCompatActivity {
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
-        mViewPager = (ViewPager) findViewById(R.id.container);
+        mViewPager = findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        TabLayout tabLayout = findViewById(R.id.tabs);
 
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        // TODO Replace with your own action
+        FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -100,10 +101,6 @@ public class Main2Activity extends AppCompatActivity {
     }
 
     /**
-     * A placeholder fragment containing a simple view.
-     */
-
-    /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
      */
@@ -113,6 +110,7 @@ public class Main2Activity extends AppCompatActivity {
         public SectionsPagerAdapter(FragmentManager fm)
         {
             super(fm);
+
         }
         @Override
         public CharSequence getPageTitle(int position) {
@@ -127,11 +125,11 @@ public class Main2Activity extends AppCompatActivity {
                    Tab1Contacts tab1 = new Tab1Contacts();
                    return tab1;
                case 1:
-                   Tab2chat tab2 = new Tab2chat();
+                   Tab2Chat tab2 = new Tab2Chat();
 
                    return tab2;
                case 2:
-                   Tab3online tab3 = new Tab3online();
+                   Tab3Online tab3 = new Tab3Online();
                    return tab3;
                    default:
                        return null;
