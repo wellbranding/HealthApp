@@ -48,15 +48,16 @@ public class Main2Activity extends AppCompatActivity {
         Intent iin = getIntent();
         Bundle b = iin.getExtras();
         String value;
-        if(b!=null) {
+        if (b != null) {
             value = (String) b.get("titlename");
             getSupportActionBar().setTitle(value);
             //  Textv.setText(j);
         }
-      //  getSupportActionBar().setTitle(value);
+        //  getSupportActionBar().setTitle(value);
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        String[] tabTitles = getResources().getStringArray(R.array.tab_titles);
+        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), tabTitles);
 
         // Set up the ViewPager with the sections adapter.
         mViewPager = findViewById(R.id.container);
@@ -78,6 +79,7 @@ public class Main2Activity extends AppCompatActivity {
         });
 
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -105,13 +107,13 @@ public class Main2Activity extends AppCompatActivity {
      * one of the sections/tabs/pages.
      */
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
-        private String[] tabTitles = new String[]{"Tadd1", "Tab2", "Tab3"};
+        private String[] tabTitles;
 
-        public SectionsPagerAdapter(FragmentManager fm)
-        {
+        public SectionsPagerAdapter(FragmentManager fm, String[] tabTitles) {
             super(fm);
-
+            this.tabTitles = tabTitles;
         }
+
         @Override
         public CharSequence getPageTitle(int position) {
             return tabTitles[position];
@@ -119,22 +121,18 @@ public class Main2Activity extends AppCompatActivity {
 
         @Override
         public Fragment getItem(int position) {
-           switch (position)
-           {
-               case 0:
-                   Tab1Contacts tab1 = new Tab1Contacts();
-                   return tab1;
-               case 1:
-                   Tab2Chat tab2 = new Tab2Chat();
+            switch (position) {
+                case 0:
+                    return new Tab1Contacts();
+                case 1:
 
-                   return tab2;
-               case 2:
-                   Tab3Online tab3 = new Tab3Online();
-                   return tab3;
-                   default:
-                       return null;
+                    return new Tab2Chat();
+                case 2:
+                    return new Tab3Online();
+                default:
+                    return null;
 
-           }
+            }
         }
 
         @Override

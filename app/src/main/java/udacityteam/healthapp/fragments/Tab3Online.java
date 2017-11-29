@@ -19,23 +19,15 @@ import udacityteam.healthapp.adapters.CustomAdapter;
  * Created by vvost on 11/16/2017.
  */
 
-public class Tab3online extends Fragment {
+public class Tab3Online extends Fragment {
 
     private static final String TAG = "RecyclerViewFragment";
     private static final String KEY_LAYOUT_MANAGER = "layoutManager";
     private static final int SPAN_COUNT = 2;
     private static final int DATASET_COUNT = 60;
-
-    private enum LayoutManagerType {
-        GRID_LAYOUT_MANAGER,
-        LINEAR_LAYOUT_MANAGER
-    }
-
-    protected Tab3online.LayoutManagerType mCurrentLayoutManagerType;
-
+    protected Tab3Online.LayoutManagerType mCurrentLayoutManagerType;
     protected RadioButton mLinearLayoutRadioButton;
     protected RadioButton mGridLayoutRadioButton;
-
     protected RecyclerView mRecyclerView;
     protected CustomAdapter mAdapter;
     protected RecyclerView.LayoutManager mLayoutManager;
@@ -63,11 +55,11 @@ public class Tab3online extends Fragment {
         // elements are laid out.
         mLayoutManager = new LinearLayoutManager(getActivity());
 
-        mCurrentLayoutManagerType = Tab3online.LayoutManagerType.LINEAR_LAYOUT_MANAGER;
+        mCurrentLayoutManagerType = Tab3Online.LayoutManagerType.LINEAR_LAYOUT_MANAGER;
 
         if (savedInstanceState != null) {
             // Restore saved layout manager type.
-            mCurrentLayoutManagerType = (Tab3online.LayoutManagerType) savedInstanceState
+            mCurrentLayoutManagerType = (Tab3Online.LayoutManagerType) savedInstanceState
                     .getSerializable(KEY_LAYOUT_MANAGER);
         }
         setRecyclerViewLayoutManager(mCurrentLayoutManagerType);
@@ -75,7 +67,7 @@ public class Tab3online extends Fragment {
         mAdapter = new CustomAdapter(mDataset);
         // Set CustomAdapter as the adapter for RecyclerView.
         mRecyclerView.setAdapter(mAdapter);
-        setRecyclerViewLayoutManager(Tab3online.LayoutManagerType.LINEAR_LAYOUT_MANAGER);
+        setRecyclerViewLayoutManager(Tab3Online.LayoutManagerType.LINEAR_LAYOUT_MANAGER);
         mRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(),
                 DividerItemDecoration.VERTICAL));
         return rootView;
@@ -86,7 +78,7 @@ public class Tab3online extends Fragment {
      *
      * @param layoutManagerType Type of layout manager to switch to.
      */
-    public void setRecyclerViewLayoutManager(Tab3online.LayoutManagerType layoutManagerType) {
+    public void setRecyclerViewLayoutManager(Tab3Online.LayoutManagerType layoutManagerType) {
         int scrollPosition = 0;
 
         // If a layout manager has already been set, get current scroll position.
@@ -98,15 +90,15 @@ public class Tab3online extends Fragment {
         switch (layoutManagerType) {
             case GRID_LAYOUT_MANAGER:
                 mLayoutManager = new GridLayoutManager(getActivity(), SPAN_COUNT);
-                mCurrentLayoutManagerType = Tab3online.LayoutManagerType.GRID_LAYOUT_MANAGER;
+                mCurrentLayoutManagerType = Tab3Online.LayoutManagerType.GRID_LAYOUT_MANAGER;
                 break;
             case LINEAR_LAYOUT_MANAGER:
                 mLayoutManager = new LinearLayoutManager(getActivity());
-                mCurrentLayoutManagerType = Tab3online.LayoutManagerType.LINEAR_LAYOUT_MANAGER;
+                mCurrentLayoutManagerType = Tab3Online.LayoutManagerType.LINEAR_LAYOUT_MANAGER;
                 break;
             default:
                 mLayoutManager = new LinearLayoutManager(getActivity());
-                mCurrentLayoutManagerType = Tab3online.LayoutManagerType.LINEAR_LAYOUT_MANAGER;
+                mCurrentLayoutManagerType = Tab3Online.LayoutManagerType.LINEAR_LAYOUT_MANAGER;
         }
 
         mRecyclerView.setLayoutManager(mLayoutManager);
@@ -129,5 +121,10 @@ public class Tab3online extends Fragment {
         for (int i = 0; i < DATASET_COUNT; i++) {
             mDataset[i] = "Breafast" + i;
         }
+    }
+
+    private enum LayoutManagerType {
+        GRID_LAYOUT_MANAGER,
+        LINEAR_LAYOUT_MANAGER
     }
 }
