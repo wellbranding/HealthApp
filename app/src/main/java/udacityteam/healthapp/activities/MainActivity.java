@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -87,7 +86,7 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         switch (id) {
-            case R.id.nav_camera: {
+            case R.id.nav_breakfasts: {
                 Intent intent = new Intent(this, Main2Activity.class);
                 Bundle extras = intent.getExtras();
                 intent.putExtra("titlename", "Community Breakfasts");
@@ -95,7 +94,7 @@ public class MainActivity extends AppCompatActivity
                 // Handle the camera action
                 break;
             }
-            case R.id.nav_gallery: {
+            case R.id.nav_dinners: {
                 Intent intent = new Intent(this, Main2Activity.class);
                 Bundle extras = intent.getExtras();
                 intent.putExtra("titlename", "Community Dinners");
@@ -104,7 +103,7 @@ public class MainActivity extends AppCompatActivity
 
                 break;
             }
-            case R.id.nav_slideshow: {
+            case R.id.nav_lunches: {
                 Intent intent = new Intent(this, Main2Activity.class);
                 Bundle extras = intent.getExtras();
                 intent.putExtra("titlename", "Community Lunches");
@@ -112,7 +111,7 @@ public class MainActivity extends AppCompatActivity
 
                 break;
             }
-            case R.id.nav_manage: {
+            case R.id.nav_community_daily_diets: {
                 Intent intent = new Intent(this, Main2Activity.class);
                 Bundle extras = intent.getExtras();
                 intent.putExtra("titlename", "Community Daily Diet Plan");
@@ -120,7 +119,7 @@ public class MainActivity extends AppCompatActivity
 
                 break;
             }
-            case R.id.nav_share: {
+            case R.id.nav_snacks: {
                 Intent intent = new Intent(this, Main2Activity.class);
                 Bundle extras = intent.getExtras();
                 intent.putExtra("titlename", "Snacks");
@@ -128,7 +127,7 @@ public class MainActivity extends AppCompatActivity
 
                 break;
             }
-            case R.id.nav_send: {
+            case R.id.nav_drinks_cocktails: {
                 Intent intent = new Intent(this, Main2Activity.class);
                 Bundle extras = intent.getExtras();
                 intent.putExtra("titlename", "Drinks/Cocktails");

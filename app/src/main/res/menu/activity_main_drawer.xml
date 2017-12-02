@@ -5,33 +5,33 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_camera"
+            android:id="@+id/nav_breakfasts"
             android:icon="@drawable/ic_menu_camera"
-            android:title="Community Breakfasts" />
+            android:title="@string/main_drawer_item_community_breakfasts" />
         <item
-            android:id="@+id/nav_gallery"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="Community Dinners" />
-        <item
-            android:id="@+id/nav_slideshow"
+            android:id="@+id/nav_lunches"
             android:icon="@drawable/ic_menu_slideshow"
-            android:title="Community Lunches" />
+            android:title="@string/main_drawer_item_community_lunches" />
         <item
-            android:id="@+id/nav_manage"
+            android:id="@+id/nav_dinners"
+            android:icon="@drawable/ic_menu_gallery"
+            android:title="@string/main_drawer_item_community_dinners" />
+        <item
+            android:id="@+id/nav_community_daily_diets"
             android:icon="@drawable/ic_menu_manage"
-            android:title="Community Daily Diet Plan" />
+            android:title="@string/main_drawer_item_community_daily_diet" />
     </group>
 
-    <item android:title="Additional">
+    <item android:title="@string/main_drawer_additional">
         <menu>
             <item
-                android:id="@+id/nav_share"
+                android:id="@+id/nav_snacks"
                 android:icon="@drawable/ic_menu_share"
-                android:title="Snacks" />
+                android:title="@string/main_drawer_item_snacks" />
             <item
-                android:id="@+id/nav_send"
+                android:id="@+id/nav_drinks_cocktails"
                 android:icon="@drawable/ic_menu_send"
-                android:title="Drinks/Coctails" />
+                android:title="@string/main_drawer_item_drinks_cocktails" />
         </menu>
     </item>
 

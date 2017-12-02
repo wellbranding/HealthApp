@@ -1,6 +1,7 @@
 package udacityteam.healthapp.activities;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -22,6 +23,9 @@ import udacityteam.healthapp.fragments.Tab3Online;
 
 public class Main2Activity extends AppCompatActivity {
 
+    // Resources
+    Resources res;
+
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -41,6 +45,7 @@ public class Main2Activity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
+        res = getResources();
         //String value = getIntent().getExtras().getString("titlename");
 
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -56,7 +61,10 @@ public class Main2Activity extends AppCompatActivity {
         //  getSupportActionBar().setTitle(value);
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
-        String[] tabTitles = getResources().getStringArray(R.array.tab_titles);
+        String[] tabTitles = new String[]{
+                res.getString(R.string.tab1_title),
+                res.getString(R.string.tab2_title),
+                res.getString(R.string.tab3_title)};
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), tabTitles);
 
         // Set up the ViewPager with the sections adapter.

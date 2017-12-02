@@ -6,10 +6,17 @@
 
     <string name="action_settings">Settings</string>
     <string name="title_activity_main2">Main2Activity</string>
-    <string-array name="tab_titles">
-        <item>Tab 1</item>
-        <item>Tab 2</item>
-        <item>Tab 3</item>
-    </string-array>
     <string name="section_format">Hello World from section: %1$d</string>
+    <!-- Tab titles in Main2Activity -->
+    <string name="tab1_title">Tab 1</string>
+    <string name="tab2_title">Tab 2</string>
+    <string name="tab3_title">Tab 3</string>
+    <!-- Main drawer menu items -->
+    <string name="main_drawer_item_community_breakfasts">Community Breakfasts</string>
+    <string name="main_drawer_item_community_lunches">Community Lunches</string>
+    <string name="main_drawer_item_community_dinners">Community Dinners</string>
+    <string name="main_drawer_item_community_daily_diet">Community Daily Diet Plan</string>
+    <string name="main_drawer_additional">Additional</string>
+    <string name="main_drawer_item_snacks">Snacks</string>
+    <string name="main_drawer_item_drinks_cocktails">Drinks/Cocktails</string>
 </resources>
