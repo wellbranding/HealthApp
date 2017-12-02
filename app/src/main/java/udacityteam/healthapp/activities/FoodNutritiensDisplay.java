@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import udacityteam.healthapp.R;
+import udacityteam.healthapp.models.Model;
 
 /**
  * Created by vvost on 11/26/2017.
