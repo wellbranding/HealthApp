@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import udacityteam.healthapp.R;
+import udacityteam.healthapp.models.Model;
 
 
 public class FoodSearchActivity extends AppCompatActivity {
