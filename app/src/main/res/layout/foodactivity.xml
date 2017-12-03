@@ -12,4 +12,13 @@
         android:text="TextView"
         tools:layout_editor_absoluteX="175dp"
         tools:layout_editor_absoluteY="146dp" />
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:text="Button" />
 </RelativeLayout>

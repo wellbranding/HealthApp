@@ -79,14 +79,15 @@ public class FoodSearchActivity extends AppCompatActivity {
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Toast.makeText(FoodSearchActivity.this, models.get(i).toString3(), Toast.LENGTH_LONG).show();
+                Toast.makeText(FoodSearchActivity.this, models.get(i).getId(), Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(FoodSearchActivity.this, FoodNutritiensDisplay.class);
                 StringBuilder amm = new StringBuilder();
                 amm.append("https://api.nal.usda.gov/ndb/V2/reports?ndbno=");
-                amm.append(models.get(i).toString3());
+                amm.append(models.get(i).getId());
                 amm.append("&type=f&format=json&api_key=HXLecTDsMqy1Y6jNoYPw2n3DQ30FeGXxD2XBZqJh");
                 //new JSONTask().execute(amm.toString());
-                intent.putExtra("vardas",models.get(i).toString3());
+                intent.putExtra("id",models.get(i).getId());
+                intent.putExtra("foodname", models.get(i).getName());
 
                 startActivity(intent);
             }

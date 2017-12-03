@@ -1,11 +1,19 @@
 package udacityteam.healthapp.activities;
 
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.SQLException;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -23,6 +31,8 @@ import java.util.List;
 
 import udacityteam.healthapp.R;
 import udacityteam.healthapp.models.Model;
+import udacityteam.healthapp.databases.CopyDbActivity;
+import udacityteam.healthapp.databases.DatabaseHelper;
 
 /**
  * Created by vvost on 11/26/2017.
@@ -30,12 +40,28 @@ import udacityteam.healthapp.models.Model;
 
 public class FoodNutritiensDisplay extends AppCompatActivity {
     TextView Textv;
+    Button addtoSqlite;
+    DatabaseHelper myDbHelper;
+    Cursor c = null;
+    String id = null;
+    String foodname = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.foodactivity);
         Textv = (TextView)findViewById(R.id.tv2);
+        myDbHelper = new DatabaseHelper(FoodNutritiensDisplay.this);
+        try {
+            myDbHelper.createDataBase();
+        } catch (IOException ioe) {
+            throw new Error("Unable to create database");
+        }
+        try {
+            myDbHelper.openDataBase();
+        } catch (SQLException sqle) {
+            throw sqle;
+        }
         Intent iin= getIntent();
 
         Bundle b = iin.getExtras();
@@ -43,15 +69,17 @@ public class FoodNutritiensDisplay extends AppCompatActivity {
 
         if(b!=null)
         {
-            String j =(String) b.get("vardas");
+           id =(String) b.get("id");
+           foodname = (String) b.get("foodname");
             StringBuilder amm = new StringBuilder();
             amm.append("https://api.nal.usda.gov/ndb/V2/reports?ndbno=");
-            amm.append(j);
+            amm.append(id);
             amm.append("&type=f&format=json&api_key=HXLecTDsMqy1Y6jNoYPw2n3DQ30FeGXxD2XBZqJh");
             new JSONTask().execute(amm.toString());
 
           //  Textv.setText(j);
         }
+
     }
 
     public class JSONTask extends AsyncTask<String, String, String>
@@ -124,14 +152,38 @@ public class FoodNutritiensDisplay extends AppCompatActivity {
             super.onPostExecute(s);
 
             if(s!=null) {
-             //   for (int i = 0; i < s.size(); i++) {
-                  //  buffer.append(s.get(i).getId() + "\n" + s.get(i).getName() + "\n" + s.get(i).getOffset() + "\n");
-                 //  tvData.setText(s.get(i).getId() + s.get(i).getName() + s.get(i).getOffset() + "\n");
-               // }
-             //   tvData.setText(s.size());w
-               // tvData.setText(s.get(1).getId());
             }
             Textv.setText(s);
+            addtoSqlite = findViewById(R.id.button2);
+            addtoSqlite.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    try {
+                        myDbHelper.openDataBase();
+                    } catch (SQLException sqle) {
+                        throw sqle;
+                    }
+
+                    ContentValues a1 = new ContentValues();
+                    a1.put("Name", id);
+                    a1.put("Name1", foodname);
+
+                    SQLiteDatabase aa = myDbHelper.myDataBase;
+                    aa.insert("Ha", null, a1);
+                    c = myDbHelper.query("Ha", null, null, null, null, null, null);
+                    if (c.moveToFirst()) {
+                        do {
+                            Toast.makeText(FoodNutritiensDisplay.this,
+                                    "_id: " + c.getString(0) + "\n" +
+                                            "E_NAME: " + c.getString(1) + "\n" +
+                                            "E_AGE: " + c.getString(2) + "\n",
+                                    Toast.LENGTH_LONG).show();
+                        } while (c.moveToNext());
+                    }
+                    myDbHelper.close();
+                }
+            });
+
 
 
         }
