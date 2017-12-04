@@ -53,13 +53,17 @@ public class FoodSearchActivity extends AppCompatActivity {
     ArrayList<Model> models;
     ListView lv;
     String aaki;
+    String foodselection =null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Button b;
 
         setContentView(R.layout.activity_foodsearchactivity);
+        Intent iin= getIntent();
+        Bundle b = iin.getExtras();
+        foodselection = (String) b.get("foodselection");
+
         buffer = new StringBuffer();
         FirebaseApp.initializeApp(this);
         tvData = (TextView) findViewById(R.id.textView);
@@ -88,6 +92,7 @@ public class FoodSearchActivity extends AppCompatActivity {
                 //new JSONTask().execute(amm.toString());
                 intent.putExtra("id",models.get(i).getId());
                 intent.putExtra("foodname", models.get(i).getName());
+                intent.putExtra("foodselection", foodselection);
 
                 startActivity(intent);
             }
