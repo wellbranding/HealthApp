@@ -59,6 +59,17 @@
       },
       "oauth_client": [
         {
+<<<<<<< HEAD
+=======
+          "client_id": "1025887070439-coflcujaad04dvukggmlmcq4jns6enn2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "udacityteam.healthapp",
+            "certificate_hash": "d2a40e74610a7569d377e95580244d4aa1f95a40"
+          }
+        },
+        {
+>>>>>>> origin/authentication
           "client_id": "1025887070439-lcf954fe01ss4lcgveg64dej15qnotr2.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
