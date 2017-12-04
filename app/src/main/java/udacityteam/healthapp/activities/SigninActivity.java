@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -23,11 +24,14 @@ import udacityteam.healthapp.R;
 public class SigninActivity extends AppCompatActivity {
     MaterialEditText edtPhone,edtPassword;
     Button btnSignIn;
+    private FirebaseAuth mAuth;
+// ...
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
+        mAuth = FirebaseAuth.getInstance();
 
         edtPhone = (MaterialEditText)findViewById(R.id.edtPhone);
         edtPassword = (MaterialEditText)findViewById(R.id.edtPassword);

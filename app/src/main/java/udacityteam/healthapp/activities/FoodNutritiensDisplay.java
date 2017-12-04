@@ -1,24 +1,20 @@
 package udacityteam.healthapp.activities;
 
-import android.content.ContentValues;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.SQLException;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.view.ViewCompat;
-import android.support.v7.app.AlertDialog;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -38,7 +34,6 @@ import java.util.List;
 
 import udacityteam.healthapp.R;
 import udacityteam.healthapp.models.Model;
-import udacityteam.healthapp.databases.CopyDbActivity;
 import udacityteam.healthapp.databases.DatabaseHelper;
 
 /**
@@ -53,6 +48,7 @@ public class FoodNutritiensDisplay extends AppCompatActivity {
     String id = null;
     String foodname = null;
     FirebaseDatabase database;
+    DatabaseReference user;
     DatabaseReference requests;
     String foodselection = null;
 
@@ -90,6 +86,9 @@ public class FoodNutritiensDisplay extends AppCompatActivity {
 
           //  Textv.setText(j);
         }
+        database = FirebaseDatabase.getInstance();
+        user = database.getReference("User").child(Common.currentUser.getPhone()).child(foodselection);
+
 
     }
 
@@ -194,66 +193,79 @@ public class FoodNutritiensDisplay extends AppCompatActivity {
 //                    myDbHelper.close();
 //                }
 //            });
-            database = FirebaseDatabase.getInstance();
-            requests = database.getReference(foodselection);
             addtoSqlite = findViewById(R.id.button2);
             addtoSqlite.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    showAlertDialog();
+                   AddFoodtoDatabase();
+
                 }
             });
         }
+        public class AddFoodtoDatabase extends AsyncTask<String, String, String>
+        {
 
-        private void showAlertDialog() {
-            AlertDialog.Builder alertDialog = new AlertDialog.Builder(FoodNutritiensDisplay.this);
-            alertDialog.setTitle("One more step..");
-            alertDialog.setMessage("Enter Your Address : ");
+            @Override
+            protected String doInBackground(String... strings) {
+                SelectedFood request = new SelectedFood(
+                        id,
+                        foodname
+                );
+                user.child(String.valueOf(System.currentTimeMillis()))
+                        .setValue(request);
+                Intent intent = new Intent(FoodNutritiensDisplay.this, FoodList.class);
+                intent.putExtra("foodselection", foodselection);
+                startActivity(intent);
+                return "success";
+            }
 
-            final EditText edtAddress = new EditText(FoodNutritiensDisplay.this);
-            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.MATCH_PARENT
-            );
-            edtAddress.setLayoutParams(lp);
-            alertDialog.setView(edtAddress);    //Add edit Text to alert dialog
-         //   alertDialog.setIcon(R.drawable.ic_shopping_cart_black_24dp);
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
 
-            alertDialog.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    //Create a new Request
-                    Request request = new Request(
-                            id,
-                            foodname,
-                            edtAddress.getText().toString(),
-                            "sssss"
-                    );
-                    //Submit to Firebase
-                    //WE will be using System.CureentMilli to key
-                    requests.child(String.valueOf(System.currentTimeMillis()))
-                            .setValue(request);
-                    //Delete Cart
-                  //  new Database(getBaseContext()).cleanCart();
-                   // Toast.makeText(Cart.this, "Thank You, Order Placed", Toast.LENGTH_SHORT).show();
+                if (s != null) {
+
                     Intent intent = new Intent(FoodNutritiensDisplay.this, FoodList.class);
+                    intent.putExtra("foodselection", foodselection);
                     startActivity(intent);
-                    finish();
+                    }
                 }
-            });
+            }
 
-            alertDialog.setNegativeButton("NO", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    dialogInterface.dismiss();
-                }
-            });
-            alertDialog.show();
+        private void AddFoodtoDatabase() {
+                    SelectedFood request = new SelectedFood(
+                            id,
+                            foodname
+                    );
+                   user.child(String.valueOf(System.currentTimeMillis()))
+                           .setValue(request).addOnCompleteListener(new OnCompleteListener<Void>() {
+                       @Override
+                       public void onComplete(@NonNull Task<Void> task) {
+                           Intent intent = new Intent(FoodNutritiensDisplay.this, FoodList.class);
+                           intent.putExtra("foodselection", foodselection);
+                           startActivity(intent);
+                           finish();
+                       }
+                   });
+// .addOnFailureListener(new OnFailureListener() {
+//                       @Override
+//                       public void onFailure(@NonNull Exception e) {
+//                           Intent intent = new Intent(FoodNutritiensDisplay.this, FoodList.class);
+//                           intent.putExtra("foodselection", foodselection);
+//                           startActivity(intent);
+//                       }
+//                   }).addOnSuccessListener(new OnSuccessListener<Void>() {
+//                       @Override
+//                       public void onSuccess(Void aVoid) {
+//                           Intent intent = new Intent(FoodNutritiensDisplay.this, FoodList.class);
+//                           intent.putExtra("foodselection", foodselection);
+//                           startActivity(intent);
+//
+//                       }
+//                   });
+
+
         }
-
-
-
-
         }
     }
 

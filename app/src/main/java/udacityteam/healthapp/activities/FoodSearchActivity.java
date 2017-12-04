@@ -78,7 +78,7 @@ public class FoodSearchActivity extends AppCompatActivity {
                 android.R.layout.simple_list_item_1,
                 arrayCountry);
         lv.setAdapter(adapter);
-        databaseReference1 = FirebaseDatabase.getInstance().getReference();
+        databaseReference1 = FirebaseDatabase.getInstance().getReference("FoodsDatabase");
         referencee = databaseReference1;
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

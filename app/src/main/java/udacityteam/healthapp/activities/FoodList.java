@@ -22,49 +22,46 @@ public class FoodList extends AppCompatActivity {
 
     FirebaseDatabase database;
     DatabaseReference foodList;
+    String foodselection;
 
     String catergoryId="ff";
-    FirebaseRecyclerAdapter<Request, FoodViewHolder> adapter;
+    FirebaseRecyclerAdapter<SelectedFood, FoodViewHolder> adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_food_list);
 
+        Intent iin= getIntent();
+
+        Bundle b = iin.getExtras();
+        foodselection = (String) b.get("foodselection");
         //Firebase
         database = FirebaseDatabase.getInstance();
-        foodList = database.getReference("Snacks");
+        foodList = database.getReference("User").child(Common.currentUser.getPhone()).child(foodselection);
+
 
         recyclerView = (RecyclerView)findViewById(R.id.recycler_food);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-
-        //Get Intent Here
-      //  if (getIntent() != null) {
-        //    catergoryId = getIntent().getStringExtra("CategoryId");
-     //   }// if (!catergoryId.isEmpty() && catergoryId != null) {
-            loadListFood(catergoryId);
-        //}
-
+        loadListFood(catergoryId);
     }
 
     private void loadListFood(String catergoryId) {
-        adapter = new FirebaseRecyclerAdapter<Request, FoodViewHolder>(Request.class,
+        adapter = new FirebaseRecyclerAdapter<SelectedFood, FoodViewHolder>(SelectedFood.class,
                 R.layout.food_item,
                 FoodViewHolder.class,
-                foodList.orderByChild("name")) {
+                foodList.orderByChild("id")) {
+
             @Override
-            protected void populateViewHolder(FoodViewHolder viewHolder, final Request model, int position) {
-                viewHolder.food_name.setText(model.getName());
-                final Request local = model;
+            protected void populateViewHolder(FoodViewHolder viewHolder, final SelectedFood model, int position) {
+                viewHolder.food_name.setText(model.getFoodName());
+               // final SelectedFood local = model;
                 viewHolder.setItemClickListener(new ItemClickListener() {
                     @Override
                     public void onClick(View view, int position, boolean isLongClick) {
-                        Toast.makeText(FoodList.this, ""+model.getName(), Toast.LENGTH_SHORT).show();
-                        {
-
-                        }
+                        Toast.makeText(FoodList.this, ""+model.getFoodid(), Toast.LENGTH_SHORT).show();
                     }
                 });
             }
