@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import udacityteam.healthapp.R;
+import udacityteam.healthapp.models.Model;
 
 
 public class FoodSearchActivity extends AppCompatActivity {
@@ -52,13 +53,17 @@ public class FoodSearchActivity extends AppCompatActivity {
     ArrayList<Model> models;
     ListView lv;
     String aaki;
+    String foodselection =null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Button b;
 
         setContentView(R.layout.activity_foodsearchactivity);
+        Intent iin= getIntent();
+        Bundle b = iin.getExtras();
+        foodselection = (String) b.get("foodselection");
+
         buffer = new StringBuffer();
         FirebaseApp.initializeApp(this);
         tvData = (TextView) findViewById(R.id.textView);
@@ -73,19 +78,21 @@ public class FoodSearchActivity extends AppCompatActivity {
                 android.R.layout.simple_list_item_1,
                 arrayCountry);
         lv.setAdapter(adapter);
-        databaseReference1 = FirebaseDatabase.getInstance().getReference();
+        databaseReference1 = FirebaseDatabase.getInstance().getReference("FoodsDatabase");
         referencee = databaseReference1;
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Toast.makeText(FoodSearchActivity.this, models.get(i).toString3(), Toast.LENGTH_LONG).show();
+                Toast.makeText(FoodSearchActivity.this, models.get(i).getId(), Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(FoodSearchActivity.this, FoodNutritiensDisplay.class);
                 StringBuilder amm = new StringBuilder();
                 amm.append("https://api.nal.usda.gov/ndb/V2/reports?ndbno=");
-                amm.append(models.get(i).toString3());
+                amm.append(models.get(i).getId());
                 amm.append("&type=f&format=json&api_key=HXLecTDsMqy1Y6jNoYPw2n3DQ30FeGXxD2XBZqJh");
                 //new JSONTask().execute(amm.toString());
-                intent.putExtra("vardas",models.get(i).toString3());
+                intent.putExtra("id",models.get(i).getId());
+                intent.putExtra("foodname", models.get(i).getName());
+                intent.putExtra("foodselection", foodselection);
 
                 startActivity(intent);
             }

@@ -1,6 +1,7 @@
 package udacityteam.healthapp.activities;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -17,10 +18,13 @@ import android.view.View;
 
 import udacityteam.healthapp.R;
 import udacityteam.healthapp.fragments.Tab1Contacts;
-import udacityteam.healthapp.fragments.Tab2chat;
-import udacityteam.healthapp.fragments.Tab3online;
+import udacityteam.healthapp.fragments.Tab2Chat;
+import udacityteam.healthapp.fragments.Tab3Online;
 
 public class Main2Activity extends AppCompatActivity {
+
+    // Resources
+    Resources res;
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -41,33 +45,39 @@ public class Main2Activity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
+        res = getResources();
         //String value = getIntent().getExtras().getString("titlename");
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        Intent iin= getIntent();
+        Intent iin = getIntent();
         Bundle b = iin.getExtras();
         String value;
-        if(b!=null) {
+        if (b != null) {
             value = (String) b.get("titlename");
             getSupportActionBar().setTitle(value);
             //  Textv.setText(j);
         }
-      //  getSupportActionBar().setTitle(value);
+        //  getSupportActionBar().setTitle(value);
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        String[] tabTitles = new String[]{
+                res.getString(R.string.tab1_title),
+                res.getString(R.string.tab2_title),
+                res.getString(R.string.tab3_title)};
+        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), tabTitles);
 
         // Set up the ViewPager with the sections adapter.
-        mViewPager = (ViewPager) findViewById(R.id.container);
+        mViewPager = findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        TabLayout tabLayout = findViewById(R.id.tabs);
 
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        // TODO Replace with your own action
+        FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -77,6 +87,7 @@ public class Main2Activity extends AppCompatActivity {
         });
 
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -100,20 +111,17 @@ public class Main2Activity extends AppCompatActivity {
     }
 
     /**
-     * A placeholder fragment containing a simple view.
-     */
-
-    /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
      */
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
-        private String[] tabTitles = new String[]{"Tadd1", "Tab2", "Tab3"};
+        private String[] tabTitles;
 
-        public SectionsPagerAdapter(FragmentManager fm)
-        {
+        public SectionsPagerAdapter(FragmentManager fm, String[] tabTitles) {
             super(fm);
+            this.tabTitles = tabTitles;
         }
+
         @Override
         public CharSequence getPageTitle(int position) {
             return tabTitles[position];
@@ -121,22 +129,18 @@ public class Main2Activity extends AppCompatActivity {
 
         @Override
         public Fragment getItem(int position) {
-           switch (position)
-           {
-               case 0:
-                   Tab1Contacts tab1 = new Tab1Contacts();
-                   return tab1;
-               case 1:
-                   Tab2chat tab2 = new Tab2chat();
+            switch (position) {
+                case 0:
+                    return new Tab1Contacts();
+                case 1:
 
-                   return tab2;
-               case 2:
-                   Tab3online tab3 = new Tab3online();
-                   return tab3;
-                   default:
-                       return null;
+                    return new Tab2Chat();
+                case 2:
+                    return new Tab3Online();
+                default:
+                    return null;
 
-           }
+            }
         }
 
         @Override

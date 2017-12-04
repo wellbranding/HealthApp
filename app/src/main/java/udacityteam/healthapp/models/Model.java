@@ -1,4 +1,4 @@
-package udacityteam.healthapp.activities;
+package udacityteam.healthapp.models;
 
 /**
  * Created by vvost on 11/21/2017.

@@ -10,9 +10,12 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
@@ -74,14 +77,27 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        fabsettings = findViewById(R.id.fabSetting);
+        Snacks = (LinearLayout) this.findViewById(R.id.Snacks);
+        Drinks = (LinearLayout) this.findViewById(R.id.Drinks);
+        Breakfast = (LinearLayout) this.findViewById(R.id.Breakfast);
+        Dinner = (LinearLayout) this.findViewById(R.id.Dinner);
+        Lunch = (LinearLayout) this.findViewById(R.id.Lunch);
+      //  layoutFabEdit = (LinearLayout) this.findViewById(R.id.layoutFabEdit);
+     //   layoutFabPhoto = (LinearLayout) this.findViewById(R.id.layoutFabPhoto);
+        fabsettings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               Intent intent = new Intent(MainActivity.this, FoodSearchActivity.class);
-               startActivity(intent);
+              // Intent intent = new Intent(MainActivity.this, FoodSearchActivity.class);
+             //  startActivity(intent);
+                if (fabExpanded == true){
+                    closeSubMenusFab();
+                } else {
+                    openSubMenusFab();
+                }
             }
         });
+      //  closeSubMenusFab();
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -158,42 +174,57 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            Intent intent = new Intent(this, Main2Activity.class);
-            Bundle extras = intent.getExtras();
-            intent.putExtra("titlename", "Community Breakfasts");
-            startActivity(intent);
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-            Intent intent = new Intent(this, Main2Activity.class);
-            Bundle extras = intent.getExtras();
-            intent.putExtra("titlename", "Community Dinners");
-            startActivity(intent);
+        switch (id) {
+            case R.id.nav_breakfasts: {
+                Intent intent = new Intent(this, Main2Activity.class);
+                Bundle extras = intent.getExtras();
+                intent.putExtra("titlename", "Community Breakfasts");
+                startActivity(intent);
+                // Handle the camera action
+                break;
+            }
+            case R.id.nav_dinners: {
+                Intent intent = new Intent(this, Main2Activity.class);
+                Bundle extras = intent.getExtras();
+                intent.putExtra("titlename", "Community Dinners");
+                startActivity(intent);
 
 
-        } else if (id == R.id.nav_slideshow) {
-            Intent intent = new Intent(this, Main2Activity.class);
-            Bundle extras = intent.getExtras();
-            intent.putExtra("titlename", "Community Lunches");
-            startActivity(intent);
+                break;
+            }
+            case R.id.nav_lunches: {
+                Intent intent = new Intent(this, Main2Activity.class);
+                Bundle extras = intent.getExtras();
+                intent.putExtra("titlename", "Community Lunches");
+                startActivity(intent);
 
-        } else if (id == R.id.nav_manage) {
-            Intent intent = new Intent(this, Main2Activity.class);
-            Bundle extras = intent.getExtras();
-            intent.putExtra("titlename", "Community Daily Diet Plan");
-            startActivity(intent);
+                break;
+            }
+            case R.id.nav_community_daily_diets: {
+                Intent intent = new Intent(this, Main2Activity.class);
+                Bundle extras = intent.getExtras();
+                intent.putExtra("titlename", "Community Daily Diet Plan");
+                startActivity(intent);
 
-        } else if (id == R.id.nav_share) {
-            Intent intent = new Intent(this, Main2Activity.class);
-            Bundle extras = intent.getExtras();
-            intent.putExtra("titlename", "Snacks");
-            startActivity(intent);
+                break;
+            }
+            case R.id.nav_snacks: {
+                Intent intent = new Intent(this, Main2Activity.class);
+                Bundle extras = intent.getExtras();
+                intent.putExtra("titlename", "Snacks");
+                startActivity(intent);
 
-        } else if (id == R.id.nav_send) {
-            Intent intent = new Intent(this, Main2Activity.class);
-            Bundle extras = intent.getExtras();
-            intent.putExtra("titlename", "Drinks/Coctails");
-            startActivity(intent);
+                break;
+            }
+            case R.id.nav_drinks_cocktails: {
+                Intent intent = new Intent(this, Main2Activity.class);
+                Bundle extras = intent.getExtras();
+                intent.putExtra("titlename", "Drinks/Cocktails");
+                startActivity(intent);
+                break;
+            }
+            default:
+                Log.e(TAG, "NavigationItemSelected not handled properly");
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);

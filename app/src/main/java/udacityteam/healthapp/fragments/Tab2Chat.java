@@ -18,22 +18,14 @@ import udacityteam.healthapp.adapters.CustomAdapter;
  * Created by vvost on 11/16/2017.
  */
 
-public class Tab2chat extends Fragment {
+public class Tab2Chat extends Fragment {
     private static final String TAG = "RecyclerViewFragment";
     private static final String KEY_LAYOUT_MANAGER = "layoutManager";
     private static final int SPAN_COUNT = 2;
     private static final int DATASET_COUNT = 60;
-
-    private enum LayoutManagerType {
-        GRID_LAYOUT_MANAGER,
-        LINEAR_LAYOUT_MANAGER
-    }
-
     protected LayoutManagerType mCurrentLayoutManagerType;
-
     protected RadioButton mLinearLayoutRadioButton;
     protected RadioButton mGridLayoutRadioButton;
-
     protected RecyclerView mRecyclerView;
     protected CustomAdapter mAdapter;
     protected RecyclerView.LayoutManager mLayoutManager;
@@ -127,6 +119,11 @@ public class Tab2chat extends Fragment {
         for (int i = 0; i < DATASET_COUNT; i++) {
             mDataset[i] = "Breafast" + i;
         }
+    }
+
+    private enum LayoutManagerType {
+        GRID_LAYOUT_MANAGER,
+        LINEAR_LAYOUT_MANAGER
     }
 }
 

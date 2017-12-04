@@ -1,11 +1,22 @@
 package udacityteam.healthapp.activities;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.SQLException;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -22,6 +33,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import udacityteam.healthapp.R;
+import udacityteam.healthapp.models.Model;
+import udacityteam.healthapp.databases.DatabaseHelper;
 
 /**
  * Created by vvost on 11/26/2017.
@@ -29,12 +42,32 @@ import udacityteam.healthapp.R;
 
 public class FoodNutritiensDisplay extends AppCompatActivity {
     TextView Textv;
+    Button addtoSqlite;
+    DatabaseHelper myDbHelper;
+    Cursor c = null;
+    String id = null;
+    String foodname = null;
+    FirebaseDatabase database;
+    DatabaseReference user;
+    DatabaseReference requests;
+    String foodselection = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.foodactivity);
         Textv = (TextView)findViewById(R.id.tv2);
+        myDbHelper = new DatabaseHelper(FoodNutritiensDisplay.this);
+        try {
+            myDbHelper.createDataBase();
+        } catch (IOException ioe) {
+            throw new Error("Unable to create database");
+        }
+        try {
+            myDbHelper.openDataBase();
+        } catch (SQLException sqle) {
+            throw sqle;
+        }
         Intent iin= getIntent();
 
         Bundle b = iin.getExtras();
@@ -42,15 +75,21 @@ public class FoodNutritiensDisplay extends AppCompatActivity {
 
         if(b!=null)
         {
-            String j =(String) b.get("vardas");
+           id =(String) b.get("id");
+           foodname = (String) b.get("foodname");
+            foodselection = (String) b.get("foodselection");
             StringBuilder amm = new StringBuilder();
             amm.append("https://api.nal.usda.gov/ndb/V2/reports?ndbno=");
-            amm.append(j);
+            amm.append(id);
             amm.append("&type=f&format=json&api_key=HXLecTDsMqy1Y6jNoYPw2n3DQ30FeGXxD2XBZqJh");
             new JSONTask().execute(amm.toString());
 
           //  Textv.setText(j);
         }
+        database = FirebaseDatabase.getInstance();
+        user = database.getReference("User").child(Common.currentUser.getPhone()).child(foodselection);
+
+
     }
 
     public class JSONTask extends AsyncTask<String, String, String>
@@ -122,19 +161,113 @@ public class FoodNutritiensDisplay extends AppCompatActivity {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
 
-            if(s!=null) {
-             //   for (int i = 0; i < s.size(); i++) {
-                  //  buffer.append(s.get(i).getId() + "\n" + s.get(i).getName() + "\n" + s.get(i).getOffset() + "\n");
-                 //  tvData.setText(s.get(i).getId() + s.get(i).getName() + s.get(i).getOffset() + "\n");
-               // }
-             //   tvData.setText(s.size());w
-               // tvData.setText(s.get(1).getId());
+            if (s != null) {
             }
-            Textv.setText(s);
+            Textv.setText(foodselection);
+//            addtoSqlite = findViewById(R.id.button2);
+//            addtoSqlite.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    try {
+//                        myDbHelper.openDataBase();
+//                    } catch (SQLException sqle) {
+//                        throw sqle;
+//                    }
+//
+//                    ContentValues a1 = new ContentValues();
+//                    a1.put("Name", id);
+//                    a1.put("Name1", foodname);
+//
+//                    SQLiteDatabase aa = myDbHelper.myDataBase;
+//                    aa.insert("Ha", null, a1);
+//                    c = myDbHelper.query("Ha", null, null, null, null, null, null);
+//                    if (c.moveToFirst()) {
+//                        do {
+//                            Toast.makeText(FoodNutritiensDisplay.this,
+//                                    "_id: " + c.getString(0) + "\n" +
+//                                            "E_NAME: " + c.getString(1) + "\n" +
+//                                            "E_AGE: " + c.getString(2) + "\n",
+//                                    Toast.LENGTH_LONG).show();
+//                        } while (c.moveToNext());
+//                    }
+//                    myDbHelper.close();
+//                }
+//            });
+            addtoSqlite = findViewById(R.id.button2);
+            addtoSqlite.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                   AddFoodtoDatabase();
+
+                }
+            });
+        }
+        public class AddFoodtoDatabase extends AsyncTask<String, String, String>
+        {
+
+            @Override
+            protected String doInBackground(String... strings) {
+                SelectedFood request = new SelectedFood(
+                        id,
+                        foodname
+                );
+                user.child(String.valueOf(System.currentTimeMillis()))
+                        .setValue(request);
+                Intent intent = new Intent(FoodNutritiensDisplay.this, FoodList.class);
+                intent.putExtra("foodselection", foodselection);
+                startActivity(intent);
+                return "success";
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+
+                if (s != null) {
+
+                    Intent intent = new Intent(FoodNutritiensDisplay.this, FoodList.class);
+                    intent.putExtra("foodselection", foodselection);
+                    startActivity(intent);
+                    }
+                }
+            }
+
+        private void AddFoodtoDatabase() {
+                    SelectedFood request = new SelectedFood(
+                            id,
+                            foodname
+                    );
+                   user.child(String.valueOf(System.currentTimeMillis()))
+                           .setValue(request).addOnCompleteListener(new OnCompleteListener<Void>() {
+                       @Override
+                       public void onComplete(@NonNull Task<Void> task) {
+                           Intent intent = new Intent(FoodNutritiensDisplay.this, FoodList.class);
+                           intent.putExtra("foodselection", foodselection);
+                           startActivity(intent);
+                           finish();
+                       }
+                   });
+// .addOnFailureListener(new OnFailureListener() {
+//                       @Override
+//                       public void onFailure(@NonNull Exception e) {
+//                           Intent intent = new Intent(FoodNutritiensDisplay.this, FoodList.class);
+//                           intent.putExtra("foodselection", foodselection);
+//                           startActivity(intent);
+//                       }
+//                   }).addOnSuccessListener(new OnSuccessListener<Void>() {
+//                       @Override
+//                       public void onSuccess(Void aVoid) {
+//                           Intent intent = new Intent(FoodNutritiensDisplay.this, FoodList.class);
+//                           intent.putExtra("foodselection", foodselection);
+//                           startActivity(intent);
+//
+//                       }
+//                   });
 
 
+        }
         }
     }
 
 
-}
+
