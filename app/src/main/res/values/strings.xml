@@ -7,19 +7,10 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_main2">Main2Activity</string>
     <string name="section_format">Hello World from section: %1$d</string>
-    <!-- Tab titles in Main2Activity -->
-    <string name="tab1_title">Tab 1</string>
-    <string name="tab2_title">Tab 2</string>
-    <string name="tab3_title">Tab 3</string>
-    <!-- Main drawer menu items -->
-    <string name="main_drawer_item_community_breakfasts">Community Breakfasts</string>
-    <string name="main_drawer_item_community_lunches">Community Lunches</string>
-    <string name="main_drawer_item_community_dinners">Community Dinners</string>
-    <string name="main_drawer_item_community_daily_diet">Community Daily Diet Plan</string>
-    <string name="main_drawer_additional">Additional</string>
-    <string name="main_drawer_item_snacks">Snacks</string>
-    <string name="main_drawer_item_drinks_cocktails">Drinks/Cocktails</string>
-    <string name="camera">Camera</string>
-    <string name="save">Save</string>
-    <string name="update_password">Password</string>
+
+    <string name="facebook_application_id" translatable="false">APP_ID</string>
+    <!-- Facebook Application ID, prefixed by 'fb'.  Enables Chrome Custom tabs. -->
+    <string name="facebook_login_protocol_scheme" translatable="false">fbAPP_ID</string>
+
+    <string name="sign_out">Sign Out</string>
 </resources>
