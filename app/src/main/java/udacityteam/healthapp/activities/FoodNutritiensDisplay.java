@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -87,7 +88,7 @@ public class FoodNutritiensDisplay extends AppCompatActivity {
           //  Textv.setText(j);
         }
         database = FirebaseDatabase.getInstance();
-        user = database.getReference("User").child(Common.currentUser.getPhone()).child(foodselection);
+        user = database.getReference("User").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(foodselection);
 
 
     }
