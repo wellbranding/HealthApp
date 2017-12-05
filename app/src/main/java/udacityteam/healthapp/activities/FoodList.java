@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -37,7 +38,7 @@ public class FoodList extends AppCompatActivity {
         foodselection = (String) b.get("foodselection");
         //Firebase
         database = FirebaseDatabase.getInstance();
-        foodList = database.getReference("User").child(Common.currentUser.getPhone()).child(foodselection);
+        foodList = database.getReference("User").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(foodselection);
 
 
         recyclerView = (RecyclerView)findViewById(R.id.recycler_food);

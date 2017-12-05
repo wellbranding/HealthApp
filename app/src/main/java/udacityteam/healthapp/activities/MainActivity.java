@@ -54,7 +54,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
 
         // Initialize Firebase components
         mFirebaseAuth = FirebaseAuth.getInstance();
@@ -82,6 +81,7 @@ public class MainActivity extends AppCompatActivity
                 }
             }
         };
+        setContentView(R.layout.activity_main);
 
         fabsettings = findViewById(R.id.fabSetting);
         Snacks = (LinearLayout) this.findViewById(R.id.Snacks);
@@ -103,6 +103,7 @@ public class MainActivity extends AppCompatActivity
                 }
             }
         });
+        closeSubMenusFab();
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
