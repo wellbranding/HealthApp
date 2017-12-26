@@ -80,7 +80,7 @@
             android:layout_alignLeft="@+id/checkBox2"
             android:layout_alignParentBottom="true"
             android:layout_alignStart="@+id/checkBox2"
-            android:text="CheckBox" />
+            android:text="CheckBoxxxxx" />
 
         <CheckBox
             android:id="@+id/checkBox6"
