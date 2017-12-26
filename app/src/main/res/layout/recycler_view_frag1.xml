@@ -90,6 +90,15 @@
             android:layout_alignParentBottom="true"
             android:layout_alignStart="@+id/checkBox"
             android:text="CheckBox" />
+
+        <TextView
+            android:id="@+id/listodydis"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/checkBox1"
+            android:layout_alignParentTop="true"
+            android:layout_alignStart="@+id/checkBox1"
+            android:text="listodydios" />
     </RelativeLayout>
 
     <android.support.v7.widget.RecyclerView

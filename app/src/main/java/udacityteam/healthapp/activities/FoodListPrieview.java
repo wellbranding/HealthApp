@@ -25,7 +25,7 @@ import java.util.List;
 
 import udacityteam.healthapp.R;
 
-public class FoodList extends AppCompatActivity {
+public class FoodListPrieview extends AppCompatActivity {
 
     RecyclerView recyclerView;
     RecyclerView.LayoutManager layoutManager;
@@ -33,12 +33,11 @@ public class FoodList extends AppCompatActivity {
     FirebaseDatabase database;
     DatabaseReference foodList;
     DatabaseReference usersdatabase;
-    String foodselection;
+    String foodselection, key;
 
     String catergoryId = "ff";
     FirebaseRecyclerAdapter<SelectedFood, FoodViewHolder> adapter;
     String stringdate;
-    String requestedString;
     Button share;
 
     @Override
@@ -50,20 +49,17 @@ public class FoodList extends AppCompatActivity {
 
         Bundle b = iin.getExtras();
         foodselection = (String) b.get("foodselection");
-        requestedString = (String) b.get("requestdate");
-        if (requestedString != null)
-            stringdate = requestedString;
-        else {
+        key = (String) b.get("key");
             Date date = new Date();
             Date newDate = new Date(date.getTime());
             SimpleDateFormat dt = new SimpleDateFormat("yyyy-MM-dd");
             stringdate = dt.format(newDate);
-        }
+
 
 
         database = FirebaseDatabase.getInstance();
         getSupportActionBar().setTitle(foodselection);
-        foodList = database.getReference("User").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(foodselection);
+        foodList = database.getReference("MainFeed").child(foodselection).child("SharedDiets").child(key);
         foodList.orderByChild("date").equalTo(stringdate);
 
         recyclerView = (RecyclerView) findViewById(R.id.recycler_food);
@@ -89,7 +85,7 @@ public class FoodList extends AppCompatActivity {
                     viewHolder.setItemClickListener(new ItemClickListener() {
                         @Override
                         public void onClick(View view, int position, boolean isLongClick) {
-                            Intent intent = new Intent(FoodList.this, FoodNutritiensDisplay.class);
+                            Intent intent = new Intent(FoodListPrieview.this, FoodNutritiensDisplay.class);
                             StringBuilder amm = new StringBuilder();
                             amm.append("https://api.nal.usda.gov/ndb/V2/reports?ndbno=");
                             amm.append(model.getFoodid());
@@ -105,7 +101,7 @@ public class FoodList extends AppCompatActivity {
                             //  final String selected = mObjects.get(position).getId();
 
                             // Toast.makeText(getApplicationContext(), selected, Toast.LENGTH_SHORT).show();
-                            Toast.makeText(FoodList.this, "" + model.getFoodid(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(FoodListPrieview.this, "" + model.getFoodid(), Toast.LENGTH_SHORT).show();
                         }
                     });
                 }
@@ -113,47 +109,32 @@ public class FoodList extends AppCompatActivity {
         }
         //set Adapter
         recyclerView.setAdapter(adapter);
-        share = findViewById(R.id.share);
-        share.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Date date = new Date();
-                Date newDate = new Date(date.getTime());
-                SimpleDateFormat dt = new SimpleDateFormat("yyyy-MM-dd");
-                String todaydate= dt.format(newDate);
-                if(requestedString.equals(todaydate))
-                sharefoodlist();
-                else
-                {
-                    Toast.makeText(FoodList.this, "You can only share todays", Toast.LENGTH_SHORT).show();
-                }
-
-            }
-        });
+        sharefoodlist();
     }
 
     private void sharefoodlist() //only if today
     {
-                usersdatabase = database.getReference("MainFeed").child(foodselection).child("SharedDiets").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-
-                foodList.orderByChild("date").equalTo(stringdate).addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        List<SelectedFood> userList = new ArrayList<>();
-                        for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
-                            Log.d("shhss", "ahahha");
-                            usersdatabase.child(String.valueOf(System.currentTimeMillis())).setValue(dataSnapshot1.getValue(SelectedFood.class));
-                        }
-   Intent intent = new Intent(FoodList.this, MainActivity.class);
-                        startActivity(intent);
-                        finish();
-
-                    }
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                    }
-                });
-            }
-
+        share = findViewById(R.id.share);
+        share.setText("Cant share");
+//        share.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                usersdatabase = database.getReference("MainFeed").child(foodselection).child("SharedDiets").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+//
+//                foodList.orderByChild("date").equalTo(stringdate).addValueEventListener(new ValueEventListener() {
+//                    @Override
+//                    public void onDataChange(DataSnapshot dataSnapshot) {
+//                        List<SelectedFood> userList = new ArrayList<>();
+//                        for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+//                            Log.d("shhss", "ahahha");
+//                            usersdatabase.child(String.valueOf(System.currentTimeMillis())).setValue(dataSnapshot1.getValue(SelectedFood.class));
+//                        }
+//                    }
+//                    @Override
+//                    public void onCancelled(DatabaseError databaseError) {
+//                    }
+//                });
+//            }
+//        });
     }
-
+}

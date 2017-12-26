@@ -9,7 +9,12 @@
         android:id="@+id/tv2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/nutritionaldysplay"
+        android:layout_alignStart="@+id/nutritionaldysplay"
+        android:layout_below="@+id/nutritionaldysplay"
+        android:layout_marginTop="39dp"
         android:text="TextView"
+        android:textSize="18sp"
         tools:layout_editor_absoluteX="175dp"
         tools:layout_editor_absoluteY="146dp" />
 
@@ -21,4 +26,29 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:text="Add food" />
+
+    <TextView
+        android:id="@+id/ProductName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="30dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="50dp"
+        android:gravity="center_vertical"
+        android:text="TextView"
+        android:textSize="25sp" />
+
+    <TextView
+        android:id="@+id/nutritionaldysplay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:layout_alignLeft="@+id/ProductName"
+        android:layout_alignStart="@+id/ProductName"
+        android:layout_below="@+id/ProductName"
+        android:layout_marginTop="17dp"
+        android:text="Nutritional value of product" />
 </RelativeLayout>

@@ -16,6 +16,12 @@ public class Model {
         this.offset = offset;
         this.id = id;
     }
+    public Model(String name, String offset, String id)
+    {
+        this.name = name;
+        this.offset = offset;
+        this.id = id;
+    }
 
 
     public String getName() {

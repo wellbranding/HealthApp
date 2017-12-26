@@ -11,6 +11,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,7 +22,7 @@ import udacityteam.healthapp.fragments.Tab1Contacts;
 import udacityteam.healthapp.fragments.Tab2Chat;
 import udacityteam.healthapp.fragments.Tab3Online;
 
-public class Main2Activity extends AppCompatActivity {
+public class CommunityList extends AppCompatActivity {
 
     // Resources
     Resources res;
@@ -40,6 +41,7 @@ public class Main2Activity extends AppCompatActivity {
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
+    RecyclerView.LayoutManager layoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,16 +60,12 @@ public class Main2Activity extends AppCompatActivity {
             getSupportActionBar().setTitle(value);
             //  Textv.setText(j);
         }
-        //  getSupportActionBar().setTitle(value);
-        // Create the adapter that will return a fragment for each of the three
-        // primary sections of the activity.
         String[] tabTitles = new String[]{
                 res.getString(R.string.tab1_title),
                 res.getString(R.string.tab2_title),
                 res.getString(R.string.tab3_title)};
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), tabTitles);
 
-        // Set up the ViewPager with the sections adapter.
         mViewPager = findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
@@ -76,7 +74,7 @@ public class Main2Activity extends AppCompatActivity {
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
 
-        // TODO Replace with your own action
+
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -133,7 +131,6 @@ public class Main2Activity extends AppCompatActivity {
                 case 0:
                     return new Tab1Contacts();
                 case 1:
-
                     return new Tab2Chat();
                 case 2:
                     return new Tab3Online();

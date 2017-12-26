@@ -1,6 +1,7 @@
 package udacityteam.healthapp.activities;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -10,9 +11,11 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -21,9 +24,19 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.FirebaseDatabase;
+import com.prolificinteractive.materialcalendarview.CalendarDay;
+import com.prolificinteractive.materialcalendarview.CalendarMode;
+import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
+import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import udacityteam.healthapp.R;
 
 public class MainActivity extends AppCompatActivity
@@ -34,6 +47,8 @@ public class MainActivity extends AppCompatActivity
     public static final int RC_SIGN_IN = 1;
 
     FloatingActionButton fabsettings;
+    @BindView(R.id.calendarView)
+    MaterialCalendarView widget;
 
 
     // Firebase instance variables
@@ -47,6 +62,11 @@ public class MainActivity extends AppCompatActivity
     private LinearLayout Breakfast;
     private LinearLayout Dinner;
     private LinearLayout Lunch;
+    private Button dinnerbtn;
+    private Button lunchbtn;
+    private Button breakfastbtn;
+    private Button snacksbtn;
+    Calendar today;
 
 
     private String mUsername;
@@ -96,7 +116,7 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View view) {
                 // Intent intent = new Intent(MainActivity.this, FoodSearchActivity.class);
                 //  startActivity(intent);
-                if (fabExpanded == true){
+                if (fabExpanded == true) {
                     closeSubMenusFab();
                 } else {
                     openSubMenusFab();
@@ -118,7 +138,116 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        calendarinit();
+        initButton();
 
+
+    }
+
+    private void initButton()
+    {
+       dinnerbtn= this.findViewById(R.id.button4);
+
+       lunchbtn = this.findViewById(R.id.button5);
+       breakfastbtn = this.findViewById(R.id.button6);
+       snacksbtn = this.findViewById(R.id.button7);
+//        Date datee = new Date();
+//        Calendar calendarr = Calendar.getInstance();
+//        calendarr.setTime(datee);
+//        SimpleDateFormat dateFormat = new SimpleDateFormat(
+//                "yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+//        Calendar calendar = Calendar.getInstance();
+//        calendar.set(Calendar.HOUR_OF_DAY, 6);
+//        calendar.set(Calendar.MINUTE,0);
+        widget.getSelectedDate();
+        final Calendar calendar = Calendar.getInstance();
+        calendar.setTime(widget.getSelectedDate().getDate());
+        final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        System.out.println();
+        Log.d("ajaaz", format.format(calendar.getTime()));
+        dinnerbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, FoodList.class);
+                intent.putExtra("foodselection", "Dinner");
+                intent.putExtra("requestdate", format.format(calendar.getTime()));
+                startActivity(intent);
+            }
+        });
+        lunchbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, FoodList.class);
+                intent.putExtra("foodselection", "Lunch");
+                intent.putExtra("requestdate", format.format(calendar.getTime()));
+                startActivity(intent);
+            }
+        });
+        breakfastbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, FoodList.class);
+                intent.putExtra("foodselection", "Breakfast");
+                intent.putExtra("requestdate", format.format(calendar.getTime()));
+                startActivity(intent);
+            }
+        });
+        snacksbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, FoodList.class);
+                intent.putExtra("foodselection", "Snacks");
+                intent.putExtra("requestdate", format.format(calendar.getTime()));
+                startActivity(intent);
+            }
+        });
+
+    }
+
+    private void calendarinit()
+    {
+        Date date = new Date();
+        Date newDate = new Date(date.getTime());
+        SimpleDateFormat dt = new SimpleDateFormat("yyyy-MM-dd");
+        ButterKnife.bind(this);
+
+        widget.state().edit()
+                .setCalendarDisplayMode(CalendarMode.WEEKS)
+                .commit();
+        widget.setShowOtherDates(MaterialCalendarView.SHOW_OTHER_MONTHS);
+
+
+        Calendar beginning = Calendar.getInstance();
+      // today.setTime(date);
+        beginning.set(beginning.get(Calendar.YEAR), beginning.get(Calendar.MONTH), beginning.get(Calendar.DAY_OF_MONTH)-10);
+        Log.d("aaa", beginning.toString());
+       today = Calendar.getInstance();
+       today.set(today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DAY_OF_MONTH));
+        widget.setCurrentDate(today);
+
+        //  widget.setSelectionMode();
+        Calendar end = Calendar.getInstance();
+        end.set(end.get(Calendar.YEAR),  end.get(Calendar.MONTH), end.get(Calendar.DAY_OF_MONTH)+10);
+
+        widget.setArrowColor(Color.RED);
+        widget.setSelectionColor(Color.RED);
+        widget.setSelectedDate(today);
+        widget.setOnDateChangedListener(new OnDateSelectedListener() {
+            @Override
+            public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
+                initButton();
+            }
+        });
+
+        Calendar minimum = Calendar.getInstance();
+       minimum.set(minimum.get(Calendar.YEAR),minimum.get(Calendar.MONTH), minimum.get(Calendar.DAY_OF_MONTH)-50);
+        Calendar maximum = Calendar.getInstance();
+        maximum.set(maximum.get(Calendar.YEAR),maximum.get(Calendar.MONTH), maximum.get(Calendar.DAY_OF_MONTH)+50);
+
+        widget.state().edit()
+                .setMinimumDate(minimum.getTime())
+                .setMaximumDate(maximum.getTime())
+                .commit();
 
 
     }
@@ -145,7 +274,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 Toast.makeText(MainActivity.this, "ahahaa", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(MainActivity.this, FoodSearchActivity.class);
+                Intent intent = new Intent(MainActivity.this, FoodSearchActivityversion3.class);
                 intent.putExtra("foodselection", "Drinks");
                 startActivity(intent);
 
@@ -155,7 +284,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
                 Toast.makeText(MainActivity.this, "ooooo", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(MainActivity.this, FoodSearchActivity.class);
+                Intent intent = new Intent(MainActivity.this, FoodSearchActivityversion3.class);
                 intent.putExtra("foodselection", "Snacks");
                 startActivity(intent);
             }
@@ -164,7 +293,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
                 Toast.makeText(MainActivity.this, "tttttt", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(MainActivity.this, FoodSearchActivity.class);
+                Intent intent = new Intent(MainActivity.this, FoodSearchActivityversion3.class);
                 intent.putExtra("foodselection", "Breakfast");
                 startActivity(intent);
             }
@@ -173,7 +302,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
                 Toast.makeText(MainActivity.this, "tttttt", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(MainActivity.this, FoodSearchActivity.class);
+                Intent intent = new Intent(MainActivity.this, FoodSearchActivityversion3.class);
                 intent.putExtra("foodselection", "Dinner");
                 startActivity(intent);
             }
@@ -182,7 +311,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
                 Toast.makeText(MainActivity.this, "tttttt", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(MainActivity.this, FoodSearchActivity.class);
+                Intent intent = new Intent(MainActivity.this, FoodSearchActivityversion3.class);
                 intent.putExtra("foodselection", "Lunch");
                 startActivity(intent);
             }
@@ -260,40 +389,45 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_breakfasts) {
-            Intent intent = new Intent(this, Main2Activity.class);
+            Intent intent = new Intent(this, CommunityList.class);
             Bundle extras = intent.getExtras();
             intent.putExtra("titlename", "Community Breakfasts");
+            intent.putExtra("databasevalue", "Breakfast");
             startActivity(intent);
             // Handle the camera action
         } else if (id == R.id.nav_dinners) {
-            Intent intent = new Intent(this, Main2Activity.class);
+            Intent intent = new Intent(this, CommunityList.class);
             Bundle extras = intent.getExtras();
             intent.putExtra("titlename", "Community Dinners");
+            intent.putExtra("databasevalue", "Dinner");
             startActivity(intent);
 
 
         } else if (id == R.id.nav_lunches) {
-            Intent intent = new Intent(this, Main2Activity.class);
+            Intent intent = new Intent(this, CommunityList.class);
             Bundle extras = intent.getExtras();
             intent.putExtra("titlename", "Community Lunches");
+            intent.putExtra("databasevalue", "Lunch");
             startActivity(intent);
 
         } else if (id == R.id.nav_community_daily_diets) {
-            Intent intent = new Intent(this, Main2Activity.class);
+            Intent intent = new Intent(this, CommunityList.class);
             Bundle extras = intent.getExtras();
             intent.putExtra("titlename", "Community Daily Diet Plan");
             startActivity(intent);
 
         } else if (id == R.id.nav_snacks) {
-            Intent intent = new Intent(this, Main2Activity.class);
+            Intent intent = new Intent(this, CommunityList.class);
             Bundle extras = intent.getExtras();
             intent.putExtra("titlename", "Snacks");
+            intent.putExtra("databasevalue", "Snacks");
             startActivity(intent);
 
         } else if (id == R.id.nav_drinks_cocktails) {
-            Intent intent = new Intent(this, Main2Activity.class);
+            Intent intent = new Intent(this, CommunityList.class);
             Bundle extras = intent.getExtras();
             intent.putExtra("titlename", "Drinks/Coctails");
+            intent.putExtra("databasevalue", "Drinks");
             startActivity(intent);
         }
 

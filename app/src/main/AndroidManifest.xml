@@ -20,7 +20,7 @@
         <activity android:name=".activities.HomeActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity
-            android:name=".activities.Main2Activity"
+            android:name=".activities.CommunityList"
             android:label="@string/title_activity_main2"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity
@@ -28,6 +28,18 @@
         android:label="@string/title_activity_main2" />
         <activity
             android:name=".activities.FoodSearchActivity"
+            android:label="@string/title_activity_main2"
+        />
+        <activity
+            android:name=".activities.FoodListPrieview"
+            android:label="@string/title_activity_main2"
+            />
+        <activity
+            android:name=".activities.FoodSearchActivityversion2"
+            android:label="@string/title_activity_main2"
+            />
+        <activity
+            android:name=".activities.FoodSearchActivityversion3"
             android:label="@string/title_activity_main2"
             />
         <activity android:name=".activities.SigninActivity" />

@@ -30,7 +30,9 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import udacityteam.healthapp.R;
@@ -48,15 +50,20 @@ public class FoodNutritiensDisplay extends AppCompatActivity {
     Cursor c = null;
     String id = null;
     String foodname = null;
+    String UserId = null;
     FirebaseDatabase database;
     DatabaseReference user;
+    DatabaseReference allusers;
     DatabaseReference requests;
     String foodselection = null;
+    TextView productname;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.foodactivity);
+        productname = findViewById(R.id.ProductName);
+        UserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         Textv = (TextView)findViewById(R.id.tv2);
 
         Intent iin= getIntent();
@@ -78,6 +85,8 @@ public class FoodNutritiensDisplay extends AppCompatActivity {
                     AddFoodtoDatabase();
                 }
             });
+            getSupportActionBar().setTitle(foodselection);
+            productname.setText(foodname);
             StringBuilder amm = new StringBuilder();
             amm.append("https://api.nal.usda.gov/ndb/V2/reports?ndbno=");
             amm.append(id);
@@ -86,19 +95,33 @@ public class FoodNutritiensDisplay extends AppCompatActivity {
            jsonTask.execute(amm.toString());
           //  Textv.setText(j);
         }
+
         database = FirebaseDatabase.getInstance();
+        allusers = database.getReference("MainFeed").child(foodselection);
         user = database.getReference("User").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(foodselection);
+
 
 
 
     }
     private void AddFoodtoDatabase() {
-        SelectedFood request = new SelectedFood(
+        Date date = new Date();
+        Date newDate = new Date(date.getTime());
+        SimpleDateFormat dt = new SimpleDateFormat("yyyy-MM-dd");
+        String stringdate = dt.format(newDate);
+        SelectedFood thisuser = new SelectedFood(
                 id,
-                foodname
+                foodname,
+                stringdate
+        );
+        SelectedFood alluser = new SelectedFood(
+                id,
+                foodname,
+                UserId, stringdate
         );
         user.child(String.valueOf(System.currentTimeMillis()))
-                .setValue(request);
+                .setValue(thisuser);
+     //   allusers.child(String.valueOf(System.currentTimeMillis())).setValue(alluser);
                 Intent intent = new Intent(FoodNutritiensDisplay.this, FoodList.class);
                 intent.putExtra("foodselection", foodselection);
                 startActivity(intent);
@@ -139,7 +162,7 @@ public class FoodNutritiensDisplay extends AppCompatActivity {
             JSONObject finalobject = parentArray.getJSONObject(0);
             JSONObject aaa = finalobject.getJSONObject("food");
             JSONArray aaa1 = aaa.getJSONArray("nutrients");
-            JSONObject enerhy = aaa1.getJSONObject(0);
+            JSONObject enerhy = aaa1.getJSONObject(1);
               String enerhykcal = enerhy.getString("value");
 
            List<Model> modelList = new ArrayList<>();
@@ -177,7 +200,8 @@ public class FoodNutritiensDisplay extends AppCompatActivity {
 
             if (s != null) {
             }
-            Textv.setText(foodselection);
+            Textv.setText("CALORIES PER 100G " + s + " KCAL");
+
 //            addtoSqlite = findViewById(R.id.button2);
 //            addtoSqlite.setOnClickListener(new View.OnClickListener() {
 //                @Override
