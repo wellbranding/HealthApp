@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -38,6 +39,7 @@ public class FoodList extends AppCompatActivity {
     String catergoryId = "ff";
     FirebaseRecyclerAdapter<SelectedFood, FoodViewHolder> adapter;
     String stringdate;
+    TextView message;
     String requestedString;
     Button share;
 
@@ -47,6 +49,7 @@ public class FoodList extends AppCompatActivity {
         setContentView(R.layout.activity_food_list);
 
         Intent iin = getIntent();
+        message = findViewById(R.id.message);
 
         Bundle b = iin.getExtras();
         foodselection = (String) b.get("foodselection");
@@ -73,6 +76,7 @@ public class FoodList extends AppCompatActivity {
         loadListFood(catergoryId);
 
 
+
     }
 
     private void loadListFood(String catergoryId) {
@@ -89,7 +93,7 @@ public class FoodList extends AppCompatActivity {
                     viewHolder.setItemClickListener(new ItemClickListener() {
                         @Override
                         public void onClick(View view, int position, boolean isLongClick) {
-                            Intent intent = new Intent(FoodList.this, FoodNutritiensDisplay.class);
+                            Intent intent = new Intent(FoodList.this, FoodNutritiensDisplayPrieview.class);
                             StringBuilder amm = new StringBuilder();
                             amm.append("https://api.nal.usda.gov/ndb/V2/reports?ndbno=");
                             amm.append(model.getFoodid());
@@ -146,6 +150,7 @@ public class FoodList extends AppCompatActivity {
                         }
    Intent intent = new Intent(FoodList.this, MainActivity.class);
                         startActivity(intent);
+                        Toast.makeText(FoodList.this, "Success!", Toast.LENGTH_SHORT).show();
                         finish();
 
                     }

@@ -2,10 +2,8 @@ package udacityteam.healthapp.activities;
 
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.SQLException;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -13,10 +11,7 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -37,14 +32,14 @@ import java.util.Date;
 import java.util.List;
 
 import udacityteam.healthapp.R;
-import udacityteam.healthapp.models.Model;
 import udacityteam.healthapp.databases.DatabaseHelper;
+import udacityteam.healthapp.models.Model;
 
 /**
  * Created by vvost on 11/26/2017.
  */
 
-public class FoodNutritiensDisplay extends AppCompatActivity {
+public class FoodNutritiensDisplayPrieview extends AppCompatActivity {
     TextView Textv;
     Button addtoSqlite;
     DatabaseHelper myDbHelper;
@@ -75,6 +70,7 @@ public class FoodNutritiensDisplay extends AppCompatActivity {
         Bundle b = iin.getExtras();
 
         addtoSqlite = findViewById(R.id.button2);
+        addtoSqlite.setVisibility(View.INVISIBLE);
 
 
 
@@ -83,12 +79,12 @@ public class FoodNutritiensDisplay extends AppCompatActivity {
            id =(String) b.get("id");
            foodname = (String) b.get("foodname");
             foodselection = (String) b.get("foodselection");
-            addtoSqlite.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    AddFoodtoDatabase();
-                }
-            });
+//            addtoSqlite.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    AddFoodtoDatabase();
+//                }
+//            });
             getSupportActionBar().setTitle(foodselection);
             productname.setText(foodname);
             StringBuilder amm = new StringBuilder();
@@ -126,7 +122,7 @@ public class FoodNutritiensDisplay extends AppCompatActivity {
         user.child(String.valueOf(System.currentTimeMillis()))
                 .setValue(thisuser);
      //   allusers.child(String.valueOf(System.currentTimeMillis())).setValue(alluser);
-                Intent intent = new Intent(FoodNutritiensDisplay.this, FoodList.class);
+                Intent intent = new Intent(FoodNutritiensDisplayPrieview.this, FoodList.class);
                 intent.putExtra("requestdate", stringdate);
                 intent.putExtra("foodselection", foodselection);
                 startActivity(intent);

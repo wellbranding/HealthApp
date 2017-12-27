@@ -64,6 +64,7 @@ public class FoodSearchActivityversion3 extends AppCompatActivity implements Sea
     private static final String DEFAULT = "default";
     private SearchManager searchManager;
     private SearchView searchView;
+    TextView message;
     private MenuItem searchMenuItem;
     private SuggestAdapter suggestionsAdapter;
     private final ArrayList<String> dummyArray = new ArrayList<String>();

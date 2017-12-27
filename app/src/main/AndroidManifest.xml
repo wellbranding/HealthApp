@@ -42,6 +42,9 @@
             android:name=".activities.FoodSearchActivityversion3"
             android:label="@string/title_activity_main2"
             />
+        <activity
+            android:name=".activities.FoodNutritiensDisplayPrieview"
+            android:label="@string/title_activity_main2" />
         <activity android:name=".activities.SigninActivity" />
         <activity android:name=".activities.SignupActivity" />
         <activity android:name=".activities.FoodList">

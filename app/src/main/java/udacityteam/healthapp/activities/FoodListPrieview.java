@@ -85,7 +85,7 @@ public class FoodListPrieview extends AppCompatActivity {
                     viewHolder.setItemClickListener(new ItemClickListener() {
                         @Override
                         public void onClick(View view, int position, boolean isLongClick) {
-                            Intent intent = new Intent(FoodListPrieview.this, FoodNutritiensDisplay.class);
+                            Intent intent = new Intent(FoodListPrieview.this, FoodNutritiensDisplayPrieview.class);
                             StringBuilder amm = new StringBuilder();
                             amm.append("https://api.nal.usda.gov/ndb/V2/reports?ndbno=");
                             amm.append(model.getFoodid());
