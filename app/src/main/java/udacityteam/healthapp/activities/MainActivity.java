@@ -10,6 +10,8 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -17,27 +19,36 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.CalendarMode;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import udacityteam.healthapp.R;
+import udacityteam.healthapp.adapters.CustomAdapter;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -66,6 +77,8 @@ public class MainActivity extends AppCompatActivity
     private Button lunchbtn;
     private Button breakfastbtn;
     private Button snacksbtn;
+    private Button dailybtn;
+    private Button drinksbtn;
     Calendar today;
 
 
@@ -139,18 +152,22 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         calendarinit();
+        initRecyclerview();
         initButton();
+
 
 
     }
 
     private void initButton()
     {
-       dinnerbtn= this.findViewById(R.id.button4);
+       dinnerbtn= this.findViewById(R.id.btndinner);
 
-       lunchbtn = this.findViewById(R.id.button5);
-       breakfastbtn = this.findViewById(R.id.button6);
-       snacksbtn = this.findViewById(R.id.button7);
+       lunchbtn = this.findViewById(R.id.btnlunch);
+       breakfastbtn = this.findViewById(R.id.btnbreakfast);
+       snacksbtn = this.findViewById(R.id.btnscancks);
+       drinksbtn = this.findViewById(R.id.btndrinks);
+       dailybtn = this.findViewById(R.id.btndaily);
 //        Date datee = new Date();
 //        Calendar calendarr = Calendar.getInstance();
 //        calendarr.setTime(datee);
@@ -201,7 +218,81 @@ public class MainActivity extends AppCompatActivity
                 startActivity(intent);
             }
         });
+        drinksbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, FoodList.class);
+                intent.putExtra("foodselection", "Drinks");
+                intent.putExtra("requestdate", format.format(calendar.getTime()));
+                startActivity(intent);
+            }
+        });
+        dailybtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(MainActivity.this, "Currently not Available", Toast.LENGTH_SHORT).show();
+            }
+        });
 
+
+    }
+    private void initRecyclerview()
+    {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference foodList = database.getReference("MainFeed").child("Breakfast").child("SharedDiets");
+
+        final RecyclerView mRecyclerView = findViewById(R.id.recyclerView);
+        final ProgressBar progressBar = findViewById(R.id.progressbar);
+
+        // LinearLayoutManager is used here, this will layout the elements in a similar fashion
+        // to the way ListView would layout elements. The RecyclerView.LayoutManager defines how
+        // elements are laid out.
+        //  listodydis.setText(foodList.orderByChild("userId").toString());
+
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(MainActivity.this);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        foodList.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // Getting current user Id
+                String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+
+                // Filter User
+                List<String> userList = new ArrayList<>();
+//                        for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+//                            Log.d("shhss", "ahahha");
+//                         //   listodydis.setText();
+//                            if (!dataSnapshot1.getValue(SelectedFood.class).getUserId().equals(uid)) {
+//                                userList.add(dataSnapshot1.getValue(SelectedFood.class));
+//                            }
+//                        }
+                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+                    Log.d("shhss", dataSnapshot1.getKey().toString());
+                    progressBar.setVisibility(View.GONE);
+                    //   listodydis.setText();
+
+                    if (!dataSnapshot1.getKey().equals(uid)) {
+                        userList.add(dataSnapshot1.getKey());
+                    }
+                }
+                progressBar.setVisibility(View.GONE);
+
+
+               CustomAdapter mAdapter = new CustomAdapter(userList);
+                mRecyclerView.setAdapter(mAdapter);
+
+
+                // Setting d
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                throw databaseError.toException();
+                //listodydis.setText("errrooas");
+            }
+        });
     }
 
     private void calendarinit()
@@ -229,8 +320,8 @@ public class MainActivity extends AppCompatActivity
         Calendar end = Calendar.getInstance();
         end.set(end.get(Calendar.YEAR),  end.get(Calendar.MONTH), end.get(Calendar.DAY_OF_MONTH)+10);
 
-        widget.setArrowColor(Color.RED);
-        widget.setSelectionColor(Color.RED);
+        widget.setArrowColor(this.getResources().getColor(R.color.colorPrimary));
+        widget.setSelectionColor(this.getResources().getColor(R.color.colorPrimary));
         widget.setSelectedDate(today);
         widget.setOnDateChangedListener(new OnDateSelectedListener() {
             @Override
@@ -248,9 +339,8 @@ public class MainActivity extends AppCompatActivity
                 .setMinimumDate(minimum.getTime())
                 .setMaximumDate(maximum.getTime())
                 .commit();
-
-
     }
+
     private void closeSubMenusFab(){
         //  layoutFabSave.setVisibility(View.INVISIBLE);
         Snacks.setVisibility(View.INVISIBLE);
@@ -414,7 +504,8 @@ public class MainActivity extends AppCompatActivity
             Intent intent = new Intent(this, CommunityList.class);
             Bundle extras = intent.getExtras();
             intent.putExtra("titlename", "Community Daily Diet Plan");
-            startActivity(intent);
+            Toast.makeText(this, "Currently Not Available", Toast.LENGTH_SHORT).show();
+            //startActivity(intent);
 
         } else if (id == R.id.nav_snacks) {
             Intent intent = new Intent(this, CommunityList.class);
@@ -430,7 +521,6 @@ public class MainActivity extends AppCompatActivity
             intent.putExtra("databasevalue", "Drinks");
             startActivity(intent);
         }
-
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;

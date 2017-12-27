@@ -3,33 +3,98 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:padding="2dp"
+    android:baselineAligned="false"
+    android:gravity="center_horizontal|center_vertical|center"
+    android:layout_height="wrap_content">
+
+    <TableLayout
+        android:layout_width="fill_parent"
+        android:baselineAligned="false"
+        android:layout_height="match_parent">
+
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_weight="1"
+            android:layout_margin="4dp"
+            android:layout_height="0dp">
 
     <Button
-        android:id="@+id/button4"
-        android:layout_width="wrap_content"
+        android:id="@+id/btndinner"
         android:layout_height="wrap_content"
+        android:layout_width="0dp"
         android:layout_weight="1"
+        android:textSize="14sp"
+        android:textColor="#ffffff"
+        android:layout_margin="4dp"
+        android:background="@color/colorPrimary"
         android:text="Dinner" />
 
     <Button
-        android:id="@+id/button5"
-        android:layout_width="wrap_content"
+        android:id="@+id/btnlunch"
         android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:layout_width="0dp"
+        android:textSize="14sp"
+        android:textColor="#ffffff"
         android:layout_weight="1"
+        android:layout_margin="4dp"
         android:text="Lunch" />
 
     <Button
-        android:id="@+id/button6"
-        android:layout_width="wrap_content"
+        android:id="@+id/btnbreakfast"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:textSize="14sp"
+        android:textColor="#ffffff"
+        android:layout_margin="4dp"
+        android:background="@color/colorPrimary"
+        android:layout_width="0dp"
         android:text="Breakfast" />
 
-    <Button
-        android:id="@+id/button7"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="Snacks" />
+
+        </TableRow>
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_weight="1"
+            android:layout_margin="4dp"
+            android:baselineAligned="false"
+            android:layout_height="0dp">
+            <Button
+                android:id="@+id/btnscancks"
+                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_margin="4dp"
+                android:textColor="#ffffff"
+                android:background="@color/colorPrimary"
+                android:layout_weight="1"
+                android:text="Snacks" />
+
+            <Button
+                android:id="@+id/btndaily"
+                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_margin="4dp"
+                android:textSize="14sp"
+                android:textColor="#ffffff"
+                android:background="@color/colorPrimary"
+                android:layout_weight="1"
+                android:text="Whole Day" />
+
+            <Button
+                android:id="@+id/btndrinks"
+                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_margin="4dp"
+                android:textSize="14sp"
+                android:textColor="#ffffff"
+                android:background="@color/colorPrimary"
+                android:layout_weight="1"
+                android:text="Drinks/Coctails" />
+
+
+        </TableRow>
+
+    </TableLayout>
+    
 </LinearLayout>

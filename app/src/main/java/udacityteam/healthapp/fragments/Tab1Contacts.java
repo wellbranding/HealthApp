@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -63,7 +64,8 @@ public class Tab1Contacts extends Fragment {
     protected RecyclerView.LayoutManager mLayoutManager;
     TextView listodydis;
     protected String[] mDataset;
-    public static String value;
+    public static String value = "Breakfast";
+    ProgressBar progressBar;
 
     DatabaseReference foodList;
     FirebaseDatabase database;
@@ -94,6 +96,7 @@ public class Tab1Contacts extends Fragment {
 
         mRecyclerView = rootView.findViewById(R.id.recyclerView);
         listodydis = (TextView) rootView.findViewById(R.id.listodydis);
+        progressBar = rootView.findViewById(R.id.progressbar);
 
                 // LinearLayoutManager is used here, this will layout the elements in a similar fashion
         // to the way ListView would layout elements. The RecyclerView.LayoutManager defines how
@@ -120,11 +123,14 @@ public class Tab1Contacts extends Fragment {
 //                        }
                         for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
                             Log.d("shhss", dataSnapshot1.getKey().toString());
+                            progressBar.setVisibility(View.GONE);
                             //   listodydis.setText();
+
                             if (!dataSnapshot1.getKey().equals(uid)) {
                                     userList.add(dataSnapshot1.getKey());
                             }
                         }
+                        progressBar.setVisibility(View.GONE);
 
 
                         mAdapter = new CustomAdapter(userList);

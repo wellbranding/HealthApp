@@ -15,7 +15,7 @@
     <Button
         android:id="@+id/share"
         android:layout_width="match_parent"
-        android:background="@color/colorPrimaryDark"
+        android:background="@color/colorPrimary"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
