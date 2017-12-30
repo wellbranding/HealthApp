@@ -24,6 +24,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -49,6 +54,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import udacityteam.healthapp.R;
 import udacityteam.healthapp.adapters.CustomAdapter;
+import udacityteam.healthapp.models.User;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -65,7 +71,9 @@ public class MainActivity extends AppCompatActivity
     // Firebase instance variables
     private FirebaseDatabase mFirebaseDatabase;
     private ChildEventListener mChildEventListener;
-    public static FirebaseAuth mFirebaseAuth;
+   // public static FirebaseAuth mFirebaseAuth;
+    private GoogleSignInClient mGoogleSignInClient;
+    private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
     private boolean fabExpanded = false;
     private LinearLayout Snacks;
@@ -89,32 +97,84 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
 
         // Initialize Firebase components
-        mFirebaseAuth = FirebaseAuth.getInstance();
+     //   mFirebaseAuth = FirebaseAuth.getInstance();
 
-        mAuthStateListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-                    // User is signed in
-                    onSignedInInitialize(user.getDisplayName());
-                } else {
-                    // User is signed out
-                    onSignedOutCleanup();
-                    startActivityForResult(
-                            AuthUI.getInstance()
-                                    .createSignInIntentBuilder()
-                                    .setIsSmartLockEnabled(false)
-                                    .setAvailableProviders(
-                                            Arrays.asList(new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
-                                                    new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build()))
 
-                                    .build(),
-                            RC_SIGN_IN);
-                }
-            }
-        };
+//        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+//                .requestIdToken("1025887070439-pa8ivq2h24eigj8vv8h66e43ng7fgefh.apps.googleusercontent.com")
+//                .requestEmail()
+//                .build();
+//
+//        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+//
+//        // [START initialize_auth]
+//
+//        mAuthStateListener = new FirebaseAuth.AuthStateListener() {
+//            @Override
+//            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+//                FirebaseUser user = firebaseAuth.getCurrentUser();
+//                if (user != null) {
+//                    // User is signed in
+//                    onSignedInInitialize(user.getDisplayName());
+//                    onSignedInInitialize(user.getEmail());
+//                    Log.d("newuser", user.getDisplayName());
+//                  // User newuser = new User(edtName.getText().toString(),edtPassword.getText().toString(), Breakfast, Dinner, Drinks, Lunch, Snacks);
+//                } else {
+//                    // User is signed out
+//                    onSignedOutCleanup();
+//                    startActivityForResult(
+//                            AuthUI.getInstance()
+//                                    .createSignInIntentBuilder()
+//                                    .setIsSmartLockEnabled(false)
+//                                    .setAvailableProviders(
+//                                            Arrays.asList(new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
+//                                                    new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build()))
+//
+//                                    .build(),
+//                            RC_SIGN_IN);
+//                }
+//            }
+//        };
         setContentView(R.layout.activity_main);
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        mAuth = FirebaseAuth.getInstance();
+        Log.d("aryra",mAuth.getCurrentUser().getUid().toString() );
+        Date date = new Date();
+        Date newDate = new Date(date.getTime());
+        SimpleDateFormat dt = new SimpleDateFormat("yyyy-MM-dd");
+       final String stringdate = dt.format(newDate);
+        mFirebaseDatabase.getReference("User").child(FirebaseAuth.getInstance().
+                getCurrentUser().getUid()).child("LastLogin").setValue(stringdate);
+        mFirebaseDatabase.getReference("User").child(FirebaseAuth.getInstance().
+                getCurrentUser().getUid()).child("LastLogin").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String value = (String) dataSnapshot.getValue();
+                if(value!=stringdate) {
+                    mFirebaseDatabase.getReference("User").child(FirebaseAuth.getInstance().
+                            getCurrentUser().getUid()).child("Dinner"+"isshared").setValue(false);
+                    mFirebaseDatabase.getReference("User").child(FirebaseAuth.getInstance().
+                            getCurrentUser().getUid()).child("Lunch"+"isshared").setValue(false);
+                    mFirebaseDatabase.getReference("User").child(FirebaseAuth.getInstance().
+                            getCurrentUser().getUid()).child("Breakfast"+"isshared").setValue(false);
+                    mFirebaseDatabase.getReference("User").child(FirebaseAuth.getInstance().
+                            getCurrentUser().getUid()).child("Snacks"+"isshared").setValue(false);
+                    mFirebaseDatabase.getReference("User").child(FirebaseAuth.getInstance().
+                            getCurrentUser().getUid()).child("Drinks"+"isshared").setValue(false);
+
+                }
+
+                // do your stuff here with value
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+
+        });
+
+        getSupportActionBar().setTitle("MainActivity");
 
         fabsettings = findViewById(R.id.fabSetting);
         Snacks = (LinearLayout) this.findViewById(R.id.Snacks);
@@ -138,7 +198,7 @@ public class MainActivity extends AppCompatActivity
         });
         closeSubMenusFab();
         Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+       // setSupportActionBar(toolbar);
 
 
         //  closeSubMenusFab();
@@ -255,6 +315,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // Getting current user Id
+
                 String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
 
@@ -438,14 +499,14 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        mFirebaseAuth.addAuthStateListener(mAuthStateListener);
+      //  mFirebaseAuth.addAuthStateListener(mAuthStateListener);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         if (mAuthStateListener != null) {
-            mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
+          //  mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
         }
     }
     @Override
@@ -466,10 +527,23 @@ public class MainActivity extends AppCompatActivity
             case R.id.action_settings:
                 return true;
             case R.id.action_sign_out:
-                AuthUI.getInstance().signOut(this);
+                ReturntoRegister();
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+    private void ReturntoRegister()
+    {
+        AuthUI.getInstance().signOut(this)
+            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                public void onComplete(@NonNull Task<Void> task) {
+                    // user is now signed out
+                      Intent intent = new Intent(MainActivity.this, Register.class);
+                    intent.putExtra("offline", true);
+                    startActivity(intent);
+                    finish();
+                }
+            });
     }
 
     @SuppressWarnings("StatementWithEmptyBody")

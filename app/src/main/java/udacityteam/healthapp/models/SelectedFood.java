@@ -1,4 +1,4 @@
-package udacityteam.healthapp.activities;
+package udacityteam.healthapp.models;
 
 import com.google.firebase.auth.FirebaseAuth;
 

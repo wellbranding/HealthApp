@@ -1,10 +1,13 @@
 package udacityteam.healthapp.activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -25,6 +28,9 @@ import java.util.Date;
 import java.util.List;
 
 import udacityteam.healthapp.R;
+import udacityteam.healthapp.models.SelectedFood;
+import udacityteam.healthapp.models.SharedFoodProducts;
+import udacityteam.healthapp.models.User;
 
 public class FoodList extends AppCompatActivity {
 
@@ -42,11 +48,21 @@ public class FoodList extends AppCompatActivity {
     TextView message;
     String requestedString;
     Button share;
+    SharedPreferences prefs;
+    SharedPreferences.Editor editor;
+    String newstring=null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_food_list);
+        SharedPreferences pref = getApplicationContext().getSharedPreferences("SharedToday", MODE_PRIVATE);
+        Boolean didsharedtoday = pref.getBoolean("didshared", false);
+        Log.d("did", didsharedtoday.toString());
+        editor = pref.edit();
+
+
+
 
         Intent iin = getIntent();
         message = findViewById(R.id.message);
@@ -62,9 +78,37 @@ public class FoodList extends AppCompatActivity {
             SimpleDateFormat dt = new SimpleDateFormat("yyyy-MM-dd");
             stringdate = dt.format(newDate);
         }
-
-
         database = FirebaseDatabase.getInstance();
+        database.getReference("User").child(FirebaseAuth.getInstance().
+                getCurrentUser().getUid()).child(foodselection+"isshared").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Boolean value = (Boolean) dataSnapshot.getValue();
+                if(value==true) {
+                    newstring = "Modify your shared diet";
+                    Log.d("pagaliau", newstring);
+                    loadListFood();
+
+                }
+
+                else {
+                    newstring = "shared.";
+                    loadListFood();
+                }
+
+                // do your stuff here with value
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+
+        });
+     //   Log.d("good", newstring);
+
+
+
         getSupportActionBar().setTitle(foodselection);
         foodList = database.getReference("User").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(foodselection);
         foodList.orderByChild("date").equalTo(stringdate);
@@ -73,13 +117,10 @@ public class FoodList extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        loadListFood(catergoryId);
-
-
 
     }
 
-    private void loadListFood(String catergoryId) {
+    private void loadListFood() {
         if (stringdate != null) {
             adapter = new FirebaseRecyclerAdapter<SelectedFood, FoodViewHolder>(SelectedFood.class,
                     R.layout.food_item,
@@ -117,7 +158,12 @@ public class FoodList extends AppCompatActivity {
         }
         //set Adapter
         recyclerView.setAdapter(adapter);
+      //  if(database.getReference("User").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(foodselection+"isshared").toString().equals("true"))
+
+
         share = findViewById(R.id.share);
+        share.setText(newstring);
+        //not good implementation
         share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -138,20 +184,36 @@ public class FoodList extends AppCompatActivity {
 
     private void sharefoodlist() //only if today
     {
-                usersdatabase = database.getReference("MainFeed").child(foodselection).child("SharedDiets").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
+                //usersdatabase = database.getReference("MainFeed").child(foodselection).child("SharedDiets").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+            final DatabaseReference sharedfoodlist = database.getReference("MainFeed").child(foodselection).child("SharedDiets");
+               final ArrayList<SelectedFood> foundfoods = new ArrayList<>();
                 foodList.orderByChild("date").equalTo(stringdate).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         List<SelectedFood> userList = new ArrayList<>();
                         for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+                            foundfoods.add(dataSnapshot1.getValue(SelectedFood.class));
                             Log.d("shhss", "ahahha");
-                            usersdatabase.child(String.valueOf(System.currentTimeMillis())).setValue(dataSnapshot1.getValue(SelectedFood.class));
+                          //  usersdatabase.child(String.valueOf(System.currentTimeMillis())).setValue(dataSnapshot1.getValue(SelectedFood.class));
                         }
-   Intent intent = new Intent(FoodList.this, MainActivity.class);
+                        Date date = new Date();
+                        Date newDate = new Date(date.getTime());
+                        SimpleDateFormat dt = new SimpleDateFormat("yyyy-MM-dd");
+                        String stringdate = dt.format(newDate);
+
+                        SharedFoodProducts sharedFoodProducts = new SharedFoodProducts(FirebaseAuth.getInstance().getCurrentUser().getUid(), stringdate, foundfoods);
+                        sharedfoodlist.child(stringdate+FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(sharedFoodProducts);
+                        editor.putBoolean("didshared", true);
+                        editor.apply();
+                        Intent intent = new Intent(FoodList.this, MainActivity.class);
                         startActivity(intent);
+                        database.getReference("User").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(foodselection+"isshared").setValue(true);
+
                         Toast.makeText(FoodList.this, "Success!", Toast.LENGTH_SHORT).show();
                         finish();
+                       // share.setText("agooo");
+
 
                     }
                     @Override

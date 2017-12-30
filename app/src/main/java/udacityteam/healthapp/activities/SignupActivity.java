@@ -18,21 +18,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
-import android.app.ProgressDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.Toast;
-
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-import com.rengwuxian.materialedittext.MaterialEditText;
+import java.util.ArrayList;
 
 import udacityteam.healthapp.R;
+import udacityteam.healthapp.models.SelectedFood;
+import udacityteam.healthapp.models.User;
 
 public class SignupActivity extends AppCompatActivity {
 
@@ -71,7 +61,13 @@ public class SignupActivity extends AppCompatActivity {
                             finish();
                         } else {
                             mDialog.dismiss();
-                            User user = new User(edtName.getText().toString(),edtPassword.getText().toString());
+                            ArrayList<SelectedFood> Breakfast = new ArrayList<>();
+                           ArrayList<SelectedFood> Dinner= new ArrayList<>();
+                         ArrayList<SelectedFood> Drinks = new ArrayList<>();
+                            ArrayList<SelectedFood> Lunch= new ArrayList<>();
+                            ArrayList<SelectedFood> Snacks= new ArrayList<>();
+                            User user = new User(edtName.getText().toString(),edtPassword.getText().toString(), Breakfast, Dinner, Drinks, Lunch, Snacks);
+                       //     User user = new User(edtName.getText().toString(),edtPassword.getText().toString());
                             table_user.child(edtPhone.getText().toString()).setValue(user);
                             Toast.makeText(SignupActivity.this, "Sign Up SuccessFull !", Toast.LENGTH_SHORT).show();
                             mDialog.dismiss();

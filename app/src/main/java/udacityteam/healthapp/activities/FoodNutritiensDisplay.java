@@ -2,10 +2,8 @@ package udacityteam.healthapp.activities;
 
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.SQLException;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -13,10 +11,7 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -39,6 +34,7 @@ import java.util.List;
 import udacityteam.healthapp.R;
 import udacityteam.healthapp.models.Model;
 import udacityteam.healthapp.databases.DatabaseHelper;
+import udacityteam.healthapp.models.SelectedFood;
 
 /**
  * Created by vvost on 11/26/2017.

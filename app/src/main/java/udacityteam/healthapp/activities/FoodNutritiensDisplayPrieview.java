@@ -34,6 +34,7 @@ import java.util.List;
 import udacityteam.healthapp.R;
 import udacityteam.healthapp.databases.DatabaseHelper;
 import udacityteam.healthapp.models.Model;
+import udacityteam.healthapp.models.SelectedFood;
 
 /**
  * Created by vvost on 11/26/2017.

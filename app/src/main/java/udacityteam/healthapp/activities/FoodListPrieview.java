@@ -11,19 +11,14 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import udacityteam.healthapp.R;
+import udacityteam.healthapp.models.SelectedFood;
 
 public class FoodListPrieview extends AppCompatActivity {
 
@@ -59,7 +54,7 @@ public class FoodListPrieview extends AppCompatActivity {
 
         database = FirebaseDatabase.getInstance();
         getSupportActionBar().setTitle(foodselection);
-        foodList = database.getReference("MainFeed").child(foodselection).child("SharedDiets").child(key);
+        foodList = database.getReference("MainFeed").child(foodselection).child("SharedDiets");
         foodList.orderByChild("date").equalTo(stringdate);
 
         recyclerView = (RecyclerView) findViewById(R.id.recycler_food);

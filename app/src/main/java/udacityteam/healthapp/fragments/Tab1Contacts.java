@@ -3,8 +3,6 @@ package udacityteam.healthapp.fragments;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -18,24 +16,23 @@ import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.io.ObjectStreamException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import udacityteam.healthapp.R;
-import udacityteam.healthapp.activities.FoodList;
 import udacityteam.healthapp.activities.FoodViewHolder;
 import udacityteam.healthapp.activities.ItemClickListener;
-import udacityteam.healthapp.activities.SelectedFood;
+import udacityteam.healthapp.models.SelectedFood;
 import udacityteam.healthapp.adapters.CustomAdapter;
+import udacityteam.healthapp.models.SharedFoodProducts;
 
 /**
  * Created by vvost on 11/16/2017.
@@ -67,12 +64,14 @@ public class Tab1Contacts extends Fragment {
     public static String value = "Breakfast";
     ProgressBar progressBar;
 
+    private FirebaseAuth mAuth;
     DatabaseReference foodList;
     FirebaseDatabase database;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mAuth = FirebaseAuth.getInstance();
 
         database = FirebaseDatabase.getInstance();
         Intent iin = getActivity().getIntent();
@@ -121,15 +120,29 @@ public class Tab1Contacts extends Fragment {
 //                                userList.add(dataSnapshot1.getValue(SelectedFood.class));
 //                            }
 //                        }
+                        ArrayList<SharedFoodProducts> sharedFoodProducts = new ArrayList<>();
                         for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
-                            Log.d("shhss", dataSnapshot1.getKey().toString());
+
+
+                            SharedFoodProducts sharedFoodProducts1 = dataSnapshot1.getValue(SharedFoodProducts.class);
+
+                            //   Log.d("shhss", dataSnapshot1.getKey().equals());
                             progressBar.setVisibility(View.GONE);
                             //   listodydis.setText();
-
-                            if (!dataSnapshot1.getKey().equals(uid)) {
+                            // Log.d("Atsakynas", dataSnapshot1.child("UserId").getValue().toString());
+                            //  if (dataSnapshot1.getValue() == SharedFoodProducts.class) {
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            if (dataSnapshot1.hasChild("UserId") && dataSnapshot1.hasChild("DateTime") && dataSnapshot1.hasChild("SelectedFoods") && user!=null) {
+                                if (!dataSnapshot1.child("UserId").getValue().toString().equals(user.getUid())) {
+                                    sharedFoodProducts.add(sharedFoodProducts1);
                                     userList.add(dataSnapshot1.getKey());
+                                }
+
                             }
                         }
+
+
+                        Log.d("Atsakynas", String.valueOf(sharedFoodProducts.size()));
                         progressBar.setVisibility(View.GONE);
 
 
