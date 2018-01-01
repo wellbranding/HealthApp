@@ -115,11 +115,11 @@ public class FoodNutritiensDisplayPrieview extends AppCompatActivity {
                 foodname,
                 stringdate
         );
-        SelectedFood alluser = new SelectedFood(
-                id,
-                foodname,
-                UserId, stringdate
-        );
+//        SelectedFood alluser = new SelectedFood(
+//                id,
+//                foodname,
+//                UserId, stringdate
+//        );
         user.child(String.valueOf(System.currentTimeMillis()))
                 .setValue(thisuser);
      //   allusers.child(String.valueOf(System.currentTimeMillis())).setValue(alluser);

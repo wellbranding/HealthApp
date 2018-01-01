@@ -7,20 +7,83 @@ import java.util.ArrayList;
  */
 
 public class SharedFoodProducts {
-   public String UserId;
-   public String DateTime;
-    ArrayList<SelectedFood> SelectedFoods;
+  private String UserId;
+  private String DateTime;
+   private ArrayList<SelectedFood> SelectedFoods;
+    private float Calories;
+    private float Carbohydrates;
+    private float Protein;
+    private float Fats;
     public SharedFoodProducts()
     {
 
     }
 
-
-    public SharedFoodProducts(String userId, String dateTime, ArrayList<SelectedFood> selectedFoods) {
+    public SharedFoodProducts(String userId, String dateTime, ArrayList<SelectedFood> selectedFoods, float calories,
+                              float carbohydrates, float protein, float fats) {
         this.UserId= userId;
         this.DateTime = dateTime;
         SelectedFoods = selectedFoods;
+        Calories = calories;
+        Carbohydrates = carbohydrates;
+        Protein = protein;
+        Fats = fats;
     }
 
+    public String getUserId() {
+        return UserId;
+    }
+
+    public void setUserId(String userId) {
+        UserId = userId;
+    }
+
+    public String getDateTime() {
+        return DateTime;
+    }
+
+    public void setDateTime(String dateTime) {
+        DateTime = dateTime;
+    }
+
+    public ArrayList<SelectedFood> getSelectedFoods() {
+        return SelectedFoods;
+    }
+
+    public void setSelectedFoods(ArrayList<SelectedFood> selectedFoods) {
+        SelectedFoods = selectedFoods;
+    }
+
+    public float getCalories() {
+        return Calories;
+    }
+
+    public void setCalories(float calories) {
+        Calories = calories;
+    }
+
+    public float getCarbohydrates() {
+        return Carbohydrates;
+    }
+
+    public void setCarbohydrates(float carbohydrates) {
+        Carbohydrates = carbohydrates;
+    }
+
+    public float getProtein() {
+        return Protein;
+    }
+
+    public void setProtein(float protein) {
+        Protein = protein;
+    }
+
+    public float getFats() {
+        return Fats;
+    }
+
+    public void setFats(float fats) {
+        Fats = fats;
+    }
 }
 

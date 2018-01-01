@@ -18,6 +18,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
@@ -29,8 +30,15 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import udacityteam.healthapp.R;
 import udacityteam.healthapp.models.SelectedFood;
@@ -136,11 +144,14 @@ public class Register extends AppCompatActivity implements
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            FirebaseUser user = mAuth.getCurrentUser();
+                            final FirebaseUser user = mAuth.getCurrentUser();
                             // Sign in success, update UI with the signed-in user's information
                             if(user!=null) {
+
                                 final FirebaseDatabase database = FirebaseDatabase.getInstance();
+                                final FirebaseFirestore storage = FirebaseFirestore.getInstance();
                                 final DatabaseReference table_user = database.getReference("User");
+                                final CollectionReference userstorage = storage.collection("Users");
 
 //                                ArrayList<SelectedFood> Breakfast = new ArrayList<>();
 //                                ArrayList<SelectedFood> Dinner= new ArrayList<>();
@@ -148,6 +159,21 @@ public class Register extends AppCompatActivity implements
 //                                ArrayList<SelectedFood> Lunch= new ArrayList<>();
 //                                ArrayList<SelectedFood> Snacks= new ArrayList<>();
                                 final User newuser = new User(user.getEmail(), user.getDisplayName());
+                                Map<String, Object> users = new HashMap<>();
+                                users.put("gmail",  user.getEmail());
+                                users.put("name", user.getDisplayName());
+                                userstorage.document(mAuth.getCurrentUser().getUid()).set(users);
+
+//                                userstorage.document(mAuth.getCurrentUser().getUid()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+//                                    @Override
+//                                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+//                                        if(documentSnapshot.exists())
+//                                        {
+//                                        }
+//                                        else
+//                                            userstorage.document(mAuth.getCurrentUser().getUid()).set(user);
+//                                    }
+//                                });
                                 //     User user = new User(edtName.getText().toString(),edtPassword.getText().toString());
                                    table_user.child(mAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                                        @Override
