@@ -80,6 +80,7 @@ public class FoodListPrieviewNew extends AppCompatActivity {
 
         Bundle b = iin.getExtras();
         foodselection = (String) b.get("foodselection");
+        ///sjjs
     //    receivedsharedfoodproducts = (SharedFoodProducts)  b.getParcelable("sharedfoofproducts");
    //  sharedprofucts = receivedsharedfoodproducts.getSelectedFoods();
      selectedFoods = b.getParcelableArrayList("user_list");
