@@ -28,8 +28,11 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 import udacityteam.healthapp.R;
 import udacityteam.healthapp.adapters.CustomAdapter;
@@ -47,6 +50,8 @@ public class FoodListPrieviewNew extends AppCompatActivity {
     DatabaseReference usersdatabase;
     String foodselection, key;
 
+   ArrayList<SelectedFood> sharedprofucts = new ArrayList<>();
+
     String catergoryId = "ff";
     FirebaseRecyclerAdapter<SelectedFood, FoodViewHolder> adapter;
     String stringdate;
@@ -57,6 +62,8 @@ public class FoodListPrieviewNew extends AppCompatActivity {
     float calories, carbohydrates, protein, fats;
     ArrayList<SelectedFood> selectedFoods;
     TextView caloriescounter, proteincounter, fatcounter, carbohycounter;
+    SharedFoodProducts receivedsharedfoodproducts;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +80,10 @@ public class FoodListPrieviewNew extends AppCompatActivity {
 
         Bundle b = iin.getExtras();
         foodselection = (String) b.get("foodselection");
+    //    receivedsharedfoodproducts = (SharedFoodProducts)  b.getParcelable("sharedfoofproducts");
+   //  sharedprofucts = receivedsharedfoodproducts.getSelectedFoods();
+     selectedFoods = b.getParcelableArrayList("user_list");
+     //Log.d("parodyk", String.valueOf(selectedFoods.size()));
         key = (String) b.get("key");
         calories = (float) b.get("calories");
         carbohydrates = (float) b.get("carbohydrates");
@@ -89,10 +100,10 @@ public class FoodListPrieviewNew extends AppCompatActivity {
         carbohycounter.setText(String.valueOf(carbohydrates));
         fatcounter.setText(String.valueOf(fats));
         database = FirebaseDatabase.getInstance();
-        getSupportActionBar().setTitle(foodselection);
-        foodList = database.getReference("MainFeed").child(foodselection).child("SharedDiets").child(key).child("SelectedFoods");
-        Log.d("kej", key);
-        foodList.orderByChild("date").equalTo(stringdate);
+     //getSupportActionBar().setTitle(foodselection);
+///        foodList = database.getReference("MainFeed").child(foodselection).child("SharedDiets").child(key).child("SelectedFoods");
+//        Log.d("kej", key);
+      //  foodList.orderByChild("date").equalTo(stringdate);
 
         recyclerView = findViewById(R.id.recycler_food);
         recyclerView.setHasFixedSize(true);
@@ -103,65 +114,68 @@ public class FoodListPrieviewNew extends AppCompatActivity {
     }
 
     private void loadListFood() {
-        selectedFoods = new ArrayList<>();
-        storage = FirebaseFirestore.getInstance();
-        userstorage= storage.collection("Users").document(key).collection(foodselection).document(stringdate).collection("TodaysFoods");
-        userstorage
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            Log.d("geras", "good");
-                            for (DocumentSnapshot document : task.getResult()) {
-                                SelectedFood food = document.toObject(SelectedFood.class);
-                                Log.d("geras",  food.getDate());
-                                selectedFoods.add(food);
-                            }
-                            CustomAdapterFoodListPrievew customAdapterFoodListPrievew = new CustomAdapterFoodListPrievew(selectedFoods);
-                            recyclerView.setAdapter(customAdapterFoodListPrievew);
-                        } else {
-                            Log.d("geras", "Error getting documents: ", task.getException());
-                        }
-                    }
-
-                });
-        Log.d("geras",  String.valueOf(selectedFoods.size()));
-//        foodList.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                // Getting current user Id
-//                String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        CustomAdapterFoodListPrievew customAdapterFoodListPrievew = new CustomAdapterFoodListPrievew(selectedFoods);
+        recyclerView.setAdapter(customAdapterFoodListPrievew);
+//        Log.d("kiekis",String.valueOf(sharedprofucts.size() ));
+//        selectedFoods = new ArrayList<>();
+//        storage = FirebaseFirestore.getInstance();
+//        userstorage= storage.collection("Users").document(key).collection(foodselection).document(stringdate).collection("TodaysFoods");
+//        userstorage
+//                .get()
+//                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//                        if (task.isSuccessful()) {
+//                            Log.d("geras", "good");
+//                            for (DocumentSnapshot document : task.getResult()) {
+//                                SelectedFood food = document.toObject(SelectedFood.class);
+//                                Log.d("geras",  food.getDate());
+//                                selectedFoods.add(food);
+//                            }
+//                            CustomAdapterFoodListPrievew customAdapterFoodListPrievew = new CustomAdapterFoodListPrievew(sharedprofucts);
+//                            recyclerView.setAdapter(customAdapterFoodListPrievew);
+//                        } else {
+//                            Log.d("geras", "Error getting documents: ", task.getException());
+//                        }
+//                    }
 //
-//
-//                // Filter User
-//                List<String> userList = new ArrayList<>();
-////                        for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
-////                            Log.d("shhss", "ahahha");
-////                         //   listodydis.setText();
-////                            if (!dataSnapshot1.getValue(SelectedFood.class).getUserId().equals(uid)) {
-////                                userList.add(dataSnapshot1.getValue(SelectedFood.class));
-////                            }
-////                        }
-//                ArrayList<SelectedFood> selectedFoods = new ArrayList<>();
-//                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
-//
-//                    SelectedFood foundFood = dataSnapshot1.getValue(SelectedFood.class);
-//                     selectedFoods.add(foundFood);
-//
-//                }
-//
-//                CustomAdapterFoodListPrievew mAdapter = new CustomAdapterFoodListPrievew(selectedFoods);
-//                recyclerView.setAdapter(mAdapter);
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//                throw databaseError.toException();
-//                //listodydis.setText("errrooas");
-//            }
-//        });
+//                });
+//        Log.d("geras",  String.valueOf(selectedFoods.size()));
+////        foodList.addValueEventListener(new ValueEventListener() {
+////            @Override
+////            public void onDataChange(DataSnapshot dataSnapshot) {
+////                // Getting current user Id
+////                String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+////
+////
+////                // Filter User
+////                List<String> userList = new ArrayList<>();
+//////                        for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+//////                            Log.d("shhss", "ahahha");
+//////                         //   listodydis.setText();
+//////                            if (!dataSnapshot1.getValue(SelectedFood.class).getUserId().equals(uid)) {
+//////                                userList.add(dataSnapshot1.getValue(SelectedFood.class));
+//////                            }
+//////                        }
+////                ArrayList<SelectedFood> selectedFoods = new ArrayList<>();
+////                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+////
+////                    SelectedFood foundFood = dataSnapshot1.getValue(SelectedFood.class);
+////                     selectedFoods.add(foundFood);
+////
+////                }
+////
+////                CustomAdapterFoodListPrievew mAdapter = new CustomAdapterFoodListPrievew(selectedFoods);
+////                recyclerView.setAdapter(mAdapter);
+////
+////            }
+////
+////            @Override
+////            public void onCancelled(DatabaseError databaseError) {
+////                throw databaseError.toException();
+////                //listodydis.setText("errrooas");
+////            }
+////        });
 
         sharefoodlist();
     }

@@ -1,19 +1,16 @@
-package udacityteam.healthapp.models;
+package udacityteam.healthapp.PHP_Retrofit;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.firebase.auth.FirebaseAuth;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 /**
  * Created by kunda on 10/4/2017.
  */
 
-public class SelectedFood implements Parcelable{
-    private String foodid;
+public class SelectedFoodretrofit implements Parcelable{
+    private String foodId;
     private String foodName;
     private String UserId= FirebaseAuth.getInstance().getCurrentUser().getUid();
     private String Date;
@@ -22,9 +19,9 @@ public class SelectedFood implements Parcelable{
     private float Fat;
     private float Carbohydrates;
 
-    public SelectedFood(String foodid, String foodName, String userId, String date, float calories, float protein,
-                        float fat, float carbohydrates) {
-        this.foodid = foodid;
+    public SelectedFoodretrofit(String foodid, String foodName, String userId, String date, float calories, float protein,
+                                float fat, float carbohydrates) {
+        this.foodId = foodid;
         this.foodName = foodName;
         UserId = userId;
         Date = date;
@@ -33,26 +30,36 @@ public class SelectedFood implements Parcelable{
         Fat = fat;
         Carbohydrates = carbohydrates;
     }
+    public SelectedFoodretrofit(String foodid, String userId, String date, float calories, float protein,
+                                float fat, float carbohydrates) {
+        this.foodId = foodid;
+        UserId = userId;
+        Date = date;
+        Calories = calories;
+        Protein = protein;
+        Fat = fat;
+        Carbohydrates = carbohydrates;
+    }
 
-    public SelectedFood(String foodid, String foodName, String date) {
-        this.foodid = foodid;
+    public SelectedFoodretrofit(String foodid, String foodName, String date) {
+        this.foodId = foodid;
         this.foodName = foodName;
         this.Date = date;
     }
-    public SelectedFood(String foodid, String foodName, String UserId, String date) {
-        this.foodid = foodid;
+    public SelectedFoodretrofit(String foodid, String foodName, String UserId, String date) {
+        this.foodId = foodid;
         this.foodName = foodName;
         this.UserId = UserId;
         this.Date = date;
     }
 
-    public SelectedFood()
+    public SelectedFoodretrofit()
     {
 
     }
 
-    protected SelectedFood(Parcel in) {
-        foodid = in.readString();
+    protected SelectedFoodretrofit(Parcel in) {
+        foodId = in.readString();
         foodName = in.readString();
         UserId = in.readString();
         Date = in.readString();
@@ -62,15 +69,15 @@ public class SelectedFood implements Parcelable{
         Carbohydrates = in.readFloat();
     }
 
-    public static final Creator<SelectedFood> CREATOR = new Creator<SelectedFood>() {
+    public static final Creator<SelectedFoodretrofit> CREATOR = new Creator<SelectedFoodretrofit>() {
         @Override
-        public SelectedFood createFromParcel(Parcel in) {
-            return new SelectedFood(in);
+        public SelectedFoodretrofit createFromParcel(Parcel in) {
+            return new SelectedFoodretrofit(in);
         }
 
         @Override
-        public SelectedFood[] newArray(int size) {
-            return new SelectedFood[size];
+        public SelectedFoodretrofit[] newArray(int size) {
+            return new SelectedFoodretrofit[size];
         }
     };
 
@@ -123,11 +130,11 @@ public class SelectedFood implements Parcelable{
     }
 
     public String getFoodid() {
-        return foodid;
+        return foodId;
     }
 
     public void setFoodid(String foodid) {
-        this.foodid = foodid;
+        this.foodId = foodid;
     }
 
     public String getFoodName() {
@@ -145,7 +152,7 @@ public class SelectedFood implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(foodid);
+        parcel.writeString(foodId);
         parcel.writeString(foodName);
         parcel.writeString(UserId);
         parcel.writeString(Date);

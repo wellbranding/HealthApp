@@ -11,6 +11,7 @@ import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -35,11 +36,22 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+import udacityteam.healthapp.PHP_Retrofit.APIService;
+import udacityteam.healthapp.PHP_Retrofit.APIUrl;
+import udacityteam.healthapp.PHP_Retrofit.Result;
+import udacityteam.healthapp.PHP_Retrofit.Userretrofit;
 import udacityteam.healthapp.R;
 import udacityteam.healthapp.models.SelectedFood;
 import udacityteam.healthapp.models.User;
@@ -163,6 +175,52 @@ public class Register extends AppCompatActivity implements
                                 users.put("gmail",  user.getEmail());
                                 users.put("name", user.getDisplayName());
                                 userstorage.document(mAuth.getCurrentUser().getUid()).set(users);
+
+                                Gson gson = new GsonBuilder()
+                                        .setLenient()
+                                        .create();
+                                Retrofit retrofit = new Retrofit.Builder()
+                                        .baseUrl(APIUrl.BASE_URL)
+                                        .addConverterFactory(GsonConverterFactory.create(gson))
+                                        .build();
+
+                                //Defining retrofit api service
+                                APIService service = retrofit.create(APIService.class);
+
+                                //Defining the user object as we need to pass it with the call
+                                Userretrofit retrofituser = new Userretrofit(user.getDisplayName(), user.getEmail(), mAuth.getCurrentUser().getUid());
+
+                                //defining the call
+                                Call<Result> call = service.createUser(
+                                        retrofituser.getName(),
+                                        retrofituser.getEmail(),
+                                        retrofituser.getUid()
+                                );
+                                call.enqueue(new Callback<Result>() {
+                                    @Override
+                                    public void onResponse(Call<Result> call, Response<Result> response) {
+                                        //hiding progress dialog
+                                        //progressDialog.dismiss();
+
+                                        //displaying the message from the response as toast
+                                        // Toast.makeText(getApplicationContext(), response.body().getMessage(), Toast.LENGTH_LONG).show();
+
+                                        //if there is no error
+//                                        if (!response.body().getError()) {
+//                                            //starting profile activity
+//                                         //   finish();
+//                                            Toast.makeText(Register.this, "goood", Toast.LENGTH_SHORT).show();
+//                                         //   SharedPrefManager.getInstance(getApplicationContext()).userLogin(response.body().getUser());
+//                                           // startActivity(new Intent(getApplicationContext(), HomeActivity.class));
+//                                        }
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<Result> call, Throwable t) {
+                                       // progressDialog.dismiss();
+                                        Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_LONG).show();
+                                    }
+                                });
 
 //                                userstorage.document(mAuth.getCurrentUser().getUid()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
 //                                    @Override

@@ -53,6 +53,7 @@ public class FoodSearchActivityversion3 extends AppCompatActivity implements Sea
     int amm = 0;
     DatabaseReference referencee;
     ArrayList<String> arrayCountry;
+    String SharedFoodListDatabase;
     private final ArrayList<Model> models = new ArrayList<>();
     ArrayList<Model> models1;
     RecyclerView lv;
@@ -83,6 +84,7 @@ public class FoodSearchActivityversion3 extends AppCompatActivity implements Sea
         main = findViewById(R.id.main);
         noresultsdisplay = findViewById(R.id.noresultsdisplay);
 
+        SharedFoodListDatabase = (String) b.get("SharedFoodListDatabase");
         buffer = new StringBuffer();
         FirebaseApp.initializeApp(this);
         final TextView aaa = (TextView) findViewById(R.id.textView2);

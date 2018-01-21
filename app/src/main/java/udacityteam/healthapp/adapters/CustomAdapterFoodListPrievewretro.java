@@ -2,7 +2,6 @@ package udacityteam.healthapp.adapters;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,21 +12,20 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import udacityteam.healthapp.PHP_Retrofit.SelectedFoodretrofit;
 import udacityteam.healthapp.R;
-import udacityteam.healthapp.activities.FoodListPrieviewNew;
 import udacityteam.healthapp.activities.FoodNutritiensDisplayPrieview;
 import udacityteam.healthapp.fragments.Tab1Contacts;
-import udacityteam.healthapp.models.SelectedFoodmodel;
-import udacityteam.healthapp.models.SharedFoodProducts;
+import udacityteam.healthapp.models.SelectedFood;
 
 /**
  * Created by vvost on 11/16/2017.
  */
 
-public class CustomAdapterSharedFoodstore extends RecyclerView.Adapter<CustomAdapterSharedFoodstore.ViewHolder> {
+public class CustomAdapterFoodListPrievewretro extends RecyclerView.Adapter<CustomAdapterFoodListPrievewretro.ViewHolder> {
     private static final String TAG = "CustomAdapter";
 
-    private ArrayList<SharedFoodProducts> mDataSet = new ArrayList<>();
+    private List<SelectedFoodretrofit> mDataSet = new ArrayList<>();
     Context context;
 
     /**
@@ -43,20 +41,10 @@ public class CustomAdapterSharedFoodstore extends RecyclerView.Adapter<CustomAda
             v.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(context, FoodListPrieviewNew.class);
-                    //new JSONTask().execute(amm.toString());
-                 //   intent.putExtra("arraylist", mDataSet.get(getAdapterPosition()).getSelectedFoods());
-//                    intent.putExtra("sharedfoodproduct", new SharedFoodProducts(mDataSet.get(getAdapterPosition()).
-//                            getUserId(),
-//                    ))
-                    SharedFoodProducts sharedFoodProducts = mDataSet.get(getAdapterPosition());
-                    intent.putExtra("user_list",sharedFoodProducts.getSelectedFoods());
-                    intent.putExtra("key", sharedFoodProducts.getUserId());
-                    intent.putExtra("foodselection", Tab1Contacts.value);
-                    intent.putExtra("calories",sharedFoodProducts.getCalories());
-                    intent.putExtra("protein",sharedFoodProducts.getProtein());
-                    intent.putExtra("fats",sharedFoodProducts.getFats());
-                    intent.putExtra("carbohydrates",sharedFoodProducts.getCarbohydrates());
+                    Intent intent = new Intent(context, FoodNutritiensDisplayPrieview.class);
+                    intent.putExtra("id",mDataSet.get(getAdapterPosition()).getFoodid());
+                    intent.putExtra("foodname", mDataSet.get(getAdapterPosition()).getFoodid());
+                    intent.putExtra("foodselection", Tab1Contacts.value); // will need to add own
 
                     context.startActivity(intent);
                 }
@@ -74,7 +62,7 @@ public class CustomAdapterSharedFoodstore extends RecyclerView.Adapter<CustomAda
      *
      * @param dataSet String[] containing the data to populate views to be used by RecyclerView.
      */
-    public CustomAdapterSharedFoodstore(ArrayList<SharedFoodProducts> dataSet) {
+    public CustomAdapterFoodListPrievewretro(List<SelectedFoodretrofit> dataSet) {
         mDataSet = dataSet;
     }
 
@@ -95,7 +83,7 @@ public class CustomAdapterSharedFoodstore extends RecyclerView.Adapter<CustomAda
 
         // Get element from your dataset at this position and replace the contents of the view
         // with that elemen/
-        viewHolder.getTextView().setText(mDataSet.get(position).getUserId());
+        viewHolder.getTextView().setText(String.valueOf(mDataSet.get(position).getCalories()));
     }
 
     // Return the size of your dataset (invoked by the layout manager)

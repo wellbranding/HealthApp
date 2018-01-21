@@ -30,5 +30,6 @@
     <string name="camera">Camera</string>
     <string name="save">Save</string>
     <string name="update_password">Password</string>
+    <string name="title_activity_filter">FilterActivity</string>
 
 </resources>

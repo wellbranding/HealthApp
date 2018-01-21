@@ -9,7 +9,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activities.Register"
+        <activity
+            android:name=".activities.Register"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -17,44 +18,42 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.HomeActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name=".activities.HomeActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.CommunityList"
             android:label="@string/title_activity_main2"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
-        android:name=".activities.FoodNutritiensDisplay"
-        android:label="@string/title_activity_main2" />
+            android:name=".activities.FoodNutritiensDisplay"
+            android:label="@string/title_activity_main2" />
         <activity
             android:name=".activities.FoodSearchActivity"
-            android:label="@string/title_activity_main2"
-        />
+            android:label="@string/title_activity_main2" />
         <activity
             android:name=".activities.FoodListPrieview"
-            android:label="@string/title_activity_main2"
-            />
+            android:label="@string/title_activity_main2" />
         <activity
             android:name=".activities.FoodSearchActivityversion2"
-            android:label="@string/title_activity_main2"
-            />
+            android:label="@string/title_activity_main2" />
         <activity
             android:name=".activities.FoodSearchActivityversion3"
-            android:label="@string/title_activity_main2"
-            />
+            android:label="@string/title_activity_main2" />
         <activity
             android:name=".activities.FoodNutritiensDisplayPrieview"
             android:label="@string/title_activity_main2" />
-        <activity android:name=".activities.MainActivity"
-            android:label="@string/title_activity_main2"/>
-
-        <activity android:name=".activities.FoodListPrieviewNew">
-        </activity>
+        <activity
+            android:name=".activities.MainActivity"
+            android:label="@string/title_activity_main2" />
+        <activity android:name=".activities.FoodListPrieviewNew"></activity>
         <activity android:name=".activities.SigninActivity" />
         <activity android:name=".activities.SignupActivity" />
-        <activity android:name=".activities.FoodList">
-
-        </activity>
+        <activity android:name=".activities.FoodList"></activity>
+        <activity
+            android:name=".activities.FilterActivity"
+            android:label="@string/title_activity_filter"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

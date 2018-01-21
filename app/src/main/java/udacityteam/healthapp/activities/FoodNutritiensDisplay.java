@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
@@ -17,6 +18,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -37,6 +40,15 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+import udacityteam.healthapp.PHP_Retrofit.APIService;
+import udacityteam.healthapp.PHP_Retrofit.APIUrl;
+import udacityteam.healthapp.PHP_Retrofit.Result;
+import udacityteam.healthapp.PHP_Retrofit.Userretrofit;
 import udacityteam.healthapp.R;
 import udacityteam.healthapp.databases.DatabaseHelper;
 import udacityteam.healthapp.models.SelectedFood;
@@ -63,6 +75,7 @@ public class FoodNutritiensDisplay extends AppCompatActivity {
      DocumentReference userstorage;
     ProgressBar progressBar;
     FirebaseFirestore storage;
+    String SharedFoodListDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +100,7 @@ public class FoodNutritiensDisplay extends AppCompatActivity {
            id =(String) b.get("id");
            foodname = (String) b.get("foodname");
             foodselection = (String) b.get("foodselection");
+            SharedFoodListDatabase = (String) b.get("SharedFoodListDatabase");
 
 
             getSupportActionBar().setTitle(foodselection);
@@ -141,6 +155,37 @@ public class FoodNutritiensDisplay extends AppCompatActivity {
         nutritiensvalue.update(userr);
 
 
+        Gson gson = new GsonBuilder()
+                .setLenient()
+                .create();
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(APIUrl.BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
+
+        //Defining retrofit api service
+        APIService service = retrofit.create(APIService.class);
+
+        Call<Result> call = service.addSelectedFood(
+                id,
+                UserId, stringdate, nutritiens.get(0)
+                ,nutritiens.get(1),nutritiens.get(2),nutritiens.get(3),
+                foodselection,0
+        );
+        call.enqueue(new Callback<Result>() {
+            @Override
+            public void onResponse(Call<Result> call, Response<Result> response) {
+                //change Result
+                Toast.makeText(getApplicationContext(), response.message(), Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onFailure(Call<Result> call, Throwable t) {
+                // progressDialog.dismiss();
+                Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+
         alluser1.setDate(stringdate);
         alluser1.setFoodid(id);
         alluser1.setUserId(UserId);
@@ -153,6 +198,7 @@ public class FoodNutritiensDisplay extends AppCompatActivity {
                 Intent intent = new Intent(FoodNutritiensDisplay.this, FoodList.class);
                 intent.putExtra("requestdate", stringdate);
                 intent.putExtra("foodselection", foodselection);
+                intent.putExtra("SharedFoodListDatabase", SharedFoodListDatabase);
                 startActivity(intent);
                 finish();
 

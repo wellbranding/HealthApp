@@ -2,7 +2,6 @@ package udacityteam.healthapp.adapters;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,23 +10,21 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.List;
 
+import udacityteam.healthapp.PHP_Retrofit.OneSharedFoodProductsListRetrofit;
 import udacityteam.healthapp.R;
 import udacityteam.healthapp.activities.FoodListPrieviewNew;
-import udacityteam.healthapp.activities.FoodNutritiensDisplayPrieview;
 import udacityteam.healthapp.fragments.Tab1Contacts;
-import udacityteam.healthapp.models.SelectedFoodmodel;
 import udacityteam.healthapp.models.SharedFoodProducts;
 
 /**
  * Created by vvost on 11/16/2017.
  */
 
-public class CustomAdapterSharedFoodstore extends RecyclerView.Adapter<CustomAdapterSharedFoodstore.ViewHolder> {
+public class CustomAdapterSharedFoodstoreRetrofit extends RecyclerView.Adapter<CustomAdapterSharedFoodstoreRetrofit.ViewHolder> {
     private static final String TAG = "CustomAdapter";
 
-    private ArrayList<SharedFoodProducts> mDataSet = new ArrayList<>();
+    private ArrayList<OneSharedFoodProductsListRetrofit> mDataSet = new ArrayList<>();
     Context context;
 
     /**
@@ -49,14 +46,14 @@ public class CustomAdapterSharedFoodstore extends RecyclerView.Adapter<CustomAda
 //                    intent.putExtra("sharedfoodproduct", new SharedFoodProducts(mDataSet.get(getAdapterPosition()).
 //                            getUserId(),
 //                    ))
-                    SharedFoodProducts sharedFoodProducts = mDataSet.get(getAdapterPosition());
-                    intent.putExtra("user_list",sharedFoodProducts.getSelectedFoods());
-                    intent.putExtra("key", sharedFoodProducts.getUserId());
-                    intent.putExtra("foodselection", Tab1Contacts.value);
-                    intent.putExtra("calories",sharedFoodProducts.getCalories());
-                    intent.putExtra("protein",sharedFoodProducts.getProtein());
-                    intent.putExtra("fats",sharedFoodProducts.getFats());
-                    intent.putExtra("carbohydrates",sharedFoodProducts.getCarbohydrates());
+//                    SharedFoodProducts sharedFoodProducts = mDataSet.get(getAdapterPosition());
+//                    intent.putExtra("user_list",sharedFoodProducts.getSelectedFoods());
+//                    intent.putExtra("key", sharedFoodProducts.getUserId());
+//                    intent.putExtra("foodselection", Tab1Contacts.value);
+//                    intent.putExtra("calories",sharedFoodProducts.getCalories());
+//                    intent.putExtra("protein",sharedFoodProducts.getProtein());
+//                    intent.putExtra("fats",sharedFoodProducts.getFats());
+//                    intent.putExtra("carbohydrates",sharedFoodProducts.getCarbohydrates());
 
                     context.startActivity(intent);
                 }
@@ -74,7 +71,7 @@ public class CustomAdapterSharedFoodstore extends RecyclerView.Adapter<CustomAda
      *
      * @param dataSet String[] containing the data to populate views to be used by RecyclerView.
      */
-    public CustomAdapterSharedFoodstore(ArrayList<SharedFoodProducts> dataSet) {
+    public CustomAdapterSharedFoodstoreRetrofit(ArrayList<OneSharedFoodProductsListRetrofit> dataSet) {
         mDataSet = dataSet;
     }
 

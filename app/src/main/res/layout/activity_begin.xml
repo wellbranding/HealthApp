@@ -70,6 +70,8 @@
 
     <Button
         android:id="@+id/sign_in_button"
+        android:text="SIGNIN WITH GOOGLE"
+        android:textSize="25sp"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="3" />
