@@ -612,6 +612,7 @@ public class MainActivity extends AppCompatActivity
             intent.putExtra("SharedFoodListDatabase", "SharedSnacks");
             intent.putExtra("databasevalue", "Snacks");
             startActivity(intent);
+            //test
 
         } else if (id == R.id.nav_drinks_cocktails) {
             Intent intent = new Intent(this, CommunityList.class);
