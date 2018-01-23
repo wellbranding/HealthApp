@@ -9,6 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.firebase.database.DatabaseReference;
+
 import java.util.ArrayList;
 
 import udacityteam.healthapp.PHP_Retrofit.OneSharedFoodProductsListRetrofit;
@@ -25,6 +27,7 @@ public class CustomAdapterSharedFoodstoreRetrofit extends RecyclerView.Adapter<C
     private static final String TAG = "CustomAdapter";
 
     private ArrayList<OneSharedFoodProductsListRetrofit> mDataSet = new ArrayList<>();
+    private String DatabaseStorage;
     Context context;
 
     /**
@@ -36,11 +39,17 @@ public class CustomAdapterSharedFoodstoreRetrofit extends RecyclerView.Adapter<C
         public ViewHolder(View v) {
             super(v);
             context = v.getContext();
-            // Define click listener for the ViewHolder's View.
+            // Define click listener for the ViewH
+            // older's View.
             v.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(context, FoodListPrieviewNew.class);
+                    intent.putExtra("date",mDataSet.get(getAdapterPosition()).getDate());
+                    intent.putExtra("getParentSharedFoodsId", mDataSet.get(getAdapterPosition()).getParentSharedFoodsId());
+                    intent.putExtra("getUserId", mDataSet.get(getAdapterPosition()).getUserId());
+                    intent.putExtra("SharedFoodListDatabase", DatabaseStorage);
+
 
                     //new JSONTask().execute(amm.toString());
                  //   intent.putExtra("arraylist", mDataSet.get(getAdapterPosition()).getSelectedFoods());
@@ -72,8 +81,10 @@ public class CustomAdapterSharedFoodstoreRetrofit extends RecyclerView.Adapter<C
      *
      * @param dataSet String[] containing the data to populate views to be used by RecyclerView.
      */
-    public CustomAdapterSharedFoodstoreRetrofit(ArrayList<OneSharedFoodProductsListRetrofit> dataSet) {
+    public CustomAdapterSharedFoodstoreRetrofit(ArrayList<OneSharedFoodProductsListRetrofit> dataSet,
+                                                String databaseStorage) {
         mDataSet = dataSet;
+        DatabaseStorage = databaseStorage;
     }
 
     // Create new views (invoked by the layout manager)

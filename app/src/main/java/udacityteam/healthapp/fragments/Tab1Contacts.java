@@ -221,7 +221,8 @@ if(side!=null)
         call.enqueue(new Callback<SharedFoodProductsRetrofit>() {
             @Override
             public void onResponse(Call<SharedFoodProductsRetrofit> call, Response<SharedFoodProductsRetrofit> response) {
-                mAdapter = new CustomAdapterSharedFoodstoreRetrofit(response.body().getSelectedFoodretrofits());
+                mAdapter = new CustomAdapterSharedFoodstoreRetrofit(response.body().
+                        getSelectedFoodretrofits(), SharedFoodListDatabase);
                mRecyclerView.setAdapter(mAdapter);
 
             }

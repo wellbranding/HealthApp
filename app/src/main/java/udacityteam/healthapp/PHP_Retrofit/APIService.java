@@ -59,6 +59,11 @@ public interface APIService {
             @Query("UserId") String UserId,
             @Query("whichtime") String whichtime
     );
+    @GET("getSelectedFoodsPrieview")
+    Call<SelectedFoodretrofitarray> getselectedfoodsPrieview(
+            @Query("UserId") String UserId,
+            @Query("whichtime") String whichtime
+    );
 
     @GET("users")
     Call<Usersretrofit> getUsers();

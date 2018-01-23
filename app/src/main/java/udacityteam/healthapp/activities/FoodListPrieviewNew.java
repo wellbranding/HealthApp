@@ -25,6 +25,8 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -34,9 +36,19 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+import udacityteam.healthapp.PHP_Retrofit.APIService;
+import udacityteam.healthapp.PHP_Retrofit.APIUrl;
+import udacityteam.healthapp.PHP_Retrofit.SelectedFoodretrofit;
+import udacityteam.healthapp.PHP_Retrofit.SelectedFoodretrofitarray;
 import udacityteam.healthapp.R;
 import udacityteam.healthapp.adapters.CustomAdapter;
 import udacityteam.healthapp.adapters.CustomAdapterFoodListPrievew;
+import udacityteam.healthapp.adapters.CustomAdapterFoodListPrievewretro;
 import udacityteam.healthapp.models.SelectedFood;
 import udacityteam.healthapp.models.SharedFoodProducts;
 
@@ -59,7 +71,7 @@ public class FoodListPrieviewNew extends AppCompatActivity {
     FirebaseAuth mAuth;
     CollectionReference userstorage;
     FirebaseFirestore storage;
-    float calories, carbohydrates, protein, fats;
+    //float calories, carbohydrates, protein, fats;
     ArrayList<SelectedFood> selectedFoods;
     TextView caloriescounter, proteincounter, fatcounter, carbohycounter;
     SharedFoodProducts receivedsharedfoodproducts;
@@ -79,27 +91,27 @@ public class FoodListPrieviewNew extends AppCompatActivity {
         Intent iin = getIntent();
 
         Bundle b = iin.getExtras();
-        foodselection = (String) b.get("foodselection");
-        ///sjjs
-    //    receivedsharedfoodproducts = (SharedFoodProducts)  b.getParcelable("sharedfoofproducts");
-   //  sharedprofucts = receivedsharedfoodproducts.getSelectedFoods();
-     selectedFoods = b.getParcelableArrayList("user_list");
-     //Log.d("parodyk", String.valueOf(selectedFoods.size()));
-        key = (String) b.get("key");
-        calories = (float) b.get("calories");
-        carbohydrates = (float) b.get("carbohydrates");
-        protein = (float) b.get("protein");
-        fats = (float) b.get("fats");
+//        foodselection = (String) b.get("foodselection");
+//        ///sjjs
+//    //    receivedsharedfoodproducts = (SharedFoodProducts)  b.getParcelable("sharedfoofproducts");
+//   //  sharedprofucts = receivedsharedfoodproducts.getSelectedFoods();
+//     selectedFoods = b.getParcelableArrayList("user_list");
+//     //Log.d("parodyk", String.valueOf(selectedFoods.size()));
+//        key = (String) b.get("key");
+//        calories = (float) b.get("calories");
+//        carbohydrates = (float) b.get("carbohydrates");
+//        protein = (float) b.get("protein");
+//        fats = (float) b.get("fats");
 
             Date date = new Date();
             Date newDate = new Date(date.getTime());
             SimpleDateFormat dt = new SimpleDateFormat("yyyy-MM-dd");
             stringdate = dt.format(newDate);
 
-        caloriescounter.setText(String.valueOf(calories));
-        proteincounter.setText(String.valueOf(protein));
-        carbohycounter.setText(String.valueOf(carbohydrates));
-        fatcounter.setText(String.valueOf(fats));
+//        caloriescounter.setText(String.valueOf(calories));
+//        proteincounter.setText(String.valueOf(protein));
+//        carbohycounter.setText(String.valueOf(carbohydrates));
+//        fatcounter.setText(String.valueOf(fats));
         database = FirebaseDatabase.getInstance();
      //getSupportActionBar().setTitle(foodselection);
 ///        foodList = database.getReference("MainFeed").child(foodselection).child("SharedDiets").child(key).child("SelectedFoods");
@@ -107,84 +119,47 @@ public class FoodListPrieviewNew extends AppCompatActivity {
       //  foodList.orderByChild("date").equalTo(stringdate);
 
         recyclerView = findViewById(R.id.recycler_food);
-        recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        loadListFood();
+        recyclerView.setHasFixedSize(true);
+        GetFoodList();
 
     }
-
-    private void loadListFood() {
-        CustomAdapterFoodListPrievew customAdapterFoodListPrievew = new CustomAdapterFoodListPrievew(selectedFoods);
-        recyclerView.setAdapter(customAdapterFoodListPrievew);
-//        Log.d("kiekis",String.valueOf(sharedprofucts.size() ));
-//        selectedFoods = new ArrayList<>();
-//        storage = FirebaseFirestore.getInstance();
-//        userstorage= storage.collection("Users").document(key).collection(foodselection).document(stringdate).collection("TodaysFoods");
-//        userstorage
-//                .get()
-//                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-//                        if (task.isSuccessful()) {
-//                            Log.d("geras", "good");
-//                            for (DocumentSnapshot document : task.getResult()) {
-//                                SelectedFood food = document.toObject(SelectedFood.class);
-//                                Log.d("geras",  food.getDate());
-//                                selectedFoods.add(food);
-//                            }
-//                            CustomAdapterFoodListPrievew customAdapterFoodListPrievew = new CustomAdapterFoodListPrievew(sharedprofucts);
-//                            recyclerView.setAdapter(customAdapterFoodListPrievew);
-//                        } else {
-//                            Log.d("geras", "Error getting documents: ", task.getException());
-//                        }
-//                    }
-//
-//                });
-//        Log.d("geras",  String.valueOf(selectedFoods.size()));
-////        foodList.addValueEventListener(new ValueEventListener() {
-////            @Override
-////            public void onDataChange(DataSnapshot dataSnapshot) {
-////                // Getting current user Id
-////                String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-////
-////
-////                // Filter User
-////                List<String> userList = new ArrayList<>();
-//////                        for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
-//////                            Log.d("shhss", "ahahha");
-//////                         //   listodydis.setText();
-//////                            if (!dataSnapshot1.getValue(SelectedFood.class).getUserId().equals(uid)) {
-//////                                userList.add(dataSnapshot1.getValue(SelectedFood.class));
-//////                            }
-//////                        }
-////                ArrayList<SelectedFood> selectedFoods = new ArrayList<>();
-////                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
-////
-////                    SelectedFood foundFood = dataSnapshot1.getValue(SelectedFood.class);
-////                     selectedFoods.add(foundFood);
-////
-////                }
-////
-////                CustomAdapterFoodListPrievew mAdapter = new CustomAdapterFoodListPrievew(selectedFoods);
-////                recyclerView.setAdapter(mAdapter);
-////
-////            }
-////
-////            @Override
-////            public void onCancelled(DatabaseError databaseError) {
-////                throw databaseError.toException();
-////                //listodydis.setText("errrooas");
-////            }
-////        });
-
-        sharefoodlist();
-    }
-
-    private void sharefoodlist() //only if today
+    private void GetFoodList()
     {
-        share = findViewById(R.id.share);
-        share.setText("Cant share");
-//
+        Gson gson = new GsonBuilder()
+                .setLenient()
+                .create();
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(APIUrl.BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
+
+        APIService service = retrofit.create(APIService.class);
+
+        Call<SelectedFoodretrofitarray> call = service.getselectedfoods(
+                FirebaseAuth.getInstance().getCurrentUser().getUid(),
+                foodselection
+        );
+        call.enqueue(new Callback<SelectedFoodretrofitarray>() {
+            @Override
+            public void onResponse(Call<SelectedFoodretrofitarray> call, Response<SelectedFoodretrofitarray> response) {
+                ArrayList<SelectedFoodretrofit> nauji = response.body().getUsers();
+                //       Log.d("ahh", String.valueOf(nauji.get(1).getFoodid()));
+                //sukurti nauja masyva ir pernesti viskaa
+
+                CustomAdapterFoodListPrievewretro customAdapterFoodListPrievew= new
+                        CustomAdapterFoodListPrievewretro(nauji);
+                recyclerView.setAdapter(customAdapterFoodListPrievew);
+            }
+
+            @Override
+            public void onFailure(Call<SelectedFoodretrofitarray> call, Throwable t) {
+
+            }
+        });
     }
+
+
+
 }
