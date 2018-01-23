@@ -34,6 +34,7 @@ import java.util.List;
 import udacityteam.healthapp.R;
 import udacityteam.healthapp.databases.DatabaseHelper;
 import udacityteam.healthapp.models.Model;
+import udacityteam.healthapp.models.SelectedFood;
 
 /**
  * Created by vvost on 11/26/2017.
@@ -114,11 +115,11 @@ public class FoodNutritiensDisplayPrieview extends AppCompatActivity {
                 foodname,
                 stringdate
         );
-        SelectedFood alluser = new SelectedFood(
-                id,
-                foodname,
-                UserId, stringdate
-        );
+//        SelectedFood alluser = new SelectedFood(
+//                id,
+//                foodname,
+//                UserId, stringdate
+//        );
         user.child(String.valueOf(System.currentTimeMillis()))
                 .setValue(thisuser);
      //   allusers.child(String.valueOf(System.currentTimeMillis())).setValue(alluser);

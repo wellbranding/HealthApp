@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="udacityteam.healthapp.activities.FilterActivity"
+    tools:showIn="@layout/activity_filter">
+
+    <Button
+        android:id="@+id/confirm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="46dp"
+        android:text="CONFIRM"
+        tools:layout_editor_absoluteX="116dp"
+        tools:layout_editor_absoluteY="327dp" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerInParent="true"
+        android:layout_below="@+id/textView3"
+        android:layout_marginTop="90dp">
+        <TableLayout
+            android:layout_width="fill_parent"
+            android:baselineAligned="false"
+            android:gravity="center_horizontal"
+            android:layout_gravity="center|center_horizontal"
+            android:layout_height="match_parent">
+
+            <TableRow
+                android:layout_width="wrap_content"
+                android:layout_gravity="center"
+
+                android:gravity="center_horizontal"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp">
+
+                <CheckBox
+                    android:id="@+id/calories"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Calories" />
+
+                <CheckBox
+                    android:id="@+id/fats"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Fats" />
+            </TableRow>
+            <TableRow
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:layout_margin="4dp">
+
+                <CheckBox
+                    android:id="@+id/protein"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Protein" />
+
+                <CheckBox
+                    android:id="@+id/carbohydrates"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Carbohydrates" />
+            </TableRow>
+        </TableLayout>
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp"
+        android:text="FilterData by descending Order" />
+</RelativeLayout>

@@ -9,22 +9,25 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.google.firebase.database.DatabaseReference;
 
+import java.util.ArrayList;
+
+import udacityteam.healthapp.PHP_Retrofit.OneSharedFoodProductsListRetrofit;
 import udacityteam.healthapp.R;
-import udacityteam.healthapp.activities.FoodListPrieview;
 import udacityteam.healthapp.activities.FoodListPrieviewNew;
 import udacityteam.healthapp.fragments.Tab1Contacts;
+import udacityteam.healthapp.models.SharedFoodProducts;
 
 /**
  * Created by vvost on 11/16/2017.
  */
 
-public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder> {
+public class CustomAdapterSharedFoodstoreRetrofit extends RecyclerView.Adapter<CustomAdapterSharedFoodstoreRetrofit.ViewHolder> {
     private static final String TAG = "CustomAdapter";
 
-    private List<String> mDataSet = new ArrayList<>();
+    private ArrayList<OneSharedFoodProductsListRetrofit> mDataSet = new ArrayList<>();
+    private String DatabaseStorage;
     Context context;
 
     /**
@@ -36,16 +39,31 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
         public ViewHolder(View v) {
             super(v);
             context = v.getContext();
-            // Define click listener for the ViewHolder's View.
+            // Define click listener for the ViewH
+            // older's View.
             v.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
-
                     Intent intent = new Intent(context, FoodListPrieviewNew.class);
+                    intent.putExtra("date",mDataSet.get(getAdapterPosition()).getDate());
+                    intent.putExtra("getParentSharedFoodsId", mDataSet.get(getAdapterPosition()).getParentSharedFoodsId());
+                    intent.putExtra("getUserId", mDataSet.get(getAdapterPosition()).getUserId());
+                    intent.putExtra("SharedFoodListDatabase", DatabaseStorage);
+
+
                     //new JSONTask().execute(amm.toString());
-                    intent.putExtra("key", mDataSet.get(getAdapterPosition()));
-                    intent.putExtra("foodselection", Tab1Contacts.value);
+                 //   intent.putExtra("arraylist", mDataSet.get(getAdapterPosition()).getSelectedFoods());
+//                    intent.putExtra("sharedfoodproduct", new SharedFoodProducts(mDataSet.get(getAdapterPosition()).
+//                            getUserId(),
+//                    ))
+//                    SharedFoodProducts sharedFoodProducts = mDataSet.get(getAdapterPosition());
+//                    intent.putExtra("user_list",sharedFoodProducts.getSelectedFoods());
+//                    intent.putExtra("key", sharedFoodProducts.getUserId());
+//                    intent.putExtra("foodselection", Tab1Contacts.value);
+//                    intent.putExtra("calories",sharedFoodProducts.getCalories());
+//                    intent.putExtra("protein",sharedFoodProducts.getProtein());
+//                    intent.putExtra("fats",sharedFoodProducts.getFats());
+//                    intent.putExtra("carbohydrates",sharedFoodProducts.getCarbohydrates());
 
                     context.startActivity(intent);
                 }
@@ -63,8 +81,10 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
      *
      * @param dataSet String[] containing the data to populate views to be used by RecyclerView.
      */
-    public CustomAdapter(List<String> dataSet) {
+    public CustomAdapterSharedFoodstoreRetrofit(ArrayList<OneSharedFoodProductsListRetrofit> dataSet,
+                                                String databaseStorage) {
         mDataSet = dataSet;
+        DatabaseStorage = databaseStorage;
     }
 
     // Create new views (invoked by the layout manager)
@@ -84,7 +104,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
 
         // Get element from your dataset at this position and replace the contents of the view
         // with that elemen/
-        viewHolder.getTextView().setText(mDataSet.get(position));
+        viewHolder.getTextView().setText(mDataSet.get(position).getUserId());
     }
 
     // Return the size of your dataset (invoked by the layout manager)

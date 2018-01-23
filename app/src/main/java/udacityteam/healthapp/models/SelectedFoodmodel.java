@@ -1,35 +1,28 @@
-package udacityteam.healthapp.activities;
+package udacityteam.healthapp.models;
 
 import com.google.firebase.auth.FirebaseAuth;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 /**
  * Created by kunda on 10/4/2017.
  */
 
-public class SelectedFood {
+public class SelectedFoodmodel {
     private String foodid;
     private String foodName;
-    private String UserId= FirebaseAuth.getInstance().getCurrentUser().getUid();
+    private String UserId;
     private String Date;
 
-    public SelectedFood(String foodid, String foodName, String date) {
-        this.foodid = foodid;
-        this.foodName = foodName;
-        this.Date = date;
-    }
-    public SelectedFood(String foodid, String foodName, String UserId, String date) {
+    public SelectedFoodmodel(String foodid, String foodName, String UserId, String date) {
         this.foodid = foodid;
         this.foodName = foodName;
         this.UserId = UserId;
         this.Date = date;
     }
-    public SelectedFood()
+    public  SelectedFoodmodel()
     {
 
     }
+
 
     public String getDate() {
         return Date;

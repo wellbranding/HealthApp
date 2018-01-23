@@ -43,6 +43,7 @@ public class CommunityList extends AppCompatActivity {
     private ViewPager mViewPager;
     RecyclerView.LayoutManager layoutManager;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,16 +56,24 @@ public class CommunityList extends AppCompatActivity {
         Intent iin = getIntent();
         Bundle b = iin.getExtras();
         String value;
+        String queryparam =null;
+        String SharedFoodListDatabase =null;
         if (b != null) {
             value = (String) b.get("titlename");
+            queryparam = (String) b.get("value");
+            SharedFoodListDatabase = (String) b.get("SharedFoodListDatabase");
+
             getSupportActionBar().setTitle(value);
             //  Textv.setText(j);
         }
+        Bundle tofragment = new Bundle();
+        tofragment.putString("value", queryparam);
+        tofragment.putString("SharedFoodListDatabase", SharedFoodListDatabase);
         String[] tabTitles = new String[]{
                 res.getString(R.string.tab1_title),
                 res.getString(R.string.tab2_title),
                 res.getString(R.string.tab3_title)};
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), tabTitles);
+        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), tabTitles, tofragment);
 
         mViewPager = findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
@@ -114,10 +123,12 @@ public class CommunityList extends AppCompatActivity {
      */
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
         private String[] tabTitles;
+        private Bundle queryParam;
 
-        public SectionsPagerAdapter(FragmentManager fm, String[] tabTitles) {
+        public SectionsPagerAdapter(FragmentManager fm, String[] tabTitles, Bundle qureryparam) {
             super(fm);
             this.tabTitles = tabTitles;
+            this.queryParam = qureryparam;
         }
 
         @Override
@@ -129,7 +140,9 @@ public class CommunityList extends AppCompatActivity {
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    return new Tab1Contacts();
+                    Tab1Contacts tab1Contacts = new Tab1Contacts();
+                    tab1Contacts.setArguments(queryParam);
+                    return tab1Contacts;
                 case 1:
                     return new Tab2Chat();
                 case 2:

@@ -24,6 +24,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -32,6 +37,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.CalendarMode;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
@@ -42,13 +48,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import udacityteam.healthapp.R;
 import udacityteam.healthapp.adapters.CustomAdapter;
+import udacityteam.healthapp.models.User;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -65,7 +74,9 @@ public class MainActivity extends AppCompatActivity
     // Firebase instance variables
     private FirebaseDatabase mFirebaseDatabase;
     private ChildEventListener mChildEventListener;
-    public static FirebaseAuth mFirebaseAuth;
+   // public static FirebaseAuth mFirebaseAuth;
+    private GoogleSignInClient mGoogleSignInClient;
+    private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
     private boolean fabExpanded = false;
     private LinearLayout Snacks;
@@ -87,34 +98,93 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         // Initialize Firebase components
-        mFirebaseAuth = FirebaseAuth.getInstance();
+     //   mFirebaseAuth = FirebaseAuth.getInstance();
 
-        mAuthStateListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-                    // User is signed in
-                    onSignedInInitialize(user.getDisplayName());
-                } else {
-                    // User is signed out
-                    onSignedOutCleanup();
-                    startActivityForResult(
-                            AuthUI.getInstance()
-                                    .createSignInIntentBuilder()
-                                    .setIsSmartLockEnabled(false)
-                                    .setAvailableProviders(
-                                            Arrays.asList(new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
-                                                    new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build()))
 
-                                    .build(),
-                            RC_SIGN_IN);
-                }
-            }
-        };
+//        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+//                .requestIdToken("1025887070439-pa8ivq2h24eigj8vv8h66e43ng7fgefh.apps.googleusercontent.com")
+//                .requestEmail()
+//                .build();
+//
+//        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+//
+//        // [START initialize_auth]
+//
+//        mAuthStateListener = new FirebaseAuth.AuthStateListener() {
+//            @Override
+//            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+//                FirebaseUser user = firebaseAuth.getCurrentUser();
+//                if (user != null) {
+//                    // User is signed in
+//                    onSignedInInitialize(user.getDisplayName());
+//                    onSignedInInitialize(user.getEmail());
+//                    Log.d("newuser", user.getDisplayName());
+//                  // User newuser = new User(edtName.getText().toString(),edtPassword.getText().toString(), Breakfast, Dinner, Drinks, Lunch, Snacks);
+//                } else {
+//                    // User is signed out
+//                    onSignedOutCleanup();
+//                    startActivityForResult(
+//                            AuthUI.getInstance()
+//                                    .createSignInIntentBuilder()
+//                                    .setIsSmartLockEnabled(false)
+//                                    .setAvailableProviders(
+//                                            Arrays.asList(new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
+//                                                    new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build()))
+//
+//                                    .build(),
+//                            RC_SIGN_IN);
+//                }
+//            }
+//        };
         setContentView(R.layout.activity_main);
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        mAuth = FirebaseAuth.getInstance();
+        Map<String, Object> user = new HashMap<>();
+        user.put("first", "Ada");
+        user.put("last", "Lovelace");
+        user.put("born", 1815);
+
+    //    db.collection("users").add(user);
+        Log.d("aryra",mAuth.getCurrentUser().getUid().toString() );
+        Date date = new Date();
+        Date newDate = new Date(date.getTime());
+        SimpleDateFormat dt = new SimpleDateFormat("yyyy-MM-dd");
+       final String stringdate = dt.format(newDate);
+        mFirebaseDatabase.getReference("User").child(FirebaseAuth.getInstance().
+                getCurrentUser().getUid()).child("LastLogin").setValue(stringdate);
+        mFirebaseDatabase.getReference("User").child(FirebaseAuth.getInstance().
+                getCurrentUser().getUid()).child("LastLogin").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String value = (String) dataSnapshot.getValue();
+                if(value!=stringdate) {
+                    mFirebaseDatabase.getReference("User").child(FirebaseAuth.getInstance().
+                            getCurrentUser().getUid()).child("Dinner"+"isshared").setValue(false);
+                    mFirebaseDatabase.getReference("User").child(FirebaseAuth.getInstance().
+                            getCurrentUser().getUid()).child("Lunch"+"isshared").setValue(false);
+                    mFirebaseDatabase.getReference("User").child(FirebaseAuth.getInstance().
+                            getCurrentUser().getUid()).child("Breakfast"+"isshared").setValue(false);
+                    mFirebaseDatabase.getReference("User").child(FirebaseAuth.getInstance().
+                            getCurrentUser().getUid()).child("Snacks"+"isshared").setValue(false);
+                    mFirebaseDatabase.getReference("User").child(FirebaseAuth.getInstance().
+                            getCurrentUser().getUid()).child("Drinks"+"isshared").setValue(false);
+
+                }
+
+                // do your stuff here with value
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+
+        });
+
+        getSupportActionBar().setTitle("MainActivity");
 
         fabsettings = findViewById(R.id.fabSetting);
         Snacks = (LinearLayout) this.findViewById(R.id.Snacks);
@@ -138,7 +208,7 @@ public class MainActivity extends AppCompatActivity
         });
         closeSubMenusFab();
         Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+       // setSupportActionBar(toolbar);
 
 
         //  closeSubMenusFab();
@@ -187,6 +257,7 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, FoodList.class);
                 intent.putExtra("foodselection", "Dinner");
+                intent.putExtra("SharedFoodListDatabase", "SharedDinners");
                 intent.putExtra("requestdate", format.format(calendar.getTime()));
                 startActivity(intent);
             }
@@ -196,6 +267,7 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, FoodList.class);
                 intent.putExtra("foodselection", "Lunch");
+                intent.putExtra("SharedFoodListDatabase", "SharedLunches");
                 intent.putExtra("requestdate", format.format(calendar.getTime()));
                 startActivity(intent);
             }
@@ -205,6 +277,7 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, FoodList.class);
                 intent.putExtra("foodselection", "Breakfast");
+                intent.putExtra("SharedFoodListDatabase", "SharedBreakfasts");
                 intent.putExtra("requestdate", format.format(calendar.getTime()));
                 startActivity(intent);
             }
@@ -214,6 +287,7 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, FoodList.class);
                 intent.putExtra("foodselection", "Snacks");
+                intent.putExtra("SharedFoodListDatabase", "SharedSnacks");
                 intent.putExtra("requestdate", format.format(calendar.getTime()));
                 startActivity(intent);
             }
@@ -223,6 +297,7 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, FoodList.class);
                 intent.putExtra("foodselection", "Drinks");
+                intent.putExtra("SharedFoodListDatabase", "SharedDrinks");
                 intent.putExtra("requestdate", format.format(calendar.getTime()));
                 startActivity(intent);
             }
@@ -255,6 +330,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // Getting current user Id
+
                 String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
 
@@ -365,6 +441,7 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View v) {
                 Toast.makeText(MainActivity.this, "ahahaa", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(MainActivity.this, FoodSearchActivityversion3.class);
+                intent.putExtra("SharedFoodListDatabase", "SharedDrinks");
                 intent.putExtra("foodselection", "Drinks");
                 startActivity(intent);
 
@@ -375,6 +452,7 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View view) {
                 Toast.makeText(MainActivity.this, "ooooo", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(MainActivity.this, FoodSearchActivityversion3.class);
+                intent.putExtra("SharedFoodListDatabase", "SharedSnacks");
                 intent.putExtra("foodselection", "Snacks");
                 startActivity(intent);
             }
@@ -384,6 +462,7 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View view) {
                 Toast.makeText(MainActivity.this, "tttttt", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(MainActivity.this, FoodSearchActivityversion3.class);
+                intent.putExtra("SharedFoodListDatabase", "SharedBreakfasts");
                 intent.putExtra("foodselection", "Breakfast");
                 startActivity(intent);
             }
@@ -393,6 +472,7 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View view) {
                 Toast.makeText(MainActivity.this, "tttttt", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(MainActivity.this, FoodSearchActivityversion3.class);
+                intent.putExtra("SharedFoodListDatabase", "SharedDinners");
                 intent.putExtra("foodselection", "Dinner");
                 startActivity(intent);
             }
@@ -402,6 +482,7 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View view) {
                 Toast.makeText(MainActivity.this, "tttttt", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(MainActivity.this, FoodSearchActivityversion3.class);
+                intent.putExtra("SharedFoodListDatabase", "SharedLunches");
                 intent.putExtra("foodselection", "Lunch");
                 startActivity(intent);
             }
@@ -438,14 +519,14 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        mFirebaseAuth.addAuthStateListener(mAuthStateListener);
+      //  mFirebaseAuth.addAuthStateListener(mAuthStateListener);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         if (mAuthStateListener != null) {
-            mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
+          //  mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
         }
     }
     @Override
@@ -466,10 +547,23 @@ public class MainActivity extends AppCompatActivity
             case R.id.action_settings:
                 return true;
             case R.id.action_sign_out:
-                AuthUI.getInstance().signOut(this);
+                ReturntoRegister();
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+    private void ReturntoRegister()
+    {
+        AuthUI.getInstance().signOut(this)
+            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                public void onComplete(@NonNull Task<Void> task) {
+                    // user is now signed out
+                      Intent intent = new Intent(MainActivity.this, Register.class);
+                    intent.putExtra("offline", true);
+                    startActivity(intent);
+                    finish();
+                }
+            });
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -482,6 +576,7 @@ public class MainActivity extends AppCompatActivity
             Intent intent = new Intent(this, CommunityList.class);
             Bundle extras = intent.getExtras();
             intent.putExtra("titlename", "Community Breakfasts");
+            intent.putExtra("SharedFoodListDatabase", "SharedBreakfasts");
             intent.putExtra("databasevalue", "Breakfast");
             startActivity(intent);
             // Handle the camera action
@@ -489,6 +584,7 @@ public class MainActivity extends AppCompatActivity
             Intent intent = new Intent(this, CommunityList.class);
             Bundle extras = intent.getExtras();
             intent.putExtra("titlename", "Community Dinners");
+            intent.putExtra("SharedFoodListDatabase", "SharedDinners");
             intent.putExtra("databasevalue", "Dinner");
             startActivity(intent);
 
@@ -497,6 +593,7 @@ public class MainActivity extends AppCompatActivity
             Intent intent = new Intent(this, CommunityList.class);
             Bundle extras = intent.getExtras();
             intent.putExtra("titlename", "Community Lunches");
+            intent.putExtra("SharedFoodListDatabase", "SharedLunches");
             intent.putExtra("databasevalue", "Lunch");
             startActivity(intent);
 
@@ -504,6 +601,7 @@ public class MainActivity extends AppCompatActivity
             Intent intent = new Intent(this, CommunityList.class);
             Bundle extras = intent.getExtras();
             intent.putExtra("titlename", "Community Daily Diet Plan");
+            intent.putExtra("SharedFoodListDatabase", "SharedDailyDiets");
             Toast.makeText(this, "Currently Not Available", Toast.LENGTH_SHORT).show();
             //startActivity(intent);
 
@@ -511,13 +609,16 @@ public class MainActivity extends AppCompatActivity
             Intent intent = new Intent(this, CommunityList.class);
             Bundle extras = intent.getExtras();
             intent.putExtra("titlename", "Snacks");
+            intent.putExtra("SharedFoodListDatabase", "SharedSnacks");
             intent.putExtra("databasevalue", "Snacks");
             startActivity(intent);
+            //test
 
         } else if (id == R.id.nav_drinks_cocktails) {
             Intent intent = new Intent(this, CommunityList.class);
             Bundle extras = intent.getExtras();
             intent.putExtra("titlename", "Drinks/Coctails");
+            intent.putExtra("SharedFoodListDatabase", "SharedDrinks");
             intent.putExtra("databasevalue", "Drinks");
             startActivity(intent);
         }

@@ -13,18 +13,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 import udacityteam.healthapp.R;
-import udacityteam.healthapp.activities.FoodListPrieview;
-import udacityteam.healthapp.activities.FoodListPrieviewNew;
+import udacityteam.healthapp.activities.FoodNutritiensDisplayPrieview;
 import udacityteam.healthapp.fragments.Tab1Contacts;
+import udacityteam.healthapp.models.SelectedFood;
+import udacityteam.healthapp.models.SelectedFoodmodel;
 
 /**
  * Created by vvost on 11/16/2017.
  */
 
-public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder> {
+public class CustomAdapterFoodListPrievewcloud extends RecyclerView.Adapter<CustomAdapterFoodListPrievewcloud.ViewHolder> {
     private static final String TAG = "CustomAdapter";
 
-    private List<String> mDataSet = new ArrayList<>();
+    private List<SelectedFoodmodel> mDataSet = new ArrayList<>();
     Context context;
 
     /**
@@ -40,12 +41,10 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
             v.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
-
-                    Intent intent = new Intent(context, FoodListPrieviewNew.class);
-                    //new JSONTask().execute(amm.toString());
-                    intent.putExtra("key", mDataSet.get(getAdapterPosition()));
-                    intent.putExtra("foodselection", Tab1Contacts.value);
+                    Intent intent = new Intent(context, FoodNutritiensDisplayPrieview.class);
+                    intent.putExtra("id",mDataSet.get(getAdapterPosition()).getFoodid());
+                    intent.putExtra("foodname", mDataSet.get(getAdapterPosition()).getFoodid());
+                    intent.putExtra("foodselection", Tab1Contacts.value); // will need to add own
 
                     context.startActivity(intent);
                 }
@@ -63,7 +62,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
      *
      * @param dataSet String[] containing the data to populate views to be used by RecyclerView.
      */
-    public CustomAdapter(List<String> dataSet) {
+    public CustomAdapterFoodListPrievewcloud(List<SelectedFoodmodel> dataSet) {
         mDataSet = dataSet;
     }
 
@@ -84,7 +83,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
 
         // Get element from your dataset at this position and replace the contents of the view
         // with that elemen/
-        viewHolder.getTextView().setText(mDataSet.get(position));
+        viewHolder.getTextView().setText(mDataSet.get(position).getFoodName());
     }
 
     // Return the size of your dataset (invoked by the layout manager)

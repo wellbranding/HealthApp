@@ -26,8 +26,10 @@
     <string name="main_drawer_additional">Additional</string>
     <string name="main_drawer_item_snacks">Snacks</string>
     <string name="main_drawer_item_drinks_cocktails">Drinks/Cocktails</string>
+
     <string name="camera">Camera</string>
     <string name="save">Save</string>
     <string name="update_password">Password</string>
+    <string name="title_activity_filter">FilterActivity</string>
 
 </resources>
