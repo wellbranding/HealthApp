@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,22 +27,8 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.storage.FirebaseStorage;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -53,9 +40,11 @@ import udacityteam.healthapp.PHP_Retrofit.APIUrl;
 import udacityteam.healthapp.PHP_Retrofit.Result;
 import udacityteam.healthapp.PHP_Retrofit.Userretrofit;
 import udacityteam.healthapp.R;
-import udacityteam.healthapp.models.SelectedFood;
-import udacityteam.healthapp.models.User;
 
+
+/**
+ * Demonstrate Firebase Authentication using a Google ID Token.
+ */
 public class Register extends AppCompatActivity implements
         View.OnClickListener {
 
@@ -69,31 +58,20 @@ public class Register extends AppCompatActivity implements
     private GoogleSignInClient mGoogleSignInClient;
     private TextView mStatusTextView;
     private TextView mDetailTextView;
-    Boolean offline;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_begin);
+        setContentView(R.layout.activity_google);
 
         // Views
         mStatusTextView = findViewById(R.id.status);
         mDetailTextView = findViewById(R.id.detail);
 
-        Intent iin = getIntent();
-
-        Bundle b = iin.getExtras();
-//        if(b!=null)
-//        {
-//           // offline =(Boolean) b.get("offline");
-//
-//        }
-
-
         // Button listeners
         findViewById(R.id.sign_in_button).setOnClickListener(this);
         findViewById(R.id.sign_out_button).setOnClickListener(this);
-      //  findViewById(R.id.disconnect_button).setOnClickListener(this);
+        findViewById(R.id.disconnect_button).setOnClickListener(this);
 
         // [START config_signin]
         // Configure Google Sign In
@@ -147,7 +125,7 @@ public class Register extends AppCompatActivity implements
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
         Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
         // [START_EXCLUDE silent]
-        // showProgressDialog();
+       // showProgressDialog();
         // [END_EXCLUDE]
 
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
@@ -157,24 +135,9 @@ public class Register extends AppCompatActivity implements
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             final FirebaseUser user = mAuth.getCurrentUser();
+                            Log.d("curent", mAuth.getCurrentUser().getUid());
                             // Sign in success, update UI with the signed-in user's information
                             if(user!=null) {
-
-                                final FirebaseDatabase database = FirebaseDatabase.getInstance();
-                                final FirebaseFirestore storage = FirebaseFirestore.getInstance();
-                                final DatabaseReference table_user = database.getReference("User");
-                                final CollectionReference userstorage = storage.collection("Users");
-
-//                                ArrayList<SelectedFood> Breakfast = new ArrayList<>();
-//                                ArrayList<SelectedFood> Dinner= new ArrayList<>();
-//                                ArrayList<SelectedFood> Drinks = new ArrayList<>();
-//                                ArrayList<SelectedFood> Lunch= new ArrayList<>();
-//                                ArrayList<SelectedFood> Snacks= new ArrayList<>();
-                                final User newuser = new User(user.getEmail(), user.getDisplayName());
-                                Map<String, Object> users = new HashMap<>();
-                                users.put("gmail",  user.getEmail());
-                                users.put("name", user.getDisplayName());
-                                userstorage.document(mAuth.getCurrentUser().getUid()).set(users);
 
                                 Gson gson = new GsonBuilder()
                                         .setLenient()
@@ -196,69 +159,25 @@ public class Register extends AppCompatActivity implements
                                         retrofituser.getEmail(),
                                         retrofituser.getUid()
                                 );
-                                call.enqueue(new Callback<Result>() {
-                                    @Override
-                                    public void onResponse(Call<Result> call, Response<Result> response) {
-                                        //hiding progress dialog
-                                        //progressDialog.dismiss();
-
-                                        //displaying the message from the response as toast
-                                        // Toast.makeText(getApplicationContext(), response.body().getMessage(), Toast.LENGTH_LONG).show();
-
-                                        //if there is no error
-//                                        if (!response.body().getError()) {
-//                                            //starting profile activity
-//                                         //   finish();
-//                                            Toast.makeText(Register.this, "goood", Toast.LENGTH_SHORT).show();
-//                                         //   SharedPrefManager.getInstance(getApplicationContext()).userLogin(response.body().getUser());
-//                                           // startActivity(new Intent(getApplicationContext(), HomeActivity.class));
-//                                        }
-                                    }
-
-                                    @Override
-                                    public void onFailure(Call<Result> call, Throwable t) {
-                                       // progressDialog.dismiss();
-                                        Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_LONG).show();
-                                    }
-                                });
-
-//                                userstorage.document(mAuth.getCurrentUser().getUid()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-//                                    @Override
-//                                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-//                                        if(documentSnapshot.exists())
-//                                        {
-//                                        }
-//                                        else
-//                                            userstorage.document(mAuth.getCurrentUser().getUid()).set(user);
-//                                    }
-//                                });
-                                //     User user = new User(edtName.getText().toString(),edtPassword.getText().toString());
-                                   table_user.child(mAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
-                                       @Override
-                                       public void onDataChange(DataSnapshot dataSnapshot) {
-                                           if(dataSnapshot.exists()){
-                                               // use "username" already exists
-                                               // Let the user know he needs to pick another username.
-                                           } else {
-                                               // User does not exist. NOW call createUserWithEmailAndPassword
-                                               table_user.child(mAuth.getCurrentUser().getUid()).setValue(newuser);
-                                               // Your previous code here.
-
-                                           }
-                                       }
-
-                                       @Override
-                                       public void onCancelled(DatabaseError databaseError) {
-
-                                       }
-                                   });
-
                                 Intent intent = new Intent(Register.this, MainActivity.class);
                                 startActivity(intent);
                                 finish();
                                 Log.d(TAG, mAuth.getCurrentUser().getUid());
-                            }
-                            updateUI(user);
+                                call.enqueue(new Callback<Result>() {
+                                    @Override
+                                    public void onResponse(Call<Result> call, Response<Result> response) {
+
+
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<Result> call, Throwable t) {
+                                        // progressDialog.dismiss();
+                                        Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_LONG).show();
+                                    }
+                                });
+                            // Sign in success, update UI with the signed-in user's information
+
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
@@ -267,11 +186,12 @@ public class Register extends AppCompatActivity implements
                         }
 
                         // [START_EXCLUDE]
-                        //  hideProgressDialog();
+                     //   hideProgressDialog();
                         // [END_EXCLUDE]
                     }
-                });
-    }
+                }
+    });}
+
     // [END auth_with_google]
 
     // [START signin]
@@ -310,30 +230,20 @@ public class Register extends AppCompatActivity implements
     }
 
     private void updateUI(FirebaseUser user) {
-        //   hideProgressDialog();
-//        if (user != null) {
-//            mStatusTextView.setText("shhs");
-//            mDetailTextView.setText("aahz");
-//
-//            findViewById(R.id.sign_in_button).setVisibility(View.GONE);
-//            findViewById(R.id.sign_out_and_disconnect).setVisibility(View.VISIBLE);
-//        } else {
-//            mStatusTextView.setText("ahahzz");
-//            mDetailTextView.setText(null);
-//
-//            findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
-//            findViewById(R.id.sign_out_and_disconnect).setVisibility(View.GONE);
-//        }
-        if(user!=null) {
-            Intent intent = new Intent(Register.this, MainActivity.class);
-            startActivity(intent);
-            finish();
-        }
-        else {
-            mStatusTextView.setText("you need to connect");
-//            mDetailTextView.setText("aahz");
-        }
+      //  hideProgressDialog();
+        if (user != null) {
+            mStatusTextView.setText( user.getEmail());
+            mDetailTextView.setText(user.getUid());
 
+            findViewById(R.id.sign_in_button).setVisibility(View.GONE);
+            findViewById(R.id.sign_out_and_disconnect).setVisibility(View.VISIBLE);
+        } else {
+            mStatusTextView.setText("noo");
+            mDetailTextView.setText(null);
+
+            findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
+            findViewById(R.id.sign_out_and_disconnect).setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -343,8 +253,10 @@ public class Register extends AppCompatActivity implements
             signIn();
         } else if (i == R.id.sign_out_button) {
             signOut();
+        } else if (i == R.id.disconnect_button) {
+            revokeAccess();
         }
-        //else if (i == R.id.disconnect_button) {
-           // revokeAccess();
     }
 }
+
+

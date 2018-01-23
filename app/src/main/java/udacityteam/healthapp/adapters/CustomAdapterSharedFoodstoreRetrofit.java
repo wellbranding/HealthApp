@@ -41,6 +41,7 @@ public class CustomAdapterSharedFoodstoreRetrofit extends RecyclerView.Adapter<C
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(context, FoodListPrieviewNew.class);
+
                     //new JSONTask().execute(amm.toString());
                  //   intent.putExtra("arraylist", mDataSet.get(getAdapterPosition()).getSelectedFoods());
 //                    intent.putExtra("sharedfoodproduct", new SharedFoodProducts(mDataSet.get(getAdapterPosition()).
