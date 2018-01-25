@@ -111,7 +111,7 @@ public class Tab1Contacts extends Fragment {
         database = FirebaseDatabase.getInstance();
         Intent iin = getActivity().getIntent();
         final Bundle args = getArguments();
-         side = args.getString("value");
+         side = args.getString("foodselection");
         SharedFoodListDatabase =  args.getString("SharedFoodListDatabase");
         Bundle b = iin.getExtras();
         if (b != null) {
@@ -222,7 +222,7 @@ if(side!=null)
             @Override
             public void onResponse(Call<SharedFoodProductsRetrofit> call, Response<SharedFoodProductsRetrofit> response) {
                 mAdapter = new CustomAdapterSharedFoodstoreRetrofit(response.body().
-                        getSelectedFoodretrofits(), SharedFoodListDatabase);
+                        getSelectedFoodretrofits(), side);
                mRecyclerView.setAdapter(mAdapter);
 
             }

@@ -1,14 +1,14 @@
 package udacityteam.healthapp.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -16,31 +16,25 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.TaskCompletionSource;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
+import okhttp3.Cache;
+import okhttp3.CacheControl;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -52,13 +46,9 @@ import udacityteam.healthapp.PHP_Retrofit.Result;
 import udacityteam.healthapp.PHP_Retrofit.SelectedFoodretrofit;
 import udacityteam.healthapp.PHP_Retrofit.SelectedFoodretrofitarray;
 import udacityteam.healthapp.R;
-import udacityteam.healthapp.adapters.CustomAdapterFoodListPrievew;
-import udacityteam.healthapp.adapters.CustomAdapterFoodListPrievewcloud;
 import udacityteam.healthapp.adapters.CustomAdapterFoodListPrievewretro;
 import udacityteam.healthapp.models.SelectedFood;
-import udacityteam.healthapp.models.SelectedFoodmodel;
-import udacityteam.healthapp.models.SharedFoodProducts;
-import udacityteam.healthapp.models.User;
+import okhttp3.Interceptor;
 
 public class FoodList extends AppCompatActivity {
 
@@ -86,7 +76,9 @@ public class FoodList extends AppCompatActivity {
     float calories = 0;
     float protein = 0;
     float carbohydrates = 0;
+    private static final String CACHE_CONTROL = "Cache-Control";
     float fat = 0;
+    int cacheSize = 10 * 1024 * 1024; // 10 MiB
 
     ArrayList<SelectedFood> selectedFoods;
 
@@ -105,12 +97,11 @@ public class FoodList extends AppCompatActivity {
         Intent iin = getIntent();
         message = findViewById(R.id.message);
         share = findViewById(R.id.share);
-
         Bundle b = iin.getExtras();
         foodselection = (String) b.get("foodselection");
         requestedString = (String) b.get("requestdate");
         SharedFoodListDatabase = (String) b.get("SharedFoodListDatabase");
-      //  Log.d("gerassss",  SharedFoodListDatabase);
+        getSupportActionBar().setTitle(foodselection);
 
         if (requestedString != null)
             stringdate = requestedString;
@@ -121,102 +112,78 @@ public class FoodList extends AppCompatActivity {
             stringdate = dt.format(newDate);
         }
         Log.d("reqss", stringdate);
-        database = FirebaseDatabase.getInstance();
-         Ishared();
-//        database.getReference("User").child(FirebaseAuth.getInstance().
-//                getCurrentUser().getUid()).child(foodselection+"isshared").addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                Boolean value = (Boolean) dataSnapshot.getValue();
-//                if(value==true) {
-//                    newstring = "Modify your shared diet";
-//                    Log.d("pagaliau", newstring);
-//                    loadListFood();
-//
-//                }
-//
-//                else {
-//                    newstring = "shared.";
-//                    loadListFood();
-//                }
-//
-//                // do your stuff here with value
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//
-//            }
-//
-//        });
-     //   Log.d("good", newstring);
-
-
 
         selectedFoods = new ArrayList<>();
         recyclerView = (RecyclerView) findViewById(R.id.recycler_food);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-
-        storage = FirebaseFirestore.getInstance();
-        userstorage= storage.collection("Users").document(FirebaseAuth.getInstance().getCurrentUser().getUid()).collection(foodselection).document(stringdate).collection("TodaysFoods");
-        userstorage
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            Log.d("geras", "good");
-                            for (DocumentSnapshot document : task.getResult()) {
-
-                                SelectedFood food = document.toObject(SelectedFood.class);
-                               Float onecalories = food.getCalories();
-                                Float oneprotein = food.getProtein();
-                                Float onecarbohydrates = food.getCarbohydrates();
-                                Float onefat = food.getFat();
-                                protein = protein + oneprotein;
-                                 calories = calories + onecalories;
-                                 carbohydrates = carbohydrates + onecarbohydrates;
-                                 fat = fat + onefat;
-
-                             // SelectedFood food = new SelectedFood(UserId, UserId, UserId, UserId);
-
-                                selectedFoods.add(food);
-                            }
-                            caloriescounter.setText(String.valueOf(calories));
-                          //     Log.d("geras",  String.valueOf(protein));
-                          proteincounter.setText(String.valueOf(protein));
-                       carbohycounter.setText(String.valueOf(carbohydrates));
-                         fatcounter.setText(String.valueOf(fat));
-                            CustomAdapterFoodListPrievew customAdapterFoodListPrievew = new CustomAdapterFoodListPrievew(selectedFoods);
-                          //  recyclerView.setAdapter(customAdapterFoodListPrievew);
-                            loadListFood();
-                        } else {
-                            Log.d("geras", "Error getting documents: ", task.getException());
-                        }
-                    }
-
-                });
-
-        Log.d("geras",  String.valueOf(selectedFoods.size()));
-
-        getSupportActionBar().setTitle(foodselection);
-        foodList = database.getReference("User").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(foodselection);
-        foodList.orderByChild("date").equalTo(stringdate);
+//not needed
+//        storage = FirebaseFirestore.getInstance();
+//        userstorage= storage.collection("Users").document(FirebaseAuth.getInstance().getCurrentUser().getUid()).collection(foodselection).document(stringdate).collection("TodaysFoods");
+//        userstorage
+//                .get()
+//                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//                        if (task.isSuccessful()) {
+//                            Log.d("geras", "good");
+//                            for (DocumentSnapshot document : task.getResult()) {
+//
+//                                SelectedFood food = document.toObject(SelectedFood.class);
+//                               Float onecalories = food.getCalories();
+//                                Float oneprotein = food.getProtein();
+//                                Float onecarbohydrates = food.getCarbohydrates();
+//                                Float onefat = food.getFat();
+//                                protein = protein + oneprotein;
+//                                 calories = calories + onecalories;
+//                                 carbohydrates = carbohydrates + onecarbohydrates;
+//                                 fat = fat + onefat;
+//
+//                             // SelectedFood food = new SelectedFood(UserId, UserId, UserId, UserId);
+//
+//                                selectedFoods.add(food);
+//                            }
+//                            caloriescounter.setText(String.valueOf(calories));
+//                          //     Log.d("geras",  String.valueOf(protein));
+//                          proteincounter.setText(String.valueOf(protein));
+//                       carbohycounter.setText(String.valueOf(carbohydrates));
+//                         fatcounter.setText(String.valueOf(fat));
+//                            CustomAdapterFoodListPrievew customAdapterFoodListPrievew = new CustomAdapterFoodListPrievew(selectedFoods);
+//
+//                        } else {
+//                            Log.d("geras", "Error getting documents: ", task.getException());
+//                        }
+//                    }
+//
+//                });
+//
+//        Log.d("geras",  String.valueOf(selectedFoods.size()));
+//not needed
+        IsShared();
         RetrofitList();
-
-
+   //     RetrofitCatche();
 
     }
 
+
+
     private void RetrofitList()
     {
+        //region Cacheprovided
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .addInterceptor( provideOfflineCacheInterceptor() )
+                .addNetworkInterceptor( provideCacheInterceptor() )
+                .cache( provideCache() )
+                .build();
+        //endregion
+
         Gson gson = new GsonBuilder()
                 .setLenient()
                 .create();
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(APIUrl.BASE_URL)
+                .client(okHttpClient)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
 
@@ -231,24 +198,87 @@ public class FoodList extends AppCompatActivity {
             @Override
             public void onResponse(Call<SelectedFoodretrofitarray> call, Response<SelectedFoodretrofitarray> response) {
                 ArrayList<SelectedFoodretrofit> nauji = response.body().getUsers();
-        //       Log.d("ahh", String.valueOf(nauji.get(1).getFoodid()));
-               //sukurti nauja masyva ir pernesti viskaa
 
                 CustomAdapterFoodListPrievewretro customAdapterFoodListPrievew= new
                         CustomAdapterFoodListPrievewretro(nauji);
                 recyclerView.setAdapter(customAdapterFoodListPrievew);
+                initSharedButton();
             }
-
             @Override
             public void onFailure(Call<SelectedFoodretrofitarray> call, Throwable t) {
+                Toast.makeText(FoodList.this, "Connection to Internet lost", Toast.LENGTH_SHORT).show();
 
             }
-
-
         });
 
     }
-    public void Ishared()
+    public static Interceptor provideCacheInterceptor ()
+    {
+        return new Interceptor()
+        {
+            @Override
+            public okhttp3.Response intercept (Chain chain) throws IOException
+            {
+                okhttp3.Response response = chain.proceed( chain.request() );
+
+                // re-write response header to force use of cache
+                CacheControl cacheControl = new CacheControl.Builder()
+                        .maxAge( 1, TimeUnit.SECONDS )
+                        .build();
+
+                return response.newBuilder()
+                        .header( CACHE_CONTROL, cacheControl.toString() )
+                        .build();
+            }
+        };
+    }
+
+    private Cache provideCache ()
+    {
+        Cache cache = null;
+        try
+        {
+            cache = new Cache( new File( getApplicationContext().getCacheDir(), "http-cache" ),
+                    10 * 1024 * 1024 ); // 10 MB
+        }
+        catch (Exception e)
+        {
+            Log.e("ahahaha", "Could not create Cache!");
+        }
+        return cache;
+    }
+    public Interceptor provideOfflineCacheInterceptor () {
+        return new Interceptor()
+        {
+            @Override
+            public okhttp3.Response intercept (Chain chain) throws IOException
+            {
+                Request request = chain.request();
+
+                if (!isNetworkAvailable())
+                {
+                    CacheControl cacheControl = new CacheControl.Builder()
+                            .maxStale( 7, TimeUnit.DAYS )
+                            .build();
+
+                    request = request.newBuilder()
+                            .cacheControl( cacheControl )
+                            .build();
+                }
+
+                return chain.proceed( request );
+            }
+        };
+    }
+
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+    public void IsShared()
     {
         Gson gson = new GsonBuilder()
                 .setLenient()
@@ -270,9 +300,10 @@ public class FoodList extends AppCompatActivity {
             public void onResponse(Call<Result> call, Response<Result> response) {
               //  if(response.body().getMessage().equals("notfound"));
               if(response.body().getMessage().equals("Some error occurred"))
-                  share.setText("Update");
-
-
+                  share.setText("UPDATE YOUR DIET");
+              else
+                  share.setText("SHARE YOUR DIET");
+              // can't share, because you can share only one time
             }
 
             @Override
@@ -283,67 +314,18 @@ public class FoodList extends AppCompatActivity {
         });
     }
 
-    private void loadListFood() {
-//        if (stringdate != null) {
-//            adapter = new FirebaseRecyclerAdapter<SelectedFood, FoodViewHolder>(SelectedFood.class,
-//                    R.layout.food_item,
-//                    FoodViewHolder.class,
-//                    foodList.orderByChild("date").equalTo(stringdate)) {
-//
-//                @Override
-//                protected void populateViewHolder(FoodViewHolder viewHolder, final SelectedFood model, int position) {
-//                    viewHolder.food_name.setText(model.getFoodName());
-//                    // final SelectedFood local = model;
-//                    viewHolder.setItemClickListener(new ItemClickListener() {
-//                        @Override
-//                        public void onClick(View view, int position, boolean isLongClick) {
-//                            Intent intent = new Intent(FoodList.this, FoodNutritiensDisplayPrieview.class);
-//                            StringBuilder amm = new StringBuilder();
-//                            amm.append("https://api.nal.usda.gov/ndb/V2/reports?ndbno=");
-//                            amm.append(model.getFoodid());
-//                            amm.append("&type=f&format=json&api_key=HXLecTDsMqy1Y6jNoYPw2n3DQ30FeGXxD2XBZqJh");
-//                            //new JSONTask().execute(amm.toString());
-//                            intent.putExtra("id", model.getFoodid());
-//                            intent.putExtra("foodname", model.getFoodName());
-//                            intent.putExtra("foodselection", foodselection);
-//
-//                            startActivity(intent);
-//                            Log.d("ama", "Element " + position + " clicked.");
-//
-//                            //  final String selected = mObjects.get(position).getId();
-//
-//                            // Toast.makeText(getApplicationContext(), selected, Toast.LENGTH_SHORT).show();
-//                            Toast.makeText(FoodList.this, "" + model.getFoodid(), Toast.LENGTH_SHORT).show();
-//                        }
-//                    });
-//                }
-//            };
-//        }
-//        //set Adapter
-//       //recyclerView.setAdapter(adapter)
-       // share.setText(newstring);
-        //not good implementation
+    private void initSharedButton(){
+
         share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                Date date = new Date();
-                Date newDate = new Date(date.getTime());
-                SimpleDateFormat dt = new SimpleDateFormat("yyyy-MM-dd");
-                String currentstingdate = dt.format(newDate);
-               // if(stringdate.equals(currentstingdate))
-               sharefoodlist();
-//                else
-//                {
-//                    Toast.makeText(FoodList.this, "Can;t share earlier day", Toast.LENGTH_SHORT).show();
-//                }
+               ShareFoodList();
             }
         });
     }
 
-    private void sharefoodlist() //only if today
+    private void ShareFoodList() //only if today
     {
-
         Gson gson = new GsonBuilder()
                 .setLenient()
                 .create();
@@ -364,34 +346,16 @@ public class FoodList extends AppCompatActivity {
             @Override
             public void onResponse(Call<Result> call, Response<Result> response) {
                 Log.d("tavo", response.message());
-
+                Toast.makeText(FoodList.this, "Shared Successfully!", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onFailure(Call<Result> call, Throwable t) {
-                Log.d("tavo", t.getMessage());
+                Toast.makeText(FoodList.this, "Some error occurred...", Toast.LENGTH_SHORT).show();
             }
 
         });
-            final DatabaseReference sharedfoodlist = database.getReference("MainFeed").child(foodselection).child("SharedDiets");
-            final CollectionReference sharedfoodliststore = storage.collection("MainFeed").document(foodselection).collection("SharedDiets");
-               final ArrayList<SelectedFood> foundfoods = new ArrayList<>();
-//
-        SharedFoodProducts sharedFoodProducts = new SharedFoodProducts(FirebaseAuth.getInstance().getCurrentUser().getUid(), stringdate,
-                selectedFoods, calories, carbohydrates, protein, fat
-        );
-        //  sharedfoodlist.child(stringdate+FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(sharedFoodProducts);
-        sharedfoodliststore.document(stringdate+FirebaseAuth.getInstance().getCurrentUser().getUid()).set(sharedFoodProducts).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                Toast.makeText(FoodList.this, "Success", Toast.LENGTH_SHORT).show();
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(FoodList.this, "noo", Toast.LENGTH_SHORT).show();
-            }
-        });
+
             }
 
     }

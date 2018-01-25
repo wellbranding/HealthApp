@@ -75,6 +75,7 @@ public class FoodListPrieviewNew extends AppCompatActivity {
     ArrayList<SelectedFood> selectedFoods;
     TextView caloriescounter, proteincounter, fatcounter, carbohycounter;
     SharedFoodProducts receivedsharedfoodproducts;
+   Integer getParentSharedFoodsId;
 
 
     @Override
@@ -91,7 +92,10 @@ public class FoodListPrieviewNew extends AppCompatActivity {
         Intent iin = getIntent();
 
         Bundle b = iin.getExtras();
-//        foodselection = (String) b.get("foodselection");
+     foodselection = (String) b.get("foodselection");
+     Log.d("foodselection", foodselection);
+        getParentSharedFoodsId = (Integer) b.get("getParentSharedFoodsId");
+        //Log.d("aazzz", getParentSharedFoodsId.toString());
 //        ///sjjs
 //    //    receivedsharedfoodproducts = (SharedFoodProducts)  b.getParcelable("sharedfoofproducts");
 //   //  sharedprofucts = receivedsharedfoodproducts.getSelectedFoods();
@@ -137,9 +141,9 @@ public class FoodListPrieviewNew extends AppCompatActivity {
 
         APIService service = retrofit.create(APIService.class);
 
-        Call<SelectedFoodretrofitarray> call = service.getselectedfoods(
-                FirebaseAuth.getInstance().getCurrentUser().getUid(),
-                foodselection
+        Call<SelectedFoodretrofitarray> call = service.getselectedfoodsPrieview(
+
+                getParentSharedFoodsId, foodselection
         );
         call.enqueue(new Callback<SelectedFoodretrofitarray>() {
             @Override

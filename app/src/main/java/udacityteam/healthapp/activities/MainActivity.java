@@ -577,7 +577,7 @@ public class MainActivity extends AppCompatActivity
             Bundle extras = intent.getExtras();
             intent.putExtra("titlename", "Community Breakfasts");
             intent.putExtra("SharedFoodListDatabase", "SharedBreakfasts");
-            intent.putExtra("databasevalue", "Breakfast");
+            intent.putExtra("foodselection", "Breakfast");
             startActivity(intent);
             // Handle the camera action
         } else if (id == R.id.nav_dinners) {
@@ -585,7 +585,7 @@ public class MainActivity extends AppCompatActivity
             Bundle extras = intent.getExtras();
             intent.putExtra("titlename", "Community Dinners");
             intent.putExtra("SharedFoodListDatabase", "SharedDinners");
-            intent.putExtra("databasevalue", "Dinner");
+            intent.putExtra("foodselection", "Dinner");
             startActivity(intent);
 
 
@@ -594,7 +594,7 @@ public class MainActivity extends AppCompatActivity
             Bundle extras = intent.getExtras();
             intent.putExtra("titlename", "Community Lunches");
             intent.putExtra("SharedFoodListDatabase", "SharedLunches");
-            intent.putExtra("databasevalue", "Lunch");
+            intent.putExtra("foodselection", "Lunch");
             startActivity(intent);
 
         } else if (id == R.id.nav_community_daily_diets) {
@@ -610,7 +610,7 @@ public class MainActivity extends AppCompatActivity
             Bundle extras = intent.getExtras();
             intent.putExtra("titlename", "Snacks");
             intent.putExtra("SharedFoodListDatabase", "SharedSnacks");
-            intent.putExtra("databasevalue", "Snacks");
+            intent.putExtra("foodselection", "Snacks");
             startActivity(intent);
             //test
 
@@ -619,7 +619,7 @@ public class MainActivity extends AppCompatActivity
             Bundle extras = intent.getExtras();
             intent.putExtra("titlename", "Drinks/Coctails");
             intent.putExtra("SharedFoodListDatabase", "SharedDrinks");
-            intent.putExtra("databasevalue", "Drinks");
+            intent.putExtra("foodselection", "Drinks");
             startActivity(intent);
         }
         DrawerLayout drawer = findViewById(R.id.drawer_layout);

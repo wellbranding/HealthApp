@@ -23,13 +23,18 @@ public interface APIService {
             @Field("email") String email,
             @Field("uid") String uid);
 
-
-
     @FormUrlEncoded
     @POST("login")
     Call<Result> userLogin(
             @Field("email") String email,
             @Field("password") String password
+    );
+    @FormUrlEncoded
+    @POST("loginwithmail")
+    Call<Result> userLoginwithmail(
+            @Field("email") String email,
+            @Field("password") String password,
+            @Field("uid") String uid
     );
 
     @FormUrlEncoded
@@ -61,8 +66,8 @@ public interface APIService {
     );
     @GET("getSelectedFoodsPrieview")
     Call<SelectedFoodretrofitarray> getselectedfoodsPrieview(
-            @Query("UserId") String UserId,
-            @Query("whichtime") String whichtime
+            @Query("getParentSharedFoodsId") Integer ParentSharedKey,
+            @Query("foodselection") String foodSelection
     );
 
     @GET("users")

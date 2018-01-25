@@ -11,6 +11,7 @@ import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,6 +54,7 @@ public class Register extends AppCompatActivity implements
 
     // [START declare_auth]
     private FirebaseAuth mAuth;
+
     // [END declare_auth]
 
     private GoogleSignInClient mGoogleSignInClient;
@@ -70,9 +72,27 @@ public class Register extends AppCompatActivity implements
 
         // Button listeners
         findViewById(R.id.sign_in_button).setOnClickListener(this);
-        findViewById(R.id.sign_out_button).setOnClickListener(this);
-        findViewById(R.id.disconnect_button).setOnClickListener(this);
 
+        Button registermail = findViewById(R.id.mailregister);
+        Button loginmail = findViewById(R.id.mailogin);
+
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+
+        registermail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Register.this, RegisterWithMailPasword.class);
+                startActivity(intent);
+            }
+        });
+        loginmail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Register.this, LoginWithMailPasword.class);
+                startActivity(intent);
+            }
+        });
         // [START config_signin]
         // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -84,7 +104,7 @@ public class Register extends AppCompatActivity implements
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
         // [START initialize_auth]
-        mAuth = FirebaseAuth.getInstance();
+
         // [END initialize_auth]
     }
 
@@ -158,6 +178,7 @@ public class Register extends AppCompatActivity implements
                                         retrofituser.getName(),
                                         retrofituser.getEmail(),
                                         retrofituser.getUid()
+
                                 );
                                 Intent intent = new Intent(Register.this, MainActivity.class);
                                 startActivity(intent);
@@ -231,18 +252,18 @@ public class Register extends AppCompatActivity implements
 
     private void updateUI(FirebaseUser user) {
       //  hideProgressDialog();
-        if (user != null) {
+        if (user != null && user.isEmailVerified()) {
+            Intent intent = new Intent(Register.this, MainActivity.class);
+            startActivity(intent);
             mStatusTextView.setText( user.getEmail());
             mDetailTextView.setText(user.getUid());
 
-            findViewById(R.id.sign_in_button).setVisibility(View.GONE);
-            findViewById(R.id.sign_out_and_disconnect).setVisibility(View.VISIBLE);
         } else {
             mStatusTextView.setText("noo");
             mDetailTextView.setText(null);
 
             findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
-            findViewById(R.id.sign_out_and_disconnect).setVisibility(View.GONE);
+
         }
     }
 
@@ -251,11 +272,8 @@ public class Register extends AppCompatActivity implements
         int i = v.getId();
         if (i == R.id.sign_in_button) {
             signIn();
-        } else if (i == R.id.sign_out_button) {
-            signOut();
-        } else if (i == R.id.disconnect_button) {
-            revokeAccess();
         }
+
     }
 }
 

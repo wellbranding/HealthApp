@@ -48,7 +48,7 @@ public class CustomAdapterSharedFoodstoreRetrofit extends RecyclerView.Adapter<C
                     intent.putExtra("date",mDataSet.get(getAdapterPosition()).getDate());
                     intent.putExtra("getParentSharedFoodsId", mDataSet.get(getAdapterPosition()).getParentSharedFoodsId());
                     intent.putExtra("getUserId", mDataSet.get(getAdapterPosition()).getUserId());
-                    intent.putExtra("SharedFoodListDatabase", DatabaseStorage);
+                    intent.putExtra("foodselection", DatabaseStorage);
 
 
                     //new JSONTask().execute(amm.toString());

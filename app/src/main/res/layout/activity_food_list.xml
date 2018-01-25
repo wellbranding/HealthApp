@@ -87,7 +87,6 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:background="@color/colorPrimary"
-        android:text="Share" />
+        android:background="@color/colorPrimary" />
 
 </RelativeLayout>

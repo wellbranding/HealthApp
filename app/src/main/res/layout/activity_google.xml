@@ -1,24 +1,19 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:weightSum="4">
+    android:orientation="vertical">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="3"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+
         android:gravity="center_horizontal"
         android:orientation="vertical">
 
-        <ImageView
-
-            android:id="@+id/google_icon"
-
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
 
         <TextView
             android:id="@+id/title_text"
@@ -40,51 +35,47 @@
 
             tools:text="Firebase User ID: 123456789abc" />
 
-    </LinearLayout>
+        <Button
+            android:id="@+id/mailregister"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/title_text"
+            android:layout_marginTop="76dp"
+            android:textColor="#ffffff"
+            android:background="@color/colorPrimary"
+            android:text="REGISTER" />
 
+        <Button
+            android:id="@+id/mailogin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/sign_in_button"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginBottom="28dp"
+            android:background="@color/colorPrimary"
+            android:text="LOGIN" />
 
-    <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-       >
 
         <com.google.android.gms.common.SignInButton
             android:id="@+id/sign_in_button"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:visibility="visible"
-            tools:visibility="gone" />
-
-        <LinearLayout
-            android:id="@+id/sign_out_and_disconnect"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:orientation="horizontal"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            android:visibility="gone"
-            tools:visibility="visible">
-
-            <Button
-                android:id="@+id/sign_out_button"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="sign_out"
-              />
-
-            <Button
-                android:id="@+id/disconnect_button"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="disconnect"
-                />
-        </LinearLayout>
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="75dp"
+            android:layout_toEndOf="@+id/title_text"
+            android:layout_toRightOf="@+id/title_text"
+            android:visibility="visible" />
 
     </RelativeLayout>
 
-</LinearLayout>
+
+
+
+
+
+
+
+</RelativeLayout>

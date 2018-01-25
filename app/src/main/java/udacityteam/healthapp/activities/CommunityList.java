@@ -49,25 +49,24 @@ public class CommunityList extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
         res = getResources();
-        //String value = getIntent().getExtras().getString("titlename");
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         Intent iin = getIntent();
         Bundle b = iin.getExtras();
         String value;
-        String queryparam =null;
+        String foodselection =null;
         String SharedFoodListDatabase =null;
         if (b != null) {
             value = (String) b.get("titlename");
-            queryparam = (String) b.get("value");
+            foodselection = (String) b.get("foodselection");
             SharedFoodListDatabase = (String) b.get("SharedFoodListDatabase");
 
             getSupportActionBar().setTitle(value);
             //  Textv.setText(j);
         }
         Bundle tofragment = new Bundle();
-        tofragment.putString("value", queryparam);
+        tofragment.putString("foodselection", foodselection);
         tofragment.putString("SharedFoodListDatabase", SharedFoodListDatabase);
         String[] tabTitles = new String[]{
                 res.getString(R.string.tab1_title),
