@@ -40,13 +40,14 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import udacityteam.healthapp.PHP_Retrofit.APIService;
-import udacityteam.healthapp.PHP_Retrofit.APIUrl;
-import udacityteam.healthapp.PHP_Retrofit.Result;
-import udacityteam.healthapp.PHP_Retrofit.SelectedFoodretrofit;
-import udacityteam.healthapp.PHP_Retrofit.SelectedFoodretrofitarray;
+import udacityteam.healthapp.PHP_Retrofit_API.APIService;
+import udacityteam.healthapp.PHP_Retrofit_API.APIUrl;
+import udacityteam.healthapp.PHP_Retrofit_Models.Result;
+import udacityteam.healthapp.PHP_Retrofit_Models.SelectedFoodretrofit;
+import udacityteam.healthapp.PHP_Retrofit_Models.SelectedFoodretrofitarray;
 import udacityteam.healthapp.R;
-import udacityteam.healthapp.adapters.CustomAdapterFoodListPrievewretro;
+import udacityteam.healthapp.adapters.FoodListRetrofitAdapter;
+import udacityteam.healthapp.adapters.FoodViewHolder;
 import udacityteam.healthapp.models.SelectedFood;
 import okhttp3.Interceptor;
 
@@ -199,8 +200,8 @@ public class FoodList extends AppCompatActivity {
             public void onResponse(Call<SelectedFoodretrofitarray> call, Response<SelectedFoodretrofitarray> response) {
                 ArrayList<SelectedFoodretrofit> nauji = response.body().getUsers();
 
-                CustomAdapterFoodListPrievewretro customAdapterFoodListPrievew= new
-                        CustomAdapterFoodListPrievewretro(nauji);
+                FoodListRetrofitAdapter customAdapterFoodListPrievew= new
+                        FoodListRetrofitAdapter(nauji);
                 recyclerView.setAdapter(customAdapterFoodListPrievew);
                 initSharedButton();
             }

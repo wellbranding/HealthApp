@@ -1,14 +1,17 @@
-package udacityteam.healthapp.PHP_Retrofit;
+package udacityteam.healthapp.PHP_Retrofit_API;
 
 
 import retrofit2.Call;
-import retrofit2.Response;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
+import udacityteam.healthapp.PHP_Retrofit_Models.Result;
+import udacityteam.healthapp.PHP_Retrofit_Models.SelectedFoodretrofitarray;
+import udacityteam.healthapp.PHP_Retrofit_Models.SharedFoodProductsRetrofit;
+import udacityteam.healthapp.PHP_Retrofit_Models.Usersretrofit;
 
 /**
  * Created by Belal on 14/04/17.

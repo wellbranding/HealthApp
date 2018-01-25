@@ -11,7 +11,6 @@ import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,7 +20,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
@@ -36,17 +34,17 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import udacityteam.healthapp.PHP_Retrofit.APIService;
-import udacityteam.healthapp.PHP_Retrofit.APIUrl;
-import udacityteam.healthapp.PHP_Retrofit.Result;
-import udacityteam.healthapp.PHP_Retrofit.Userretrofit;
+import udacityteam.healthapp.PHP_Retrofit_API.APIService;
+import udacityteam.healthapp.PHP_Retrofit_API.APIUrl;
+import udacityteam.healthapp.PHP_Retrofit_Models.Result;
+import udacityteam.healthapp.PHP_Retrofit_Models.Userretrofit;
 import udacityteam.healthapp.R;
 
 
 /**
  * Demonstrate Firebase Authentication using a Google ID Token.
  */
-public class Register extends AppCompatActivity implements
+public class RegisterActivityHome extends AppCompatActivity implements
         View.OnClickListener {
 
     private static final String TAG = "GoogleActivity";
@@ -64,7 +62,7 @@ public class Register extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_google);
+        setContentView(R.layout.register_activity_home);
 
         // Views
         mStatusTextView = findViewById(R.id.status);
@@ -82,14 +80,14 @@ public class Register extends AppCompatActivity implements
         registermail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(Register.this, RegisterWithMailPasword.class);
+                Intent intent = new Intent(RegisterActivityHome.this, RegisterWithMailPasword.class);
                 startActivity(intent);
             }
         });
         loginmail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(Register.this, LoginWithMailPasword.class);
+                Intent intent = new Intent(RegisterActivityHome.this, LoginWithMailPasword.class);
                 startActivity(intent);
             }
         });
@@ -180,7 +178,7 @@ public class Register extends AppCompatActivity implements
                                         retrofituser.getUid()
 
                                 );
-                                Intent intent = new Intent(Register.this, MainActivity.class);
+                                Intent intent = new Intent(RegisterActivityHome.this, MainActivity.class);
                                 startActivity(intent);
                                 finish();
                                 Log.d(TAG, mAuth.getCurrentUser().getUid());
@@ -253,7 +251,7 @@ public class Register extends AppCompatActivity implements
     private void updateUI(FirebaseUser user) {
       //  hideProgressDialog();
         if (user != null && user.isEmailVerified()) {
-            Intent intent = new Intent(Register.this, MainActivity.class);
+            Intent intent = new Intent(RegisterActivityHome.this, MainActivity.class);
             startActivity(intent);
             mStatusTextView.setText( user.getEmail());
             mDetailTextView.setText(user.getUid());

@@ -1,4 +1,5 @@
-package udacityteam.healthapp.fragments;
+package udacityteam.healthapp.activities.CommunityActivities;
+
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -18,12 +19,13 @@ import udacityteam.healthapp.adapters.CustomAdapter;
  * Created by vvost on 11/16/2017.
  */
 
-public class Tab2Chat extends Fragment {
+public class CommunityFoodListsDisplayFragment2 extends Fragment {
+
     private static final String TAG = "RecyclerViewFragment";
     private static final String KEY_LAYOUT_MANAGER = "layoutManager";
     private static final int SPAN_COUNT = 2;
     private static final int DATASET_COUNT = 60;
-    protected LayoutManagerType mCurrentLayoutManagerType;
+    protected CommunityFoodListsDisplayFragment2.LayoutManagerType mCurrentLayoutManagerType;
     protected RadioButton mLinearLayoutRadioButton;
     protected RadioButton mGridLayoutRadioButton;
     protected RecyclerView mRecyclerView;
@@ -46,26 +48,26 @@ public class Tab2Chat extends Fragment {
         View rootView = inflater.inflate(R.layout.recycler_view_frag, container, false);
         rootView.setTag(TAG);
 
-        mRecyclerView = rootView.findViewById(R.id.recyclerView);
+        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
 
         // LinearLayoutManager is used here, this will layout the elements in a similar fashion
         // to the way ListView would layout elements. The RecyclerView.LayoutManager defines how
         // elements are laid out.
         mLayoutManager = new LinearLayoutManager(getActivity());
 
-        mCurrentLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER;
+        mCurrentLayoutManagerType = CommunityFoodListsDisplayFragment2.LayoutManagerType.LINEAR_LAYOUT_MANAGER;
 
         if (savedInstanceState != null) {
             // Restore saved layout manager type.
-            mCurrentLayoutManagerType = (LayoutManagerType) savedInstanceState
+            mCurrentLayoutManagerType = (CommunityFoodListsDisplayFragment2.LayoutManagerType) savedInstanceState
                     .getSerializable(KEY_LAYOUT_MANAGER);
         }
         setRecyclerViewLayoutManager(mCurrentLayoutManagerType);
 
-        //mAdapter = new CustomAdapter(mDataset);
+       // mAdapter = new CustomAdapter(mDataset);
         // Set CustomAdapter as the adapter for RecyclerView.
         mRecyclerView.setAdapter(mAdapter);
-        setRecyclerViewLayoutManager(LayoutManagerType.LINEAR_LAYOUT_MANAGER);
+        setRecyclerViewLayoutManager(CommunityFoodListsDisplayFragment2.LayoutManagerType.LINEAR_LAYOUT_MANAGER);
         mRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(),
                 DividerItemDecoration.VERTICAL));
         return rootView;
@@ -76,7 +78,7 @@ public class Tab2Chat extends Fragment {
      *
      * @param layoutManagerType Type of layout manager to switch to.
      */
-    public void setRecyclerViewLayoutManager(LayoutManagerType layoutManagerType) {
+    public void setRecyclerViewLayoutManager(CommunityFoodListsDisplayFragment2.LayoutManagerType layoutManagerType) {
         int scrollPosition = 0;
 
         // If a layout manager has already been set, get current scroll position.
@@ -88,15 +90,15 @@ public class Tab2Chat extends Fragment {
         switch (layoutManagerType) {
             case GRID_LAYOUT_MANAGER:
                 mLayoutManager = new GridLayoutManager(getActivity(), SPAN_COUNT);
-                mCurrentLayoutManagerType = LayoutManagerType.GRID_LAYOUT_MANAGER;
+                mCurrentLayoutManagerType = CommunityFoodListsDisplayFragment2.LayoutManagerType.GRID_LAYOUT_MANAGER;
                 break;
             case LINEAR_LAYOUT_MANAGER:
                 mLayoutManager = new LinearLayoutManager(getActivity());
-                mCurrentLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER;
+                mCurrentLayoutManagerType = CommunityFoodListsDisplayFragment2.LayoutManagerType.LINEAR_LAYOUT_MANAGER;
                 break;
             default:
                 mLayoutManager = new LinearLayoutManager(getActivity());
-                mCurrentLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER;
+                mCurrentLayoutManagerType = CommunityFoodListsDisplayFragment2.LayoutManagerType.LINEAR_LAYOUT_MANAGER;
         }
 
         mRecyclerView.setLayoutManager(mLayoutManager);
@@ -126,4 +128,3 @@ public class Tab2Chat extends Fragment {
         LINEAR_LAYOUT_MANAGER
     }
 }
-

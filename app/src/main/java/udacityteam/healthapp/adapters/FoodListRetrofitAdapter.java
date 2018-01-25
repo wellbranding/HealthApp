@@ -12,17 +12,16 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-import udacityteam.healthapp.PHP_Retrofit.SelectedFoodretrofit;
+import udacityteam.healthapp.PHP_Retrofit_Models.SelectedFoodretrofit;
 import udacityteam.healthapp.R;
 import udacityteam.healthapp.activities.FoodNutritiensDisplayPrieview;
-import udacityteam.healthapp.fragments.Tab1Contacts;
-import udacityteam.healthapp.models.SelectedFood;
+import udacityteam.healthapp.activities.CommunityActivities.CommunityFoodListsDisplayFragment0;
 
 /**
  * Created by vvost on 11/16/2017.
  */
 
-public class CustomAdapterFoodListPrievewretro extends RecyclerView.Adapter<CustomAdapterFoodListPrievewretro.ViewHolder> {
+public class FoodListRetrofitAdapter extends RecyclerView.Adapter<FoodListRetrofitAdapter.ViewHolder> {
     private static final String TAG = "CustomAdapter";
 
     private List<SelectedFoodretrofit> mDataSet = new ArrayList<>();
@@ -44,7 +43,7 @@ public class CustomAdapterFoodListPrievewretro extends RecyclerView.Adapter<Cust
                     Intent intent = new Intent(context, FoodNutritiensDisplayPrieview.class);
                     intent.putExtra("id",mDataSet.get(getAdapterPosition()).getFoodid());
                     intent.putExtra("foodname", mDataSet.get(getAdapterPosition()).getFoodid());
-                    intent.putExtra("foodselection", Tab1Contacts.value); // will need to add own
+                    intent.putExtra("foodselection", CommunityFoodListsDisplayFragment0.value); // will need to add own
 
                     context.startActivity(intent);
                 }
@@ -62,7 +61,7 @@ public class CustomAdapterFoodListPrievewretro extends RecyclerView.Adapter<Cust
      *
      * @param dataSet String[] containing the data to populate views to be used by RecyclerView.
      */
-    public CustomAdapterFoodListPrievewretro(List<SelectedFoodretrofit> dataSet) {
+    public FoodListRetrofitAdapter(List<SelectedFoodretrofit> dataSet) {
         mDataSet = dataSet;
     }
 

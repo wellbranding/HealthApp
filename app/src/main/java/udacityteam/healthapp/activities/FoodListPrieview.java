@@ -6,19 +6,36 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+import udacityteam.healthapp.PHP_Retrofit_API.APIService;
+import udacityteam.healthapp.PHP_Retrofit_API.APIUrl;
+import udacityteam.healthapp.PHP_Retrofit_Models.SelectedFoodretrofit;
+import udacityteam.healthapp.PHP_Retrofit_Models.SelectedFoodretrofitarray;
 import udacityteam.healthapp.R;
+import udacityteam.healthapp.adapters.FoodListRetrofitAdapter;
+import udacityteam.healthapp.adapters.FoodViewHolder;
 import udacityteam.healthapp.models.SelectedFood;
+import udacityteam.healthapp.models.SharedFoodProducts;
 
 public class FoodListPrieview extends AppCompatActivity {
 
@@ -30,106 +47,108 @@ public class FoodListPrieview extends AppCompatActivity {
     DatabaseReference usersdatabase;
     String foodselection, key;
 
+   ArrayList<SelectedFood> sharedprofucts = new ArrayList<>();
+
     String catergoryId = "ff";
     FirebaseRecyclerAdapter<SelectedFood, FoodViewHolder> adapter;
     String stringdate;
     Button share;
+    FirebaseAuth mAuth;
+    CollectionReference userstorage;
+    FirebaseFirestore storage;
+    //float calories, carbohydrates, protein, fats;
+    ArrayList<SelectedFood> selectedFoods;
+    TextView caloriescounter, proteincounter, fatcounter, carbohycounter;
+    SharedFoodProducts receivedsharedfoodproducts;
+   Integer getParentSharedFoodsId;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_food_list);
+        mAuth = FirebaseAuth.getInstance();
+
+        caloriescounter = findViewById(R.id.caloriescount);
+        proteincounter = findViewById(R.id.proteincount);
+        carbohycounter = findViewById(R.id.carbohncount);
+        fatcounter = findViewById(R.id.fatcount);
 
         Intent iin = getIntent();
 
         Bundle b = iin.getExtras();
-        foodselection = (String) b.get("foodselection");
-        key = (String) b.get("key");
+     foodselection = (String) b.get("foodselection");
+     Log.d("foodselection", foodselection);
+        getParentSharedFoodsId = (Integer) b.get("getParentSharedFoodsId");
+        //Log.d("aazzz", getParentSharedFoodsId.toString());
+//        ///sjjs
+//    //    receivedsharedfoodproducts = (SharedFoodProducts)  b.getParcelable("sharedfoofproducts");
+//   //  sharedprofucts = receivedsharedfoodproducts.getSelectedFoods();
+//     selectedFoods = b.getParcelableArrayList("user_list");
+//     //Log.d("parodyk", String.valueOf(selectedFoods.size()));
+//        key = (String) b.get("key");
+//        calories = (float) b.get("calories");
+//        carbohydrates = (float) b.get("carbohydrates");
+//        protein = (float) b.get("protein");
+//        fats = (float) b.get("fats");
+
             Date date = new Date();
             Date newDate = new Date(date.getTime());
             SimpleDateFormat dt = new SimpleDateFormat("yyyy-MM-dd");
             stringdate = dt.format(newDate);
 
-
-
+//        caloriescounter.setText(String.valueOf(calories));
+//        proteincounter.setText(String.valueOf(protein));
+//        carbohycounter.setText(String.valueOf(carbohydrates));
+//        fatcounter.setText(String.valueOf(fats));
         database = FirebaseDatabase.getInstance();
-        getSupportActionBar().setTitle(foodselection);
-        foodList = database.getReference("MainFeed").child(foodselection).child("SharedDiets");
-        foodList.orderByChild("date").equalTo(stringdate);
+     //getSupportActionBar().setTitle(foodselection);
+///        foodList = database.getReference("MainFeed").child(foodselection).child("SharedDiets").child(key).child("SelectedFoods");
+//        Log.d("kej", key);
+      //  foodList.orderByChild("date").equalTo(stringdate);
 
-        recyclerView = (RecyclerView) findViewById(R.id.recycler_food);
-        recyclerView.setHasFixedSize(true);
+        recyclerView = findViewById(R.id.recycler_food);
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        loadListFood(catergoryId);
-
+        recyclerView.setHasFixedSize(true);
+        GetFoodList();
 
     }
-
-    private void loadListFood(String catergoryId) {
-        if (stringdate != null) {
-            adapter = new FirebaseRecyclerAdapter<SelectedFood, FoodViewHolder>(SelectedFood.class,
-                    R.layout.food_item,
-                    FoodViewHolder.class,
-                    foodList.orderByChild("date").equalTo(stringdate)) {
-
-                @Override
-                protected void populateViewHolder(FoodViewHolder viewHolder, final SelectedFood model, int position) {
-                    viewHolder.food_name.setText(model.getFoodName());
-                    // final SelectedFood local = model;
-                    viewHolder.setItemClickListener(new ItemClickListener() {
-                        @Override
-                        public void onClick(View view, int position, boolean isLongClick) {
-                            Intent intent = new Intent(FoodListPrieview.this, FoodNutritiensDisplayPrieview.class);
-                            StringBuilder amm = new StringBuilder();
-                            amm.append("https://api.nal.usda.gov/ndb/V2/reports?ndbno=");
-                            amm.append(model.getFoodid());
-                            amm.append("&type=f&format=json&api_key=HXLecTDsMqy1Y6jNoYPw2n3DQ30FeGXxD2XBZqJh");
-                            //new JSONTask().execute(amm.toString());
-                            intent.putExtra("id", model.getFoodid());
-                            intent.putExtra("foodname", model.getFoodName());
-                            intent.putExtra("foodselection", foodselection);
-
-                            startActivity(intent);
-                            Log.d("ama", "Element " + position + " clicked.");
-
-                            //  final String selected = mObjects.get(position).getId();
-
-                            // Toast.makeText(getApplicationContext(), selected, Toast.LENGTH_SHORT).show();
-                            Toast.makeText(FoodListPrieview.this, "" + model.getFoodid(), Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }
-            };
-        }
-        //set Adapter
-        recyclerView.setAdapter(adapter);
-        sharefoodlist();
-    }
-
-    private void sharefoodlist() //only if today
+    private void GetFoodList()
     {
-        share = findViewById(R.id.share);
-        share.setText("Cant share");
-//        share.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                usersdatabase = database.getReference("MainFeed").child(foodselection).child("SharedDiets").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-//
-//                foodList.orderByChild("date").equalTo(stringdate).addValueEventListener(new ValueEventListener() {
-//                    @Override
-//                    public void onDataChange(DataSnapshot dataSnapshot) {
-//                        List<SelectedFood> userList = new ArrayList<>();
-//                        for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
-//                            Log.d("shhss", "ahahha");
-//                            usersdatabase.child(String.valueOf(System.currentTimeMillis())).setValue(dataSnapshot1.getValue(SelectedFood.class));
-//                        }
-//                    }
-//                    @Override
-//                    public void onCancelled(DatabaseError databaseError) {
-//                    }
-//                });
-//            }
-//        });
+        Gson gson = new GsonBuilder()
+                .setLenient()
+                .create();
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(APIUrl.BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
+
+        APIService service = retrofit.create(APIService.class);
+
+        Call<SelectedFoodretrofitarray> call = service.getselectedfoodsPrieview(
+
+                getParentSharedFoodsId, foodselection
+        );
+        call.enqueue(new Callback<SelectedFoodretrofitarray>() {
+            @Override
+            public void onResponse(Call<SelectedFoodretrofitarray> call, Response<SelectedFoodretrofitarray> response) {
+                ArrayList<SelectedFoodretrofit> nauji = response.body().getUsers();
+                //       Log.d("ahh", String.valueOf(nauji.get(1).getFoodid()));
+                //sukurti nauja masyva ir pernesti viskaa
+
+                FoodListRetrofitAdapter customAdapterFoodListPrievew= new
+                        FoodListRetrofitAdapter(nauji);
+                recyclerView.setAdapter(customAdapterFoodListPrievew);
+            }
+
+            @Override
+            public void onFailure(Call<SelectedFoodretrofitarray> call, Throwable t) {
+
+            }
+        });
     }
+
+
+
 }

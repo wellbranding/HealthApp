@@ -9,21 +9,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.google.firebase.database.DatabaseReference;
-
 import java.util.ArrayList;
 
-import udacityteam.healthapp.PHP_Retrofit.OneSharedFoodProductsListRetrofit;
+import udacityteam.healthapp.PHP_Retrofit_Models.OneSharedFoodProductsListRetrofit;
 import udacityteam.healthapp.R;
-import udacityteam.healthapp.activities.FoodListPrieviewNew;
-import udacityteam.healthapp.fragments.Tab1Contacts;
-import udacityteam.healthapp.models.SharedFoodProducts;
+import udacityteam.healthapp.activities.FoodListPrieview;
 
 /**
  * Created by vvost on 11/16/2017.
  */
 
-public class CustomAdapterSharedFoodstoreRetrofit extends RecyclerView.Adapter<CustomAdapterSharedFoodstoreRetrofit.ViewHolder> {
+public class SharedFoodListsAdapter extends RecyclerView.Adapter<SharedFoodListsAdapter.ViewHolder> {
     private static final String TAG = "CustomAdapter";
 
     private ArrayList<OneSharedFoodProductsListRetrofit> mDataSet = new ArrayList<>();
@@ -44,7 +40,7 @@ public class CustomAdapterSharedFoodstoreRetrofit extends RecyclerView.Adapter<C
             v.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(context, FoodListPrieviewNew.class);
+                    Intent intent = new Intent(context, FoodListPrieview.class);
                     intent.putExtra("date",mDataSet.get(getAdapterPosition()).getDate());
                     intent.putExtra("getParentSharedFoodsId", mDataSet.get(getAdapterPosition()).getParentSharedFoodsId());
                     intent.putExtra("getUserId", mDataSet.get(getAdapterPosition()).getUserId());
@@ -59,7 +55,7 @@ public class CustomAdapterSharedFoodstoreRetrofit extends RecyclerView.Adapter<C
 //                    SharedFoodProducts sharedFoodProducts = mDataSet.get(getAdapterPosition());
 //                    intent.putExtra("user_list",sharedFoodProducts.getSelectedFoods());
 //                    intent.putExtra("key", sharedFoodProducts.getUserId());
-//                    intent.putExtra("foodselection", Tab1Contacts.value);
+//                    intent.putExtra("foodselection", CommunityFoodListsDisplayFragment0.value);
 //                    intent.putExtra("calories",sharedFoodProducts.getCalories());
 //                    intent.putExtra("protein",sharedFoodProducts.getProtein());
 //                    intent.putExtra("fats",sharedFoodProducts.getFats());
@@ -81,8 +77,8 @@ public class CustomAdapterSharedFoodstoreRetrofit extends RecyclerView.Adapter<C
      *
      * @param dataSet String[] containing the data to populate views to be used by RecyclerView.
      */
-    public CustomAdapterSharedFoodstoreRetrofit(ArrayList<OneSharedFoodProductsListRetrofit> dataSet,
-                                                String databaseStorage) {
+    public SharedFoodListsAdapter(ArrayList<OneSharedFoodProductsListRetrofit> dataSet,
+                                  String databaseStorage) {
         mDataSet = dataSet;
         DatabaseStorage = databaseStorage;
     }

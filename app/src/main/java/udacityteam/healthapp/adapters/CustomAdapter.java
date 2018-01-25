@@ -14,8 +14,7 @@ import java.util.List;
 
 import udacityteam.healthapp.R;
 import udacityteam.healthapp.activities.FoodListPrieview;
-import udacityteam.healthapp.activities.FoodListPrieviewNew;
-import udacityteam.healthapp.fragments.Tab1Contacts;
+import udacityteam.healthapp.activities.CommunityActivities.CommunityFoodListsDisplayFragment0;
 
 /**
  * Created by vvost on 11/16/2017.
@@ -42,10 +41,10 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
                 public void onClick(View v) {
 
 
-                    Intent intent = new Intent(context, FoodListPrieviewNew.class);
+                    Intent intent = new Intent(context, FoodListPrieview.class);
                     //new JSONTask().execute(amm.toString());
                     intent.putExtra("key", mDataSet.get(getAdapterPosition()));
-                    intent.putExtra("foodselection", Tab1Contacts.value);
+                    intent.putExtra("foodselection", CommunityFoodListsDisplayFragment0.value);
 
                     context.startActivity(intent);
                 }
