@@ -421,15 +421,11 @@ public class FoodSearchActivity extends AppCompatActivity implements SearchView.
                 } catch (Exception e) {
                     // aki.setText(s);
                 }
-
-
-
             }
             else
             {
 
             }
-
 
         }
     }
