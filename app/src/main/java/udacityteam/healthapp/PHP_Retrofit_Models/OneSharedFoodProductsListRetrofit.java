@@ -1,5 +1,6 @@
-package udacityteam.healthapp.PHP_Retrofit;
+package udacityteam.healthapp.PHP_Retrofit_Models;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 
 /**
@@ -8,14 +9,14 @@ import java.util.ArrayList;
 
     public class OneSharedFoodProductsListRetrofit {
      private String UserId;
-    private String Date;
-    private String ParentSharedFoodsId;
+     private String Date;
+    private Integer ParentSharedFoodsId;
     public OneSharedFoodProductsListRetrofit()
     {
 
     }
 
-    public OneSharedFoodProductsListRetrofit(String userId, String date, String parentSharedFoodsId) {
+    public OneSharedFoodProductsListRetrofit(String userId, String date,Integer parentSharedFoodsId) {
         UserId = userId;
         Date = date;
         ParentSharedFoodsId = parentSharedFoodsId;
@@ -29,11 +30,11 @@ import java.util.ArrayList;
         Date = date;
     }
 
-    public String getParentSharedFoodsId() {
+    public Integer getParentSharedFoodsId() {
         return ParentSharedFoodsId;
     }
 
-    public void setParentSharedFoodsId(String parentSharedFoodsId) {
+    public void setParentSharedFoodsId(Integer parentSharedFoodsId) {
         ParentSharedFoodsId = parentSharedFoodsId;
     }
 

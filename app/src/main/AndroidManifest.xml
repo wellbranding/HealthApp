@@ -2,15 +2,17 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="udacityteam.healthapp">
 
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
+
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".activities.Register"
+            android:name=".activities.RegisterActivityHome"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -19,10 +21,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.HomeActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".activities.CommunityList"
+            android:name=".activities.CommunityActivities.CommunityList"
             android:label="@string/title_activity_main2"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
@@ -32,28 +31,18 @@
             android:name=".activities.FoodSearchActivity"
             android:label="@string/title_activity_main2" />
         <activity
-            android:name=".activities.FoodListPrieview"
-            android:label="@string/title_activity_main2" />
-        <activity
-            android:name=".activities.FoodSearchActivityversion2"
-            android:label="@string/title_activity_main2" />
-        <activity
-            android:name=".activities.FoodSearchActivityversion3"
-            android:label="@string/title_activity_main2" />
-        <activity
             android:name=".activities.FoodNutritiensDisplayPrieview"
             android:label="@string/title_activity_main2" />
         <activity
             android:name=".activities.MainActivity"
             android:label="@string/title_activity_main2" />
-        <activity android:name=".activities.FoodListPrieviewNew"></activity>
-        <activity android:name=".activities.SigninActivity" />
-        <activity android:name=".activities.SignupActivity" />
-        <activity android:name=".activities.FoodList"></activity>
+        <activity android:name=".activities.FoodListPrieview" />
+        <activity android:name=".activities.FoodList" />
         <activity
-            android:name=".activities.FilterActivity"
-            android:label="@string/title_activity_filter"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:name=".activities.CommunityActivities.FilterActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".activities.RegisterWithMailPasword"></activity>
+        <activity android:name=".activities.LoginWithMailPasword"></activity>
     </application>
 
 </manifest>

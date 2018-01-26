@@ -20,7 +20,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
@@ -35,17 +34,17 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import udacityteam.healthapp.PHP_Retrofit.APIService;
-import udacityteam.healthapp.PHP_Retrofit.APIUrl;
-import udacityteam.healthapp.PHP_Retrofit.Result;
-import udacityteam.healthapp.PHP_Retrofit.Userretrofit;
+import udacityteam.healthapp.PHP_Retrofit_API.APIService;
+import udacityteam.healthapp.PHP_Retrofit_API.APIUrl;
+import udacityteam.healthapp.PHP_Retrofit_Models.Result;
+import udacityteam.healthapp.PHP_Retrofit_Models.Userretrofit;
 import udacityteam.healthapp.R;
 
 
 /**
  * Demonstrate Firebase Authentication using a Google ID Token.
  */
-public class Register extends AppCompatActivity implements
+public class RegisterActivityHome extends AppCompatActivity implements
         View.OnClickListener {
 
     private static final String TAG = "GoogleActivity";
@@ -53,6 +52,7 @@ public class Register extends AppCompatActivity implements
 
     // [START declare_auth]
     private FirebaseAuth mAuth;
+
     // [END declare_auth]
 
     private GoogleSignInClient mGoogleSignInClient;
@@ -62,7 +62,7 @@ public class Register extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_google);
+        setContentView(R.layout.register_activity_home);
 
         // Views
         mStatusTextView = findViewById(R.id.status);
@@ -70,9 +70,27 @@ public class Register extends AppCompatActivity implements
 
         // Button listeners
         findViewById(R.id.sign_in_button).setOnClickListener(this);
-        findViewById(R.id.sign_out_button).setOnClickListener(this);
-        findViewById(R.id.disconnect_button).setOnClickListener(this);
 
+        Button registermail = findViewById(R.id.mailregister);
+        Button loginmail = findViewById(R.id.mailogin);
+
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+
+        registermail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(RegisterActivityHome.this, RegisterWithMailPasword.class);
+                startActivity(intent);
+            }
+        });
+        loginmail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(RegisterActivityHome.this, LoginWithMailPasword.class);
+                startActivity(intent);
+            }
+        });
         // [START config_signin]
         // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -84,7 +102,7 @@ public class Register extends AppCompatActivity implements
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
         // [START initialize_auth]
-        mAuth = FirebaseAuth.getInstance();
+
         // [END initialize_auth]
     }
 
@@ -158,8 +176,9 @@ public class Register extends AppCompatActivity implements
                                         retrofituser.getName(),
                                         retrofituser.getEmail(),
                                         retrofituser.getUid()
+
                                 );
-                                Intent intent = new Intent(Register.this, MainActivity.class);
+                                Intent intent = new Intent(RegisterActivityHome.this, MainActivity.class);
                                 startActivity(intent);
                                 finish();
                                 Log.d(TAG, mAuth.getCurrentUser().getUid());
@@ -231,18 +250,18 @@ public class Register extends AppCompatActivity implements
 
     private void updateUI(FirebaseUser user) {
       //  hideProgressDialog();
-        if (user != null) {
+        if (user != null && user.isEmailVerified()) {
+            Intent intent = new Intent(RegisterActivityHome.this, MainActivity.class);
+            startActivity(intent);
             mStatusTextView.setText( user.getEmail());
             mDetailTextView.setText(user.getUid());
 
-            findViewById(R.id.sign_in_button).setVisibility(View.GONE);
-            findViewById(R.id.sign_out_and_disconnect).setVisibility(View.VISIBLE);
         } else {
             mStatusTextView.setText("noo");
             mDetailTextView.setText(null);
 
             findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
-            findViewById(R.id.sign_out_and_disconnect).setVisibility(View.GONE);
+
         }
     }
 
@@ -251,11 +270,8 @@ public class Register extends AppCompatActivity implements
         int i = v.getId();
         if (i == R.id.sign_in_button) {
             signIn();
-        } else if (i == R.id.sign_out_button) {
-            signOut();
-        } else if (i == R.id.disconnect_button) {
-            revokeAccess();
         }
+
     }
 }
 

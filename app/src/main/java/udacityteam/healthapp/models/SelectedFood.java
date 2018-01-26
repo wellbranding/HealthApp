@@ -5,7 +5,6 @@ import android.os.Parcelable;
 
 import com.google.firebase.auth.FirebaseAuth;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -46,7 +45,7 @@ public class SelectedFood implements Parcelable{
         this.Date = date;
     }
 
-    public SelectedFood()
+    public SelectedFood(String id, String foodname, String userId, Date newDate, Float calories, Float protein, Float fat, Float carbohydrates)
     {
 
     }
@@ -148,7 +147,7 @@ public class SelectedFood implements Parcelable{
         parcel.writeString(foodid);
         parcel.writeString(foodName);
         parcel.writeString(UserId);
-        parcel.writeString(Date);
+        parcel.writeString(String.valueOf(Date));
         parcel.writeFloat(Calories);
         parcel.writeFloat(Protein);
         parcel.writeFloat(Fat);

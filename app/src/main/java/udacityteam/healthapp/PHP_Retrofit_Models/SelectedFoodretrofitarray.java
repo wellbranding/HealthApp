@@ -1,9 +1,4 @@
-package udacityteam.healthapp.PHP_Retrofit;
-
-import android.os.Parcel;
-import android.os.Parcelable;
-
-import com.google.firebase.auth.FirebaseAuth;
+package udacityteam.healthapp.PHP_Retrofit_Models;
 
 import java.util.ArrayList;
 

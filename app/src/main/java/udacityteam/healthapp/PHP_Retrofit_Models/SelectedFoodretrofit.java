@@ -1,30 +1,35 @@
-package udacityteam.healthapp.PHP_Retrofit;
+package udacityteam.healthapp.PHP_Retrofit_Models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.os.health.TimerStat;
 
 import com.google.firebase.auth.FirebaseAuth;
+
+import java.sql.Timestamp;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by kunda on 10/4/2017.
  */
 
-public class SelectedFoodretrofit implements Parcelable{
+public class SelectedFoodretrofit {
     private String foodId;
     private String foodName;
     private String UserId= FirebaseAuth.getInstance().getCurrentUser().getUid();
-    private String Date;
+    private String SendDate;
     private float Calories;
     private float Protein;
     private float Fat;
     private float Carbohydrates;
 
-    public SelectedFoodretrofit(String foodid, String foodName, String userId, String date, float calories, float protein,
+    public SelectedFoodretrofit(String foodid, String foodName, String userId,
+                               String date, float calories, float protein,
                                 float fat, float carbohydrates) {
         this.foodId = foodid;
         this.foodName = foodName;
         UserId = userId;
-        Date = date;
+        SendDate = date;
         Calories = calories;
         Protein = protein;
         Fat = fat;
@@ -34,52 +39,42 @@ public class SelectedFoodretrofit implements Parcelable{
                                 float fat, float carbohydrates) {
         this.foodId = foodid;
         UserId = userId;
-        Date = date;
+        SendDate = date;
         Calories = calories;
         Protein = protein;
         Fat = fat;
         Carbohydrates = carbohydrates;
     }
 
-    public SelectedFoodretrofit(String foodid, String foodName, String date) {
-        this.foodId = foodid;
-        this.foodName = foodName;
-        this.Date = date;
-    }
-    public SelectedFoodretrofit(String foodid, String foodName, String UserId, String date) {
-        this.foodId = foodid;
-        this.foodName = foodName;
-        this.UserId = UserId;
-        this.Date = date;
-    }
+
 
     public SelectedFoodretrofit()
     {
 
     }
 
-    protected SelectedFoodretrofit(Parcel in) {
-        foodId = in.readString();
-        foodName = in.readString();
-        UserId = in.readString();
-        Date = in.readString();
-        Calories = in.readFloat();
-        Protein = in.readFloat();
-        Fat = in.readFloat();
-        Carbohydrates = in.readFloat();
-    }
+//    protected SelectedFoodretrofit(Parcel in) {
+//        foodId = in.readString();
+//        foodName = in.readString();
+//        UserId = in.readString();
+//        Datetrue = in.readString();
+//        Calories = in.readFloat();
+//        Protein = in.readFloat();
+//        Fat = in.readFloat();
+//        Carbohydrates = in.readFloat();
+//    }
 
-    public static final Creator<SelectedFoodretrofit> CREATOR = new Creator<SelectedFoodretrofit>() {
-        @Override
-        public SelectedFoodretrofit createFromParcel(Parcel in) {
-            return new SelectedFoodretrofit(in);
-        }
-
-        @Override
-        public SelectedFoodretrofit[] newArray(int size) {
-            return new SelectedFoodretrofit[size];
-        }
-    };
+//    public static final Creator<SelectedFoodretrofit> CREATOR = new Creator<SelectedFoodretrofit>() {
+//        @Override
+//        public SelectedFoodretrofit createFromParcel(Parcel in) {
+//            return new SelectedFoodretrofit(in);
+//        }
+//
+//        @Override
+//        public SelectedFoodretrofit[] newArray(int size) {
+//            return new SelectedFoodretrofit[size];
+//        }
+//    };
 
     public float getProtein() {
         return Protein;
@@ -114,11 +109,11 @@ public class SelectedFoodretrofit implements Parcelable{
     }
 
     public String getDate() {
-        return Date;
+        return SendDate;
     }
 
     public void setDate(String date) {
-        Date = date;
+        SendDate = date;
     }
 
     public String getUserId() {
@@ -144,21 +139,21 @@ public class SelectedFoodretrofit implements Parcelable{
     public void setFoodName(String foodName) {
         this.foodName = foodName;
     }
+//
+//    @Override
+//    public int describeContents() {
+//        return 0;
+//    }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(foodId);
-        parcel.writeString(foodName);
-        parcel.writeString(UserId);
-        parcel.writeString(Date);
-        parcel.writeFloat(Calories);
-        parcel.writeFloat(Protein);
-        parcel.writeFloat(Fat);
-        parcel.writeFloat(Carbohydrates);
-    }
+//    @Override
+//    public void writeToParcel(Parcel parcel, int i) {
+//        parcel.writeString(foodId);
+//        parcel.writeString(foodName);
+//        parcel.writeString(UserId);
+//        parcel.writeString(Datetrue);
+//        parcel.writeFloat(Calories);
+//        parcel.writeFloat(Protein);
+//        parcel.writeFloat(Fat);
+//        parcel.writeFloat(Carbohydrates);
+//    }
 }

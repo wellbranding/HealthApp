@@ -1,7 +1,6 @@
 package udacityteam.healthapp.activities;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -20,17 +19,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -45,19 +40,17 @@ import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import udacityteam.healthapp.R;
+import udacityteam.healthapp.activities.CommunityActivities.CommunityList;
 import udacityteam.healthapp.adapters.CustomAdapter;
-import udacityteam.healthapp.models.User;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -246,6 +239,7 @@ public class MainActivity extends AppCompatActivity
 //        Calendar calendar = Calendar.getInstance();
 //        calendar.set(Calendar.HOUR_OF_DAY, 6);
 //        calendar.set(Calendar.MINUTE,0);
+
         widget.getSelectedDate();
         final Calendar calendar = Calendar.getInstance();
         calendar.setTime(widget.getSelectedDate().getDate());
@@ -440,7 +434,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 Toast.makeText(MainActivity.this, "ahahaa", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(MainActivity.this, FoodSearchActivityversion3.class);
+                Intent intent = new Intent(MainActivity.this, FoodSearchActivity.class);
                 intent.putExtra("SharedFoodListDatabase", "SharedDrinks");
                 intent.putExtra("foodselection", "Drinks");
                 startActivity(intent);
@@ -451,7 +445,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
                 Toast.makeText(MainActivity.this, "ooooo", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(MainActivity.this, FoodSearchActivityversion3.class);
+                Intent intent = new Intent(MainActivity.this, FoodSearchActivity.class);
                 intent.putExtra("SharedFoodListDatabase", "SharedSnacks");
                 intent.putExtra("foodselection", "Snacks");
                 startActivity(intent);
@@ -461,7 +455,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
                 Toast.makeText(MainActivity.this, "tttttt", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(MainActivity.this, FoodSearchActivityversion3.class);
+                Intent intent = new Intent(MainActivity.this, FoodSearchActivity.class);
                 intent.putExtra("SharedFoodListDatabase", "SharedBreakfasts");
                 intent.putExtra("foodselection", "Breakfast");
                 startActivity(intent);
@@ -471,7 +465,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
                 Toast.makeText(MainActivity.this, "tttttt", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(MainActivity.this, FoodSearchActivityversion3.class);
+                Intent intent = new Intent(MainActivity.this, FoodSearchActivity.class);
                 intent.putExtra("SharedFoodListDatabase", "SharedDinners");
                 intent.putExtra("foodselection", "Dinner");
                 startActivity(intent);
@@ -481,7 +475,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
                 Toast.makeText(MainActivity.this, "tttttt", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(MainActivity.this, FoodSearchActivityversion3.class);
+                Intent intent = new Intent(MainActivity.this, FoodSearchActivity.class);
                 intent.putExtra("SharedFoodListDatabase", "SharedLunches");
                 intent.putExtra("foodselection", "Lunch");
                 startActivity(intent);
@@ -558,7 +552,7 @@ public class MainActivity extends AppCompatActivity
             .addOnCompleteListener(new OnCompleteListener<Void>() {
                 public void onComplete(@NonNull Task<Void> task) {
                     // user is now signed out
-                      Intent intent = new Intent(MainActivity.this, Register.class);
+                      Intent intent = new Intent(MainActivity.this, RegisterActivityHome.class);
                     intent.putExtra("offline", true);
                     startActivity(intent);
                     finish();
@@ -577,7 +571,7 @@ public class MainActivity extends AppCompatActivity
             Bundle extras = intent.getExtras();
             intent.putExtra("titlename", "Community Breakfasts");
             intent.putExtra("SharedFoodListDatabase", "SharedBreakfasts");
-            intent.putExtra("databasevalue", "Breakfast");
+            intent.putExtra("foodselection", "Breakfast");
             startActivity(intent);
             // Handle the camera action
         } else if (id == R.id.nav_dinners) {
@@ -585,7 +579,7 @@ public class MainActivity extends AppCompatActivity
             Bundle extras = intent.getExtras();
             intent.putExtra("titlename", "Community Dinners");
             intent.putExtra("SharedFoodListDatabase", "SharedDinners");
-            intent.putExtra("databasevalue", "Dinner");
+            intent.putExtra("foodselection", "Dinner");
             startActivity(intent);
 
 
@@ -594,7 +588,7 @@ public class MainActivity extends AppCompatActivity
             Bundle extras = intent.getExtras();
             intent.putExtra("titlename", "Community Lunches");
             intent.putExtra("SharedFoodListDatabase", "SharedLunches");
-            intent.putExtra("databasevalue", "Lunch");
+            intent.putExtra("foodselection", "Lunch");
             startActivity(intent);
 
         } else if (id == R.id.nav_community_daily_diets) {
@@ -610,7 +604,7 @@ public class MainActivity extends AppCompatActivity
             Bundle extras = intent.getExtras();
             intent.putExtra("titlename", "Snacks");
             intent.putExtra("SharedFoodListDatabase", "SharedSnacks");
-            intent.putExtra("databasevalue", "Snacks");
+            intent.putExtra("foodselection", "Snacks");
             startActivity(intent);
             //test
 
@@ -619,7 +613,7 @@ public class MainActivity extends AppCompatActivity
             Bundle extras = intent.getExtras();
             intent.putExtra("titlename", "Drinks/Coctails");
             intent.putExtra("SharedFoodListDatabase", "SharedDrinks");
-            intent.putExtra("databasevalue", "Drinks");
+            intent.putExtra("foodselection", "Drinks");
             startActivity(intent);
         }
         DrawerLayout drawer = findViewById(R.id.drawer_layout);

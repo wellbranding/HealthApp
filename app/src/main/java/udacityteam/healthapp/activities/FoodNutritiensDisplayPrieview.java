@@ -97,9 +97,9 @@ public class FoodNutritiensDisplayPrieview extends AppCompatActivity {
           //  Textv.setText(j);
         }
 
-        database = FirebaseDatabase.getInstance();
-        allusers = database.getReference("MainFeed").child(foodselection);
-        user = database.getReference("User").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(foodselection);
+      //  database = FirebaseDatabase.getInstance();
+    //    allusers = database.getReference("MainFeed").child(foodselection);
+     //   user = database.getReference("User").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(foodselection);
 
 
 

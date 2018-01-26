@@ -1,4 +1,4 @@
-package udacityteam.healthapp.activities;
+package udacityteam.healthapp.adapters;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -6,6 +6,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import udacityteam.healthapp.R;
+import udacityteam.healthapp.activities.ItemClickListener;
 
 
 /**

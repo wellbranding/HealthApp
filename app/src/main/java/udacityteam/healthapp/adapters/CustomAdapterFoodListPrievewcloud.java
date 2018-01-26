@@ -14,8 +14,7 @@ import java.util.List;
 
 import udacityteam.healthapp.R;
 import udacityteam.healthapp.activities.FoodNutritiensDisplayPrieview;
-import udacityteam.healthapp.fragments.Tab1Contacts;
-import udacityteam.healthapp.models.SelectedFood;
+import udacityteam.healthapp.activities.CommunityActivities.CommunityFoodListsDisplayFragment0;
 import udacityteam.healthapp.models.SelectedFoodmodel;
 
 /**
@@ -44,7 +43,7 @@ public class CustomAdapterFoodListPrievewcloud extends RecyclerView.Adapter<Cust
                     Intent intent = new Intent(context, FoodNutritiensDisplayPrieview.class);
                     intent.putExtra("id",mDataSet.get(getAdapterPosition()).getFoodid());
                     intent.putExtra("foodname", mDataSet.get(getAdapterPosition()).getFoodid());
-                    intent.putExtra("foodselection", Tab1Contacts.value); // will need to add own
+                    intent.putExtra("foodselection", CommunityFoodListsDisplayFragment0.value); // will need to add own
 
                     context.startActivity(intent);
                 }

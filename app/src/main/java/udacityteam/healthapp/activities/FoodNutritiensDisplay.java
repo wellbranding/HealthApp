@@ -15,7 +15,6 @@ import android.widget.Toast;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.gson.Gson;
@@ -32,6 +31,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -45,10 +45,9 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import udacityteam.healthapp.PHP_Retrofit.APIService;
-import udacityteam.healthapp.PHP_Retrofit.APIUrl;
-import udacityteam.healthapp.PHP_Retrofit.Result;
-import udacityteam.healthapp.PHP_Retrofit.Userretrofit;
+import udacityteam.healthapp.PHP_Retrofit_API.APIService;
+import udacityteam.healthapp.PHP_Retrofit_API.APIUrl;
+import udacityteam.healthapp.PHP_Retrofit_Models.Result;
 import udacityteam.healthapp.R;
 import udacityteam.healthapp.databases.DatabaseHelper;
 import udacityteam.healthapp.models.SelectedFood;
@@ -131,6 +130,9 @@ public class FoodNutritiensDisplay extends AppCompatActivity {
         Date date = new Date();
         Date newDate = new Date(date.getTime());
         SimpleDateFormat dt = new SimpleDateFormat("yyyy-MM-dd");
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        Log.d("timestamp", timestamp.toString());
+
         String stringdate = dt.format(newDate);
         SelectedFood thisuser = new SelectedFood(
                 id,
@@ -140,7 +142,7 @@ public class FoodNutritiensDisplay extends AppCompatActivity {
         SelectedFood alluser = new SelectedFood(
                 id,
                 foodname,
-                UserId, stringdate, nutritiens.get(0)
+                UserId, timestamp, nutritiens.get(0)
                 ,nutritiens.get(1),nutritiens.get(2),nutritiens.get(3)
         );
         SelectedFoodmodel alluser1 = new SelectedFoodmodel(
@@ -168,7 +170,7 @@ public class FoodNutritiensDisplay extends AppCompatActivity {
 
         Call<Result> call = service.addSelectedFood(
                 id,
-                UserId, stringdate, nutritiens.get(0)
+                UserId, timestamp, nutritiens.get(0)
                 ,nutritiens.get(1),nutritiens.get(2),nutritiens.get(3),
                 foodselection,0
         );

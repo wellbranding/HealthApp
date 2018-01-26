@@ -1,14 +1,21 @@
-package udacityteam.healthapp.PHP_Retrofit;
+package udacityteam.healthapp.PHP_Retrofit_API;
 
+
+import java.sql.Timestamp;
+import java.util.Date;
 
 import retrofit2.Call;
-import retrofit2.Response;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
+import retrofit2.http.Url;
+import udacityteam.healthapp.PHP_Retrofit_Models.Result;
+import udacityteam.healthapp.PHP_Retrofit_Models.SelectedFoodretrofitarray;
+import udacityteam.healthapp.PHP_Retrofit_Models.SharedFoodProductsRetrofit;
+import udacityteam.healthapp.PHP_Retrofit_Models.Usersretrofit;
 
 /**
  * Created by Belal on 14/04/17.
@@ -23,13 +30,18 @@ public interface APIService {
             @Field("email") String email,
             @Field("uid") String uid);
 
-
-
     @FormUrlEncoded
     @POST("login")
     Call<Result> userLogin(
             @Field("email") String email,
             @Field("password") String password
+    );
+    @FormUrlEncoded
+    @POST("loginwithmail")
+    Call<Result> userLoginwithmail(
+            @Field("email") String email,
+            @Field("password") String password,
+            @Field("uid") String uid
     );
 
     @FormUrlEncoded
@@ -37,7 +49,7 @@ public interface APIService {
     Call<Result> addSelectedFood(
             @Field("foodId") String foodId,
             @Field("UserId") String UserId,
-            @Field("Date") String Date,
+            @Field("Date") Timestamp Date,
             @Field("Calories") Float Calories,
             @Field("Protein") Float Protein,
             @Field("Fat") Float Fat,
@@ -49,7 +61,7 @@ public interface APIService {
     @POST("addSharedList")
     Call<Result> addSharedList(
             @Field("UserId") String UserId,
-            @Field("Date") String Date,
+            @Field("Date") Timestamp Date,
             @Field("SharedFoodListDatabase") String SharedFoodListDatabase,
             @Field("whichtime") String whichtime
     );
@@ -57,12 +69,15 @@ public interface APIService {
     @GET("getSelectedFoods")
     Call<SelectedFoodretrofitarray> getselectedfoods(
             @Query("UserId") String UserId,
-            @Query("whichtime") String whichtime
+            @Query("whichtime") String whichtime,
+            @Query("year") String year,
+            @Query("month") String month,
+            @Query("day") String day
     );
     @GET("getSelectedFoodsPrieview")
     Call<SelectedFoodretrofitarray> getselectedfoodsPrieview(
-            @Query("UserId") String UserId,
-            @Query("whichtime") String whichtime
+            @Query("getParentSharedFoodsId") Integer ParentSharedKey,
+            @Query("foodselection") String foodSelection
     );
 
     @GET("users")
@@ -79,7 +94,7 @@ public interface APIService {
     Call<Result> getIsShared
     (
             @Query("UserId") String UserId,
-            @Query("date") String Date,
+            @Query("date") Timestamp Date,
             @Query("whichtime") String whichtime
     );
 

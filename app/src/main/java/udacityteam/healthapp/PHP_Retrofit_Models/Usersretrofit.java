@@ -1,4 +1,4 @@
-package udacityteam.healthapp.PHP_Retrofit;
+package udacityteam.healthapp.PHP_Retrofit_Models;
 
 import java.util.ArrayList;
 

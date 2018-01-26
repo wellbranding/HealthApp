@@ -1,4 +1,4 @@
-package udacityteam.healthapp.fragments;
+package udacityteam.healthapp.activities.CommunityActivities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,66 +11,45 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Filter;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.storage.FirebaseStorage;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import udacityteam.healthapp.PHP_Retrofit.APIService;
-import udacityteam.healthapp.PHP_Retrofit.APIUrl;
-import udacityteam.healthapp.PHP_Retrofit.SelectedFoodretrofit;
-import udacityteam.healthapp.PHP_Retrofit.SelectedFoodretrofitarray;
-import udacityteam.healthapp.PHP_Retrofit.SharedFoodProductsRetrofit;
+import udacityteam.healthapp.PHP_Retrofit_API.APIService;
+import udacityteam.healthapp.PHP_Retrofit_API.APIUrl;
+import udacityteam.healthapp.PHP_Retrofit_Models.SharedFoodProductsRetrofit;
 import udacityteam.healthapp.R;
-import udacityteam.healthapp.activities.FilterActivity;
-import udacityteam.healthapp.activities.FoodList;
-import udacityteam.healthapp.activities.FoodViewHolder;
-import udacityteam.healthapp.activities.ItemClickListener;
-import udacityteam.healthapp.adapters.CustomAdapterFoodListPrievew;
-import udacityteam.healthapp.adapters.CustomAdapterFoodListPrievewretro;
-import udacityteam.healthapp.adapters.CustomAdapterSharedFoodstore;
-import udacityteam.healthapp.adapters.CustomAdapterSharedFoodstoreRetrofit;
+import udacityteam.healthapp.adapters.FoodViewHolder;
+import udacityteam.healthapp.adapters.SharedFoodListsAdapter;
 import udacityteam.healthapp.models.SelectedFood;
-import udacityteam.healthapp.adapters.CustomAdapter;
 import udacityteam.healthapp.models.SharedFoodProducts;
 
 /**
  * Created by vvost on 11/16/2017.
  */
 
-public class Tab1Contacts extends Fragment {
+public class CommunityFoodListsDisplayFragment0 extends Fragment {
     private static final String TAG = "RecyclerViewFragment";
     private static final String KEY_LAYOUT_MANAGER = "layoutManager";
     private static final int SPAN_COUNT = 2;
@@ -84,13 +63,13 @@ public class Tab1Contacts extends Fragment {
         LINEAR_LAYOUT_MANAGER
     }
 
-    protected Tab1Contacts.LayoutManagerType mCurrentLayoutManagerType;
+    protected CommunityFoodListsDisplayFragment0.LayoutManagerType mCurrentLayoutManagerType;
 
     protected RadioButton mLinearLayoutRadioButton;
     protected RadioButton mGridLayoutRadioButton;
 
     protected RecyclerView mRecyclerView;
-    protected CustomAdapterSharedFoodstoreRetrofit mAdapter;
+    protected SharedFoodListsAdapter mAdapter;
     protected RecyclerView.LayoutManager mLayoutManager;
     TextView listodydis;
     protected String[] mDataset;
@@ -111,7 +90,7 @@ public class Tab1Contacts extends Fragment {
         database = FirebaseDatabase.getInstance();
         Intent iin = getActivity().getIntent();
         final Bundle args = getArguments();
-         side = args.getString("value");
+         side = args.getString("foodselection");
         SharedFoodListDatabase =  args.getString("SharedFoodListDatabase");
         Bundle b = iin.getExtras();
         if (b != null) {
@@ -156,47 +135,7 @@ if(side!=null)
 {
     final ArrayList<SharedFoodProducts> userlist = new ArrayList<>();
     ArrayList<SelectedFood> fooda = new ArrayList<>();
-    CollectionReference sharedfoodliststoree = storage.collection("MainFeed").document("Breakfast").
-            collection("SharedDiets");
-    SharedFoodProducts sharedFoodProducts = new SharedFoodProducts(
-            "aaaaaaaaaaa", "201332",
-            fooda, 10, 1222, 3000, 34500);
-    //  sharedfoodlist.child(stringdate+FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(sharedFoodProducts);
-    sharedfoodliststoree.document("ajahhaaaz").set(sharedFoodProducts);
-    CollectionReference sharedfoodliststore = storage.collection("MainFeed").document("Breakfast").collection("SharedDiets");
-    sharedfoodliststore
-            .orderBy("calories",  Query.Direction.DESCENDING)
-            .get()
-            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                    if (task.isSuccessful()) {
-                        for (DocumentSnapshot document : task.getResult()) {
-                            Log.d("protein",  Float.valueOf(document.getData().get("protein").toString()).toString());
-                            if (document.getData().get("userId").equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))
-                                    {
-                                //good
-                            }
-                            else if( Float.valueOf(document.getData().get("protein").toString())>1000 &&
-                                    Float.valueOf(document.getData().get("fats").toString())<=500
-                                    && Float.valueOf(document.getData().get("calories").toString())>5000)
-                            {
 
-                            }
-                                else {
-                                SharedFoodProducts food = document.toObject(SharedFoodProducts.class);
-                                userlist.add(food);
-
-                            }
-                        }
-
-                        progressBar.setVisibility(View.GONE);
-                    } else {
-                        Log.d("geras", "Error getting documents: ", task.getException());
-                    }
-                }
-
-            });
 
 }
         return rootView;
@@ -221,8 +160,8 @@ if(side!=null)
         call.enqueue(new Callback<SharedFoodProductsRetrofit>() {
             @Override
             public void onResponse(Call<SharedFoodProductsRetrofit> call, Response<SharedFoodProductsRetrofit> response) {
-                mAdapter = new CustomAdapterSharedFoodstoreRetrofit(response.body().
-                        getSelectedFoodretrofits(), SharedFoodListDatabase);
+                mAdapter = new SharedFoodListsAdapter(response.body().
+                        getSelectedFoodretrofits(), side);
                mRecyclerView.setAdapter(mAdapter);
 
             }

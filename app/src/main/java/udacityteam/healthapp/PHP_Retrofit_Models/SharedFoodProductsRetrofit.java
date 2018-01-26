@@ -1,11 +1,6 @@
-package udacityteam.healthapp.PHP_Retrofit;
-
-import android.os.Parcel;
-import android.os.Parcelable;
+package udacityteam.healthapp.PHP_Retrofit_Models;
 
 import java.util.ArrayList;
-
-import udacityteam.healthapp.models.SelectedFood;
 
 /**
  * Created by vvost on 12/29/2017.
