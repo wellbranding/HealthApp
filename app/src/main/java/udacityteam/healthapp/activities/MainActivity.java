@@ -239,6 +239,7 @@ public class MainActivity extends AppCompatActivity
 //        Calendar calendar = Calendar.getInstance();
 //        calendar.set(Calendar.HOUR_OF_DAY, 6);
 //        calendar.set(Calendar.MINUTE,0);
+
         widget.getSelectedDate();
         final Calendar calendar = Calendar.getInstance();
         calendar.setTime(widget.getSelectedDate().getDate());

@@ -26,6 +26,8 @@ import com.google.gson.GsonBuilder;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -108,6 +110,7 @@ public class FoodList extends AppCompatActivity {
             stringdate = requestedString;
         else {
             Date date = new Date();
+
             Date newDate = new Date(date.getTime());
             SimpleDateFormat dt = new SimpleDateFormat("yyyy-MM-dd");
             stringdate = dt.format(newDate);
@@ -119,49 +122,7 @@ public class FoodList extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-//not needed
-//        storage = FirebaseFirestore.getInstance();
-//        userstorage= storage.collection("Users").document(FirebaseAuth.getInstance().getCurrentUser().getUid()).collection(foodselection).document(stringdate).collection("TodaysFoods");
-//        userstorage
-//                .get()
-//                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-//                        if (task.isSuccessful()) {
-//                            Log.d("geras", "good");
-//                            for (DocumentSnapshot document : task.getResult()) {
-//
-//                                SelectedFood food = document.toObject(SelectedFood.class);
-//                               Float onecalories = food.getCalories();
-//                                Float oneprotein = food.getProtein();
-//                                Float onecarbohydrates = food.getCarbohydrates();
-//                                Float onefat = food.getFat();
-//                                protein = protein + oneprotein;
-//                                 calories = calories + onecalories;
-//                                 carbohydrates = carbohydrates + onecarbohydrates;
-//                                 fat = fat + onefat;
-//
-//                             // SelectedFood food = new SelectedFood(UserId, UserId, UserId, UserId);
-//
-//                                selectedFoods.add(food);
-//                            }
-//                            caloriescounter.setText(String.valueOf(calories));
-//                          //     Log.d("geras",  String.valueOf(protein));
-//                          proteincounter.setText(String.valueOf(protein));
-//                       carbohycounter.setText(String.valueOf(carbohydrates));
-//                         fatcounter.setText(String.valueOf(fat));
-//                            CustomAdapterFoodListPrievew customAdapterFoodListPrievew = new CustomAdapterFoodListPrievew(selectedFoods);
-//
-//                        } else {
-//                            Log.d("geras", "Error getting documents: ", task.getException());
-//                        }
-//                    }
-//
-//                });
-//
-//        Log.d("geras",  String.valueOf(selectedFoods.size()));
-//not needed
-        IsShared();
+      IsShared();
         RetrofitList();
    //     RetrofitCatche();
 
@@ -178,6 +139,10 @@ public class FoodList extends AppCompatActivity {
                 .cache( provideCache() )
                 .build();
         //endregion
+        String year = requestedString.substring(0, 4);
+        String month = requestedString.substring(5, 7);
+        String day = requestedString.substring(8, 10);
+       Log.d("rezas",year);
 
         Gson gson = new GsonBuilder()
                 .setLenient()
@@ -193,7 +158,7 @@ public class FoodList extends AppCompatActivity {
 
         Call<SelectedFoodretrofitarray> call = service.getselectedfoods(
                 FirebaseAuth.getInstance().getCurrentUser().getUid(),
-                foodselection
+                foodselection, year, month, day
         );
         call.enqueue(new Callback<SelectedFoodretrofitarray>() {
             @Override
@@ -207,7 +172,8 @@ public class FoodList extends AppCompatActivity {
             }
             @Override
             public void onFailure(Call<SelectedFoodretrofitarray> call, Throwable t) {
-                Toast.makeText(FoodList.this, "Connection to Internet lost", Toast.LENGTH_SHORT).show();
+                Toast.makeText(FoodList.this, t.getMessage().toString(), Toast.LENGTH_SHORT).show();
+                Log.d("bigerror", t.getMessage());
 
             }
         });
@@ -281,6 +247,7 @@ public class FoodList extends AppCompatActivity {
     }
     public void IsShared()
     {
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         Gson gson = new GsonBuilder()
                 .setLenient()
                 .create();
@@ -294,7 +261,7 @@ public class FoodList extends AppCompatActivity {
 
         Call<Result> call = service.getIsShared(
                 FirebaseAuth.getInstance().getCurrentUser().getUid(),
-                stringdate, foodselection
+                timestamp, foodselection
         );
         call.enqueue(new Callback<Result>() {
             @Override
@@ -317,16 +284,30 @@ public class FoodList extends AppCompatActivity {
 
     private void initSharedButton(){
 
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        String month = requestedString.substring(5, 7);
+        String day = requestedString.substring(8, 10);
+        String timestampmonth = timestamp.toString().substring(5,7);
+        String timestampday = timestamp.toString().substring(8,10);
+
+
+
         share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(month.equals(timestampmonth)&&day.equals(timestampday))
                ShareFoodList();
+                else
+                {
+                    Toast.makeText(FoodList.this, "Can't share earlier diet", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
 
     private void ShareFoodList() //only if today
     {
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         Gson gson = new GsonBuilder()
                 .setLenient()
                 .create();
@@ -340,7 +321,7 @@ public class FoodList extends AppCompatActivity {
 
         Call<Result> call = service.addSharedList(
                 FirebaseAuth.getInstance().getCurrentUser().getUid(),
-                stringdate,
+                timestamp,
                 SharedFoodListDatabase, foodselection
         );
         call.enqueue(new Callback<Result>() {

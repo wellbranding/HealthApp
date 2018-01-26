@@ -1,5 +1,6 @@
 package udacityteam.healthapp.PHP_Retrofit_Models;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 
 /**

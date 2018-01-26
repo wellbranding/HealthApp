@@ -31,6 +31,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -129,6 +130,9 @@ public class FoodNutritiensDisplay extends AppCompatActivity {
         Date date = new Date();
         Date newDate = new Date(date.getTime());
         SimpleDateFormat dt = new SimpleDateFormat("yyyy-MM-dd");
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        Log.d("timestamp", timestamp.toString());
+
         String stringdate = dt.format(newDate);
         SelectedFood thisuser = new SelectedFood(
                 id,
@@ -138,7 +142,7 @@ public class FoodNutritiensDisplay extends AppCompatActivity {
         SelectedFood alluser = new SelectedFood(
                 id,
                 foodname,
-                UserId, stringdate, nutritiens.get(0)
+                UserId, timestamp, nutritiens.get(0)
                 ,nutritiens.get(1),nutritiens.get(2),nutritiens.get(3)
         );
         SelectedFoodmodel alluser1 = new SelectedFoodmodel(
@@ -166,7 +170,7 @@ public class FoodNutritiensDisplay extends AppCompatActivity {
 
         Call<Result> call = service.addSelectedFood(
                 id,
-                UserId, stringdate, nutritiens.get(0)
+                UserId, timestamp, nutritiens.get(0)
                 ,nutritiens.get(1),nutritiens.get(2),nutritiens.get(3),
                 foodselection,0
         );

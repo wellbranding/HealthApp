@@ -135,47 +135,7 @@ if(side!=null)
 {
     final ArrayList<SharedFoodProducts> userlist = new ArrayList<>();
     ArrayList<SelectedFood> fooda = new ArrayList<>();
-    CollectionReference sharedfoodliststoree = storage.collection("MainFeed").document("Breakfast").
-            collection("SharedDiets");
-    SharedFoodProducts sharedFoodProducts = new SharedFoodProducts(
-            "aaaaaaaaaaa", "201332",
-            fooda, 10, 1222, 3000, 34500);
-    //  sharedfoodlist.child(stringdate+FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(sharedFoodProducts);
-    sharedfoodliststoree.document("ajahhaaaz").set(sharedFoodProducts);
-    CollectionReference sharedfoodliststore = storage.collection("MainFeed").document("Breakfast").collection("SharedDiets");
-    sharedfoodliststore
-            .orderBy("calories",  Query.Direction.DESCENDING)
-            .get()
-            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                    if (task.isSuccessful()) {
-                        for (DocumentSnapshot document : task.getResult()) {
-                            Log.d("protein",  Float.valueOf(document.getData().get("protein").toString()).toString());
-                            if (document.getData().get("userId").equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))
-                                    {
-                                //good
-                            }
-                            else if( Float.valueOf(document.getData().get("protein").toString())>1000 &&
-                                    Float.valueOf(document.getData().get("fats").toString())<=500
-                                    && Float.valueOf(document.getData().get("calories").toString())>5000)
-                            {
 
-                            }
-                                else {
-                                SharedFoodProducts food = document.toObject(SharedFoodProducts.class);
-                                userlist.add(food);
-
-                            }
-                        }
-
-                        progressBar.setVisibility(View.GONE);
-                    } else {
-                        Log.d("geras", "Error getting documents: ", task.getException());
-                    }
-                }
-
-            });
 
 }
         return rootView;
