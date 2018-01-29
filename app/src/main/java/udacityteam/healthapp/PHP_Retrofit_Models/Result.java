@@ -14,9 +14,9 @@ public class Result {
     private String message;
 
     @SerializedName("user")
-    private Userretrofit user;
+    private UserRetrofitGood user;
 
-    public Result(Boolean error, String message, Userretrofit user) {
+    public Result(Boolean error, String message, UserRetrofitGood user) {
         this.error = error;
         this.message = message;
         this.user = user;
@@ -34,7 +34,7 @@ public class Result {
         return message;
     }
 
-    public Userretrofit getUser() {
+    public UserRetrofitGood getUser() {
         return user;
     }
 }

@@ -27,6 +27,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import udacityteam.healthapp.PHP_Retrofit_API.APIService;
 import udacityteam.healthapp.PHP_Retrofit_API.APIUrl;
 import udacityteam.healthapp.PHP_Retrofit_Models.Result;
+import udacityteam.healthapp.PHP_Retrofit_Models.UserRetrofitGood;
 import udacityteam.healthapp.PHP_Retrofit_Models.Userretrofit;
 import udacityteam.healthapp.R;
 
@@ -40,6 +41,7 @@ public class LoginWithMailPasword extends AppCompatActivity implements
     private TextView mDetailTextView;
     private EditText mEmailField;
     private EditText mPasswordField;
+    public static UserRetrofitGood currentuser;
 
     // [START declare_auth]
     private FirebaseAuth mAuth;
@@ -120,6 +122,8 @@ public class LoginWithMailPasword extends AppCompatActivity implements
                                 call.enqueue(new Callback<Result>() {
                                     @Override
                                     public void onResponse(Call<Result> call, Response<Result> response) {
+
+                                        Log.d("veikeas", String.valueOf(response.body().getUser().getId()));
 
                                         Intent intent = new Intent(LoginWithMailPasword.this, MainActivity.class);
                                         startActivity(intent);

@@ -40,6 +40,7 @@ import udacityteam.healthapp.PHP_Retrofit_API.APIService;
 import udacityteam.healthapp.PHP_Retrofit_API.APIUrl;
 import udacityteam.healthapp.PHP_Retrofit_Models.SharedFoodProductsRetrofit;
 import udacityteam.healthapp.R;
+import udacityteam.healthapp.activities.ApplicationClass;
 import udacityteam.healthapp.adapters.FoodViewHolder;
 import udacityteam.healthapp.adapters.SharedFoodListsAdapter;
 import udacityteam.healthapp.models.SelectedFood;
@@ -123,6 +124,7 @@ public class CommunityFoodListsDisplayFragment0 extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), FilterActivity.class);
+                intent.putExtra("SharedFoodListDatabase", SharedFoodListDatabase);
                 startActivity(intent);
             }
         });
@@ -154,7 +156,7 @@ if(side!=null)
         APIService service = retrofit.create(APIService.class);
 
         Call<SharedFoodProductsRetrofit> call = service.getAllSharedDiets(
-                FirebaseAuth.getInstance().getCurrentUser().getUid(),
+                ((ApplicationClass)getActivity().getApplicationContext()).getId(),
                 SharedFoodListDatabase
         );
         call.enqueue(new Callback<SharedFoodProductsRetrofit>() {

@@ -33,6 +33,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.CalendarMode;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
@@ -48,9 +50,21 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+import udacityteam.healthapp.PHP_Retrofit_API.APIService;
+import udacityteam.healthapp.PHP_Retrofit_API.APIUrl;
+import udacityteam.healthapp.PHP_Retrofit_Models.Result;
+import udacityteam.healthapp.PHP_Retrofit_Models.SelectedFoodretrofit;
+import udacityteam.healthapp.PHP_Retrofit_Models.SelectedFoodretrofitarray;
+import udacityteam.healthapp.PHP_Retrofit_Models.UserRetrofitGood;
 import udacityteam.healthapp.R;
 import udacityteam.healthapp.activities.CommunityActivities.CommunityList;
 import udacityteam.healthapp.adapters.CustomAdapter;
+import udacityteam.healthapp.adapters.FoodListRetrofitAdapter;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -84,6 +98,9 @@ public class MainActivity extends AppCompatActivity
     private Button dailybtn;
     private Button drinksbtn;
     Calendar today;
+    public static UserRetrofitGood currentUser;
+
+
 
 
     private String mUsername;
@@ -92,6 +109,9 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+
+
 
         // Initialize Firebase components
      //   mFirebaseAuth = FirebaseAuth.getInstance();
@@ -135,6 +155,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         mAuth = FirebaseAuth.getInstance();
+        InitUser();
         Map<String, Object> user = new HashMap<>();
         user.put("first", "Ada");
         user.put("last", "Lovelace");
@@ -221,6 +242,36 @@ public class MainActivity extends AppCompatActivity
 
 
     }
+    private void InitUser()
+    {
+        Gson gson = new GsonBuilder()
+                .setLenient()
+                .create();
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(APIUrl.BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
+
+        //Defining retrofit api service
+        APIService service = retrofit.create(APIService.class);
+
+        Call<Result> call = service.getCurrentUser(
+                FirebaseAuth.getInstance().getCurrentUser().getUid()
+        );
+        call.enqueue(new Callback<Result>() {
+            @Override
+            public void onResponse(Call<Result> call, Response<Result> response) {
+                currentUser = response.body().getUser();
+                ((ApplicationClass)getApplicationContext()).setId(response.body().getUser().getId());
+                Log.d("useris", currentUser.toString());
+            }
+
+            @Override
+            public void onFailure(Call<Result> call, Throwable t) {
+
+            }
+    });
+    }
 
     private void initButton()
     {
@@ -263,6 +314,7 @@ public class MainActivity extends AppCompatActivity
                 intent.putExtra("foodselection", "Lunch");
                 intent.putExtra("SharedFoodListDatabase", "SharedLunches");
                 intent.putExtra("requestdate", format.format(calendar.getTime()));
+
                 startActivity(intent);
             }
         });
@@ -291,6 +343,7 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, FoodList.class);
                 intent.putExtra("foodselection", "Drinks");
+                intent.putExtra("UserId", currentUser.getId());
                 intent.putExtra("SharedFoodListDatabase", "SharedDrinks");
                 intent.putExtra("requestdate", format.format(calendar.getTime()));
                 startActivity(intent);

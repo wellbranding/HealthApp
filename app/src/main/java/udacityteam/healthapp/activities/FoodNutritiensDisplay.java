@@ -170,7 +170,7 @@ public class FoodNutritiensDisplay extends AppCompatActivity {
 
         Call<Result> call = service.addSelectedFood(
                 id,
-                UserId, timestamp, nutritiens.get(0)
+                MainActivity.currentUser.getId(), timestamp, nutritiens.get(0)
                 ,nutritiens.get(1),nutritiens.get(2),nutritiens.get(3),
                 foodselection,0
         );

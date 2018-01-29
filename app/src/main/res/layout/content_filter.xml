@@ -14,72 +14,194 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="46dp"
         android:text="CONFIRM"
         tools:layout_editor_absoluteX="116dp"
         tools:layout_editor_absoluteY="327dp" />
 
-    <RelativeLayout
+
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:id="@+id/carbohydrateslayout"
+    android:layout_height="wrap_content">
+    <io.apptik.widget.MultiSlider
+        android:id="@+id/carbohydrates"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerInParent="true"
-        android:layout_below="@+id/textView3"
-        android:layout_marginTop="90dp">
-        <TableLayout
-            android:layout_width="fill_parent"
-            android:baselineAligned="false"
-            android:gravity="center_horizontal"
-            android:layout_gravity="center|center_horizontal"
-            android:layout_height="match_parent">
 
-            <TableRow
-                android:layout_width="wrap_content"
-                android:layout_gravity="center"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="62dp"
+        app:drawThumbsApart="true"
 
-                android:gravity="center_horizontal"
-                android:layout_height="wrap_content"
-                android:layout_margin="4dp">
-
-                <CheckBox
-                    android:id="@+id/calories"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Calories" />
-
-                <CheckBox
-                    android:id="@+id/fats"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Fats" />
-            </TableRow>
-            <TableRow
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:layout_margin="4dp">
-
-                <CheckBox
-                    android:id="@+id/protein"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Protein" />
-
-                <CheckBox
-                    android:id="@+id/carbohydrates"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Carbohydrates" />
-            </TableRow>
-        </TableLayout>
-    </RelativeLayout>
+        app:stepsThumbsApart="5"
+        app:thumbNumber="2" />
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/carbobegin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
+
+        android:layout_marginTop="26dp"
+
+        android:text="TextView" />
+
+    <TextView
+        android:id="@+id/carboend"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_alignBaseline="@+id/carbobegin"
+        android:layout_alignBottom="@+id/carbobegin"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:text="TextView" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/carboend"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="50dp"
-        android:text="FilterData by descending Order" />
+        android:text="Carbohydrates" />
+</RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:id="@+id/proteinlayout"
+        android:layout_below="@id/carbohydrateslayout"
+        android:layout_height="wrap_content">
+        <io.apptik.widget.MultiSlider
+            android:id="@+id/protein"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="62dp"
+            app:drawThumbsApart="true"
+            app:stepsThumbsApart="5"
+            app:thumbNumber="2" />
+
+        <TextView
+            android:id="@+id/proteinbegin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_marginTop="26dp"
+
+            android:text="TextView" />
+
+        <TextView
+            android:id="@+id/proteinend"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_alignBaseline="@+id/proteinbegin"
+            android:layout_alignBottom="@+id/proteinbegin"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:text="TextView" />
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/proteinend"
+            android:layout_centerHorizontal="true"
+            android:text="Protein" />
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:id="@+id/fatlayout"
+        android:layout_below="@id/proteinlayout"
+        android:layout_height="wrap_content">
+        <io.apptik.widget.MultiSlider
+            android:id="@+id/fat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="62dp"
+            app:drawThumbsApart="true"
+            app:stepsThumbsApart="5"
+            app:thumbNumber="2" />
+
+        <TextView
+            android:id="@+id/fatbegin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_marginTop="26dp"
+
+            android:text="TextView" />
+
+        <TextView
+            android:id="@+id/fatnend"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_alignBaseline="@+id/fatbegin"
+            android:layout_alignBottom="@+id/fatbegin"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:text="TextView" />
+
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/fatnend"
+            android:layout_centerHorizontal="true"
+            android:text="Fats" />
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:id="@+id/calorieslayout"
+        android:layout_below="@id/fatlayout"
+        android:layout_height="wrap_content">
+        <io.apptik.widget.MultiSlider
+            android:id="@+id/calories"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="62dp"
+            app:drawThumbsApart="true"
+            app:stepsThumbsApart="5"
+            app:thumbNumber="2" />
+
+        <TextView
+            android:id="@+id/caloriesbegin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_marginTop="26dp"
+
+            android:text="TextView" />
+
+        <TextView
+            android:id="@+id/caloriesnend"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_alignBaseline="@+id/caloriesbegin"
+            android:layout_alignBottom="@+id/caloriesbegin"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:text="TextView" />
+
+        <TextView
+            android:id="@+id/textView6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/caloriesnend"
+            android:layout_centerHorizontal="true"
+            android:text="Calories" />
+    </RelativeLayout>
 </RelativeLayout>

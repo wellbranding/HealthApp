@@ -22,9 +22,23 @@ class DbOperation
                 return USER_CREATED;
             return USER_CREATION_FAILED;
         }
-        return USER_EXIST;
+        return USER_CREATED;
     }
-   
+    function getUserByUid($uid)
+    {
+        $stmt = $this->con->prepare("SELECT id, mail, uid, displayname FROM Users WHERE uid = ?");
+        $stmt->bind_param("s", $uid);
+        $stmt->execute();
+        $stmt->bind_result($id, $mail, $uid, $displayname);
+        $stmt->fetch();
+        $user = array();
+        $user['id'] = $id;
+        $user['mail'] = $mail;
+        $user['uid'] = $uid;
+        $user['displayname'] = $displayname;
+        return $user;
+    }
+
 
     //Method for user login
     function userLogin($email, $pass)
@@ -92,7 +106,7 @@ class DbOperation
             $day = substr($date, 8,10);
             $stmt = $this->con->prepare("SELECT ParentSharedFoodsId FROM SharedDinners WHERE UserID = ? AND year(SendDate) = ?
             AND month(SendDate) =? AND day(SendDate) =?");
-         $stmt->bind_param("ssss", $UserId, $year, $month, $day);
+         $stmt->bind_param("isss", $UserId, $year, $month, $day);
         $stmt->execute();
         $stmt->store_result();
         return $stmt->num_rows > 0;
@@ -161,20 +175,7 @@ class DbOperation
     }
 
     //Method to get user by email
-    function getUserByEmail($email)
-    {
-        $stmt = $this->con->prepare("SELECT id, name, email, gender FROM users WHERE email = ?");
-        $stmt->bind_param("s", $email);
-        $stmt->execute();
-        $stmt->bind_result($id, $name, $email, $gender);
-        $stmt->fetch();
-        $user = array();
-        $user['id'] = $id;
-        $user['name'] = $name;
-        $user['email'] = $email;
-        $user['gender'] = $gender;
-        return $user;
-    }
+
 
     //Method to get all users
     function getAllUsers(){
@@ -195,28 +196,28 @@ class DbOperation
     function addSelectedFood($foodId, $Userid, $Date, $Calories, $Protein, $Fat, $Carbohydrates, $whichtime, $sharedfoodsId)
     {
             $stmt = $this->con->prepare("INSERT INTO ".$whichtime." (foodId, UserId, SendDate, Calories, Protein, Fat, Carbohydrates, SharedFoodsId) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-            $stmt->bind_param("sssddddi", $foodId, $Userid, $Date, $Calories, $Protein, $Fat, $Carbohydrates, $sharedfoodsId);
+            $stmt->bind_param("sisddddi", $foodId, $Userid, $Date, $Calories, $Protein, $Fat, $Carbohydrates, $sharedfoodsId);
             if ($stmt->execute())
                 return USER_CREATED;
             return USER_CREATION_FAILED;
     }
-    function addSharedFoodList($UserId, $Date, $SharedFoodListDatabase)
+    function addSharedFoodList($UserId, $Date, $SharedFoodListDatabase, $Calories, $Protein, $Fat, $Carbohydrates)
     {
-        $stmt = $this->con->prepare("INSERT INTO ".$SharedFoodListDatabase." (UserId, SendDate) VALUES (?, ?)");
-            $stmt->bind_param("ss", $UserId, $Date);
+        $stmt = $this->con->prepare("INSERT INTO ".$SharedFoodListDatabase." (UserId, SendDate, Calories, Protein, Fat, Carbohydrates) VALUES (?, ?, ?, ?, ?, ?)");
+            $stmt->bind_param("isdddd", $UserId, $Date, $Calories, $Protein, $Fat, $Carbohydrates);
 
             if ($stmt->execute())
                 return USER_CREATED;
             return USER_CREATION_FAILED;
-        
+
     }
-    function updateFoods($UserId, $Date, $whichtime)
+    function updateFoods($UserId, $Date, $whichtime, $Calories, $Protein, $Fat, $Carbohydrates )
     {
         $year = substr($Date, 0,4);
         $month = substr($Date, 5,7);
         $day = substr($Date, 8,10);
         if($whichtime=="Breakfast"){
-        $stmt = $this->con->prepare("UPDATE Breakfast SET Breakfast.SharedFoodsId=(SELECT SharedBreakfasts.ParentSharedFoodsId 
+        $stmt = $this->con->prepare("UPDATE Breakfast SET Breakfast.SharedFoodsId=(SELECT SharedBreakfasts.ParentSharedFoodsId
         FROM SharedBreakfasts WHERE year(SharedBreakfasts.SendDate)=? AND month(SharedBreakfasts.SendDate)=? AND day(SharedBreakfasts.SendDate)=?
         AND SharedBreakfasts.UserId=Breakfast.UserId) WHERE year(Breakfast.SendDate)=? AND month(Breakfast.SendDate)=? AND day(Breakfast.SendDate)=?
         AND  Breakfast.UserId =?");
@@ -227,11 +228,11 @@ class DbOperation
         }
         else if($whichtime=="Lunch")
         {
-            $stmt = $this->con->prepare("UPDATE Lunch SET Lunch.SharedFoodsId=(SELECT SharedLunches.ParentSharedFoodsId 
+            $stmt = $this->con->prepare("UPDATE Lunch SET Lunch.SharedFoodsId=(SELECT SharedLunches.ParentSharedFoodsId
             FROM SharedLunches WHERE year(SharedLunches.SendDate)=? AND month(SharedLunches.SendDate)=? AND day(SharedLunches.SendDate)=?
              AND SharedLunches.UserId=Lunch.UserId) WHERE year(Lunch.SendDate)=? AND month(Lunch.SendDate)=? AND day(Lunch.SendDate)=?
               AND  Lunch.UserId =?");
-        
+
             $stmt->bind_param("sssssss",  $year, $month, $day, $year, $month, $day, $UserId );
             if ($stmt->execute())
                 return true;
@@ -239,17 +240,22 @@ class DbOperation
         }
         else if($whichtime=="Dinner")
         {
-            $stmt = $this->con->prepare("UPDATE Dinner SET Dinner.SharedFoodsId=(SELECT SharedDinners.ParentSharedFoodsId 
+           $stmt = $this->con->prepare("UPDATE SharedDinners SET SharedDinners.Calories =?, SharedDinners.Protein =? WHERE year(SharedDinners.SendDate)=? AND
+           month(SharedDinners.SendDate)=? AND day(SharedDinners.SendDate)=? AND UserId= ?");
+           $stmt->bind_param("ddsssi",  $Calories, $Protein, $year, $month, $day, $UserId );
+           $stmt->execute();
+        $stmt->close();
+            $stmt = $this->con->prepare("UPDATE Dinner SET Dinner.SharedFoodsId=(SELECT SharedDinners.ParentSharedFoodsId
             FROM SharedDinners WHERE year(SharedDinners.SendDate)=? AND month(SharedDinners.SendDate)=? AND day(SharedDinners.SendDate)=?
              AND SharedDinners.UserId=Dinner.UserId) WHERE year(Dinner.SendDate)=? AND month(Dinner.SendDate)=? AND day(Dinner.SendDate)=? AND  Dinner.UserId =?");
-            $stmt->bind_param("sssssss",  $year, $month, $day, $year, $month, $day, $UserId );
+            $stmt->bind_param("ssssssi",  $year, $month, $day, $year, $month, $day, $UserId );
             if ($stmt->execute())
                 return true;
             return false;
         }
         else if($whichtime=="Drinks")
         {
-            $stmt = $this->con->prepare("UPDATE Drinks SET Drinks.SharedFoodsId=(SELECT SharedDrinks.ParentSharedFoodsId 
+            $stmt = $this->con->prepare("UPDATE Drinks SET Drinks.SharedFoodsId=(SELECT SharedDrinks.ParentSharedFoodsId
             FROM SharedDrinks WHERE year(SharedDrinks.SendDate)=? AND month(SharedDrinks.SendDate)=? AND day(SharedDrinks.SendDate)=?
             AND SharedDrinks.UserId=Drinks.UserId) WHERE  year(Drinks.SendDate)=? AND month(Drinks.SendDate)=? AND day(Drinks.SendDate)=? AND  Drinks.UserId =?");
             $stmt->bind_param("sssssss",  $year, $month, $day, $year, $month, $day, $UserId );
@@ -259,7 +265,7 @@ class DbOperation
         }
         else if($whichtime=="Snacks")
         {
-            $stmt = $this->con->prepare("UPDATE Snacks SET Snacks.SharedFoodsId=(SELECT SharedSnacks.ParentSharedFoodsId 
+            $stmt = $this->con->prepare("UPDATE Snacks SET Snacks.SharedFoodsId=(SELECT SharedSnacks.ParentSharedFoodsId
             FROM SharedSnacks WHERE year(SharedSnacks.SendDate)=? AND month(SharedSnacks.SendDate)=? AND day(SharedSnacks.SendDate)=? AND SharedSnacks.UserId=Snacks.UserId)
              WHERE  year(Snacks.SendDate)=? AND month(Snacks.SendDate)=? AND day(Snacks.SendDate)=? AND Snacks.UserId =?");
             $stmt->bind_param("sssssss",  $year, $month, $day, $year, $month, $day, $UserId );
@@ -268,13 +274,13 @@ class DbOperation
             return false;
         }
         return false;
-        
+
     }
     function getAllSelectedFoods($UserId, $whichtime, $year, $month, $day){
         echo "hello";
-        $stmt = $this->con->prepare("SELECT foodId, UserId, SendDate, Calories, Protein, Fat, Carbohydrates FROM ".$whichtime." WHERE UserId =? 
+        $stmt = $this->con->prepare("SELECT foodId, UserId, SendDate, Calories, Protein, Fat, Carbohydrates FROM ".$whichtime." WHERE UserId =?
         AND day(SendDate) =? AND year(SendDate)=? AND month(SendDate)=?");
-        $stmt->bind_param("ssss", $UserId, $day, $year, $month);
+        $stmt->bind_param("isss", $UserId, $day, $year, $month);
         $stmt->execute();
         $stmt->bind_result($foodId, $Userid, $Date, $Calories, $Protein, $Fat, $Carbohydrates);
         $users = array();
@@ -302,7 +308,7 @@ class DbOperation
             $temp = array();
             $temp['foodId'] = $foodId;
             $temp['UserId'] = $Userid;
-            $temp['Date'] = $Date;
+            $temp['SendDate'] = $Date;
             $temp['Calories'] = $Calories;
             $temp['Protein'] = $Protein;
             $temp['Fat'] = $Fat;
@@ -312,23 +318,48 @@ class DbOperation
         return $users;
     }
     function getAllSharedDiets($UserId, $SharedFoodListDatabase){
-        $stmt = $this->con->prepare("SELECT ParentSharedFoodsId, UserId, SendDate FROM ".$SharedFoodListDatabase." WHERE UserId <>?");
-        $stmt->bind_param("s", $UserId);
+        $stmt = $this->con->prepare("SELECT ParentSharedFoodsId, UserId, SendDate, Calories, Protein, Fat, Carbohydrates FROM ".$SharedFoodListDatabase." WHERE UserId <>?");
+        $stmt->bind_param("i", $UserId);
         $stmt->execute();
-        $stmt->bind_result($ParentSharedFoodsId, $Userid, $Date);
+        $stmt->bind_result($ParentSharedFoodsId, $Userid, $Date, $Calories, $Protein, $Fat, $Carbohydrates);
         $users = array();
         while($stmt->fetch()){
             $temp = array();
             $temp['ParentSharedFoodsId'] = $ParentSharedFoodsId;
             $temp['UserId'] = $Userid;
             $temp['Date'] = $Date;
+            $temp['Calories'] = $Calories;
+            $temp['Protein'] = $Protein;
+            $temp['Fat'] = $Fat;
+            $temp['Carbohydrates'] = $Carbohydrates;
+            array_push($users, $temp);
+        }
+        return $users;
+    }
+   function getAllFilteredSharedDiets($UserId, $SharedFoodListDatabase, $proteinbegin, $proteinend, $caloriesbegin, $caloriesend, $carbohydratesbegin,
+    $carbohydratesend, $fatsbegin, $fatsend){
+        $stmt = $this->con->prepare("SELECT ParentSharedFoodsId, UserId, SendDate, Calories, Protein, Fat, Carbohydrates FROM ".$SharedFoodListDatabase."
+         WHERE SharedDinners.UserId <> ? AND SharedDinners.Calories BETWEEN ? AND ? AND SharedDinners.Carbohydrates BETWEEN ? AND ? AND SharedDinners.Protein BETWEEN ? AND ? AND SharedDinners.Fat BETWEEN ? AND ?");
+        $stmt->bind_param("iiiiiiiii", $UserId, $caloriesbegin, $caloriesend, $carbohydratesbegin, $carbohydratesend, $proteinbegin, $proteinend, $fatsbegin, $fatsend );
+        $stmt->execute();
+        $stmt->bind_result($ParentSharedFoodsId, $Userid, $Date, $Calories, $Protein, $Fat, $Carbohydrates);
+        $users = array();
+        while($stmt->fetch()){
+            $temp = array();
+            $temp['ParentSharedFoodsId'] = $ParentSharedFoodsId;
+            $temp['UserId'] = $Userid;
+            $temp['Date'] = $Date;
+            $temp['Calories'] = $Calories;
+            $temp['Protein'] = $Protein;
+            $temp['Fat'] = $Fat;
+            $temp['Carbohydrates'] = $Carbohydrates;
             array_push($users, $temp);
         }
         return $users;
     }
     function qur( $value, $name)
     {
-        
+
         $stmt = $this->con->prepare("SELECT id, name, email, gender FROM users WHERE " .$name. " = ?");
         $stmt->bind_param("s", $value);
         $stmt->execute();

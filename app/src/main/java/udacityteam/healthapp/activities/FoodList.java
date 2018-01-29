@@ -47,13 +47,14 @@ import udacityteam.healthapp.PHP_Retrofit_API.APIUrl;
 import udacityteam.healthapp.PHP_Retrofit_Models.Result;
 import udacityteam.healthapp.PHP_Retrofit_Models.SelectedFoodretrofit;
 import udacityteam.healthapp.PHP_Retrofit_Models.SelectedFoodretrofitarray;
+import udacityteam.healthapp.PHP_Retrofit_Models.UserRetrofitGood;
 import udacityteam.healthapp.R;
 import udacityteam.healthapp.adapters.FoodListRetrofitAdapter;
 import udacityteam.healthapp.adapters.FoodViewHolder;
 import udacityteam.healthapp.models.SelectedFood;
 import okhttp3.Interceptor;
 
-public class FoodList extends AppCompatActivity {
+public class FoodList extends AppCompatActivity implements Currentuser {
 
     RecyclerView recyclerView;
     RecyclerView.LayoutManager layoutManager;
@@ -76,12 +77,12 @@ public class FoodList extends AppCompatActivity {
    FirebaseFirestore storage;
     String newstring=null;
     TextView caloriescounter, proteincounter, fatcounter, carbohycounter;
-    float calories = 0;
-    float protein = 0;
-    float carbohydrates = 0;
+    float carbohydrates = 0, protein=0, fats =0, calories =0;
     private static final String CACHE_CONTROL = "Cache-Control";
-    float fat = 0;
+    Integer UserId=0;
+
     int cacheSize = 10 * 1024 * 1024; // 10 MiB
+    ArrayList<SelectedFoodretrofit> nauji;
 
     ArrayList<SelectedFood> selectedFoods;
 
@@ -122,9 +123,9 @@ public class FoodList extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-      IsShared();
+        IsShared();
         RetrofitList();
-   //     RetrofitCatche();
+
 
     }
 
@@ -132,7 +133,7 @@ public class FoodList extends AppCompatActivity {
 
     private void RetrofitList()
     {
-        //region Cacheprovided
+        //rion Cacheprovided
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .addInterceptor( provideOfflineCacheInterceptor() )
                 .addNetworkInterceptor( provideCacheInterceptor() )
@@ -156,15 +157,26 @@ public class FoodList extends AppCompatActivity {
         //Defining retrofit api service
         APIService service = retrofit.create(APIService.class);
 
+        Toast.makeText(this,   ((ApplicationClass)getApplicationContext()).getId().toString(), Toast.LENGTH_SHORT).show();
         Call<SelectedFoodretrofitarray> call = service.getselectedfoods(
-                FirebaseAuth.getInstance().getCurrentUser().getUid(),
+                ((ApplicationClass)getApplicationContext()).getId(),
                 foodselection, year, month, day
         );
         call.enqueue(new Callback<SelectedFoodretrofitarray>() {
             @Override
             public void onResponse(Call<SelectedFoodretrofitarray> call, Response<SelectedFoodretrofitarray> response) {
-                ArrayList<SelectedFoodretrofit> nauji = response.body().getUsers();
-
+                nauji = response.body().getUsers();
+                for ( SelectedFoodretrofit c:
+                        nauji) {
+                    carbohydrates += c.getCarbohydrates();
+                    protein+=c.getProtein();
+                    fats+=c.getFat();
+                    calories+=c.getCalories();
+                }
+                carbohycounter.setText(Float.toString(carbohydrates));
+                proteincounter.setText(Float.toString(protein));
+                fatcounter.setText(Float.toString(fats));
+                caloriescounter.setText(Float.toString(calories));
                 FoodListRetrofitAdapter customAdapterFoodListPrievew= new
                         FoodListRetrofitAdapter(nauji);
                 recyclerView.setAdapter(customAdapterFoodListPrievew);
@@ -260,7 +272,7 @@ public class FoodList extends AppCompatActivity {
         APIService service = retrofit.create(APIService.class);
 
         Call<Result> call = service.getIsShared(
-                FirebaseAuth.getInstance().getCurrentUser().getUid(),
+                ((ApplicationClass)getApplicationContext()).getId(),
                 timestamp, foodselection
         );
         call.enqueue(new Callback<Result>() {
@@ -308,6 +320,7 @@ public class FoodList extends AppCompatActivity {
 
     private void ShareFoodList() //only if today
     {
+
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         Gson gson = new GsonBuilder()
                 .setLenient()
@@ -320,10 +333,11 @@ public class FoodList extends AppCompatActivity {
         //Defining retrofit api service
         APIService service = retrofit.create(APIService.class);
 
-        Call<Result> call = service.addSharedList(
-                FirebaseAuth.getInstance().getCurrentUser().getUid(),
+        Toast.makeText(this, Float.toString(protein), Toast.LENGTH_SHORT).show();
+        Call<Result> call = service.addSharedList(((ApplicationClass)getApplicationContext()).getId()
+                ,
                 timestamp,
-                SharedFoodListDatabase, foodselection
+                SharedFoodListDatabase, foodselection,calories, protein, fats, carbohydrates
         );
         call.enqueue(new Callback<Result>() {
             @Override

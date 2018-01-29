@@ -11,15 +11,56 @@ import java.util.ArrayList;
      private String UserId;
      private String Date;
     private Integer ParentSharedFoodsId;
+    private float Calories;
+    private float Protein;
+    private float Fat;
+    private float Carbohydrates;
+
     public OneSharedFoodProductsListRetrofit()
     {
 
     }
 
-    public OneSharedFoodProductsListRetrofit(String userId, String date,Integer parentSharedFoodsId) {
+    public OneSharedFoodProductsListRetrofit(String userId, String date, Integer parentSharedFoodsId, float calories, float protein, float fat, float carbohydrates) {
         UserId = userId;
         Date = date;
         ParentSharedFoodsId = parentSharedFoodsId;
+        Calories = calories;
+        Protein = protein;
+        Fat = fat;
+        Carbohydrates = carbohydrates;
+    }
+
+    public float getCalories() {
+        return Calories;
+    }
+
+    public void setCalories(float calories) {
+        Calories = calories;
+    }
+
+    public float getProtein() {
+        return Protein;
+    }
+
+    public void setProtein(float protein) {
+        Protein = protein;
+    }
+
+    public float getFat() {
+        return Fat;
+    }
+
+    public void setFat(float fat) {
+        Fat = fat;
+    }
+
+    public float getCarbohydrates() {
+        return Carbohydrates;
+    }
+
+    public void setCarbohydrates(float carbohydrates) {
+        Carbohydrates = carbohydrates;
     }
 
     public String getDate() {
