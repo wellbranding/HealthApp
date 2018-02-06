@@ -1,4 +1,4 @@
-package udacityteam.healthapp.PHP_Retrofit_Models;
+package udacityteam.healthapp.Model;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -16,20 +16,6 @@ import java.util.ArrayList;
     private float Fat;
     private float Carbohydrates;
 
-    public OneSharedFoodProductsListRetrofit()
-    {
-
-    }
-
-    public OneSharedFoodProductsListRetrofit(String userId, String date, Integer parentSharedFoodsId, float calories, float protein, float fat, float carbohydrates) {
-        UserId = userId;
-        Date = date;
-        ParentSharedFoodsId = parentSharedFoodsId;
-        Calories = calories;
-        Protein = protein;
-        Fat = fat;
-        Carbohydrates = carbohydrates;
-    }
 
     public float getCalories() {
         return Calories;

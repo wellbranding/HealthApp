@@ -3,17 +3,13 @@ package udacityteam.healthapp.activities.CommunityActivities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.rey.material.widget.Slider;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -26,16 +22,10 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import udacityteam.healthapp.PHP_Retrofit_API.APIService;
 import udacityteam.healthapp.PHP_Retrofit_API.APIUrl;
-import udacityteam.healthapp.PHP_Retrofit_Models.OneSharedFoodProductsListRetrofit;
-import udacityteam.healthapp.PHP_Retrofit_Models.Result;
-import udacityteam.healthapp.PHP_Retrofit_Models.SelectedFoodretrofit;
-import udacityteam.healthapp.PHP_Retrofit_Models.SelectedFoodretrofitarray;
-import udacityteam.healthapp.PHP_Retrofit_Models.SharedFoodProductsRetrofit;
+import udacityteam.healthapp.Model.OneSharedFoodProductsListRetrofit;
+import udacityteam.healthapp.Model.SharedFoodProductsRetrofit;
 import udacityteam.healthapp.R;
 import udacityteam.healthapp.activities.ApplicationClass;
-import udacityteam.healthapp.activities.FoodList;
-import udacityteam.healthapp.adapters.FoodListRetrofitAdapter;
-import udacityteam.healthapp.adapters.SharedFoodListsAdapter;
 
 public class FilterActivity extends AppCompatActivity {
 

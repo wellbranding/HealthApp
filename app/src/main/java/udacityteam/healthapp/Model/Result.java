@@ -1,4 +1,4 @@
-package udacityteam.healthapp.PHP_Retrofit_Models;
+package udacityteam.healthapp.Model;
 
 import com.google.gson.annotations.SerializedName;
 

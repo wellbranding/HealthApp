@@ -3,6 +3,8 @@ package udacityteam.healthapp.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.databinding.DataBindingUtil;
+import android.databinding.ViewDataBinding;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -16,7 +18,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.CollectionReference;
@@ -26,7 +27,6 @@ import com.google.gson.GsonBuilder;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -44,10 +44,9 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import udacityteam.healthapp.PHP_Retrofit_API.APIService;
 import udacityteam.healthapp.PHP_Retrofit_API.APIUrl;
-import udacityteam.healthapp.PHP_Retrofit_Models.Result;
-import udacityteam.healthapp.PHP_Retrofit_Models.SelectedFoodretrofit;
-import udacityteam.healthapp.PHP_Retrofit_Models.SelectedFoodretrofitarray;
-import udacityteam.healthapp.PHP_Retrofit_Models.UserRetrofitGood;
+import udacityteam.healthapp.Model.Result;
+import udacityteam.healthapp.Model.SelectedFoodretrofit;
+import udacityteam.healthapp.Model.SelectedFoodretrofitarray;
 import udacityteam.healthapp.R;
 import udacityteam.healthapp.adapters.FoodListRetrofitAdapter;
 import udacityteam.healthapp.adapters.FoodViewHolder;
@@ -86,10 +85,15 @@ public class FoodList extends AppCompatActivity implements Currentuser {
 
     ArrayList<SelectedFood> selectedFoods;
 
+
+    private FoodListViewModel foodListViewModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_food_list);
+        foodListViewModel = new FoodListViewModel(getApplicationContext());
+        ViewDataBinding viewDataBinding = DataBindingUtil.setContentView(this, R.ac);
         final SharedPreferences pref = getApplicationContext().getSharedPreferences("SharedToday", MODE_PRIVATE);
         Boolean didsharedtoday = pref.getBoolean("didshared", false);
         Log.d("did", didsharedtoday.toString());

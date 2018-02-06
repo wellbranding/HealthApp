@@ -1,4 +1,4 @@
-package udacityteam.healthapp.PHP_Retrofit_Models;
+package udacityteam.healthapp.Model;
 
 /**
  * Created by Belal on 14/04/17.

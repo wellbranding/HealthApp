@@ -12,7 +12,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-import udacityteam.healthapp.PHP_Retrofit_Models.SelectedFoodretrofit;
+import udacityteam.healthapp.Model.SelectedFoodretrofit;
 import udacityteam.healthapp.R;
 import udacityteam.healthapp.activities.FoodNutritiensDisplayPrieview;
 import udacityteam.healthapp.activities.CommunityActivities.CommunityFoodListsDisplayFragment0;

@@ -12,7 +12,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-import udacityteam.healthapp.PHP_Retrofit_Models.OneSharedFoodProductsListRetrofit;
+import udacityteam.healthapp.Model.OneSharedFoodProductsListRetrofit;
 import udacityteam.healthapp.R;
 import udacityteam.healthapp.activities.FoodListPrieview;
 

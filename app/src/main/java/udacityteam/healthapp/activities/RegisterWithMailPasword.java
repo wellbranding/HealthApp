@@ -29,8 +29,8 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import udacityteam.healthapp.PHP_Retrofit_API.APIService;
 import udacityteam.healthapp.PHP_Retrofit_API.APIUrl;
-import udacityteam.healthapp.PHP_Retrofit_Models.Result;
-import udacityteam.healthapp.PHP_Retrofit_Models.Userretrofit;
+import udacityteam.healthapp.Model.Result;
+import udacityteam.healthapp.Model.Userretrofit;
 import udacityteam.healthapp.R;
 
 
