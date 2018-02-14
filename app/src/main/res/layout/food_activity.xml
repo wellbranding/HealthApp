@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="viewModel"
+            type="udacityteam.healthapp.activities.FoodNutritiensDisplayViewModel"/>
+    </data>
 <RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -21,7 +28,7 @@
         android:layout_alignStart="@+id/nutritionaldysplay"
         android:layout_below="@+id/nutritionaldysplay"
         android:layout_marginTop="39dp"
-        android:text="TextView"
+        android:text="@{viewModel.foodId}"
         android:textSize="18sp"
         tools:layout_editor_absoluteX="175dp"
         tools:layout_editor_absoluteY="146dp" />
@@ -57,6 +64,8 @@
         android:layout_alignLeft="@+id/ProductName"
         android:layout_alignStart="@+id/ProductName"
         android:layout_below="@+id/ProductName"
+        android:text="@{Float.toString(viewModel.nutritional)}"
         android:layout_marginTop="17dp"
-        android:text="Nutritional value of product" />
+        />
 </RelativeLayout>
+</layout>

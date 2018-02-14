@@ -2,7 +2,6 @@ package udacityteam.healthapp.activities.CommunityActivities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,16 +15,10 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -38,8 +31,9 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import udacityteam.healthapp.PHP_Retrofit_API.APIService;
 import udacityteam.healthapp.PHP_Retrofit_API.APIUrl;
-import udacityteam.healthapp.PHP_Retrofit_Models.SharedFoodProductsRetrofit;
+import udacityteam.healthapp.Model.SharedFoodProductsRetrofit;
 import udacityteam.healthapp.R;
+import udacityteam.healthapp.activities.ApplicationClass;
 import udacityteam.healthapp.adapters.FoodViewHolder;
 import udacityteam.healthapp.adapters.SharedFoodListsAdapter;
 import udacityteam.healthapp.models.SelectedFood;
@@ -106,7 +100,7 @@ public class CommunityFoodListsDisplayFragment0 extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.recycler_view_frag1, container, false);
+        View rootView = inflater.inflate(R.layout.community_list_fragment, container, false);
         rootView.setTag(TAG);
        // foodList = database.getReference("MainFeed").child(value).child("SharedDiets");
 
@@ -123,6 +117,7 @@ public class CommunityFoodListsDisplayFragment0 extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), FilterActivity.class);
+                intent.putExtra("SharedFoodListDatabase", SharedFoodListDatabase);
                 startActivity(intent);
             }
         });
@@ -154,7 +149,7 @@ if(side!=null)
         APIService service = retrofit.create(APIService.class);
 
         Call<SharedFoodProductsRetrofit> call = service.getAllSharedDiets(
-                FirebaseAuth.getInstance().getCurrentUser().getUid(),
+                ((ApplicationClass)getActivity().getApplicationContext()).getId(),
                 SharedFoodListDatabase
         );
         call.enqueue(new Callback<SharedFoodProductsRetrofit>() {

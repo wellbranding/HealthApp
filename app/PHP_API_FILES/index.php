@@ -29,7 +29,7 @@ $app->post('/register', function (Request $request, Response $response) {
         if ($result == USER_CREATED) {
             $responseData['error'] = false;
             $responseData['message'] = 'Registered successfully';
-            $responseData['user'] = $db->getUserByEmail($email);
+            $responseData['user'] = $db->getUserByUid($uid);
         } elseif ($result == USER_CREATION_FAILED) {
             $responseData['error'] = true;
             $responseData['message'] = 'Some error occurred';
@@ -54,7 +54,7 @@ $app->post('/loginwithmail', function (Request $request, Response $response) {
     if ($result == USER_CREATED) {
         $responseData['error'] = false;
         $responseData['message'] = 'Registered successfully';
-  //      $responseData['user'] = $db->getUserByEmail($email);
+  //     $responseData['user'] = $db->getUserByEmail($email);
     } elseif ($result == USER_CREATION_FAILED) {
         $responseData['error'] = true;
         $responseData['message'] = 'Some error occurred';
@@ -65,6 +65,7 @@ $app->post('/loginwithmail', function (Request $request, Response $response) {
 
     $response->getBody()->write(json_encode($responseData));
 });
+
 
 
 //user login route
@@ -89,6 +90,16 @@ $app->post('/login', function (Request $request, Response $response) {
         $response->getBody()->write(json_encode($responseData));
     }
 });
+$app->get('/getUserByUid', function (Request $request, Response $response) {
+
+    $db = new DbOperation();
+    $UserId = $request->getQueryParam('UserId');
+    $responseData = array();
+    $responseData['error'] = false;
+    $responseData['message'] = 'Got succesffuly';
+    $responseData['user'] = $db->getUserByUid($UserId);
+    $response->getBody()->write(json_encode($responseData));
+    });
 
 //getting all users
 $app->get('/users', function (Request $request, Response $response) {
@@ -104,6 +115,22 @@ $app->get('/getAllSharedDiets', function (Request $request, Response $response) 
 
     $whichtime = $request->getQueryParam('whichtime');
     $users = $db->getAllSharedDiets($UserId, $SharedFoodListDatabase);
+    $response->getBody()->write(json_encode(array("selectedFoodretrofits" => $users)));
+});
+$app->get('/getAllFilteredSharedDiets', function (Request $request, Response $response) {
+    $db = new DbOperation();
+    $UserId = $request->getQueryParam('UserId');
+    $SharedFoodListDatabase = $request->getQueryParam('SharedFoodListDatabase');
+    $proteinbegin =  $request->getQueryParam('ProteinBegin');
+    $proteinend =  $request->getQueryParam('ProteinEnd');
+    $caloriesbegin =  $request->getQueryParam('CaloriesBegin');
+    $caloriesend =  $request->getQueryParam('CaloriesEnd');
+    $carbohydratesbegin =  $request->getQueryParam('CarbohydratesBegin');
+    $carbohydratesend =  $request->getQueryParam('CarbohydratesEnd');
+    $fatsbegin =  $request->getQueryParam('FatsBegin');
+    $fatsend =  $request->getQueryParam('FatsEnd');
+    $users = $db->getAllFilteredSharedDiets($UserId, $SharedFoodListDatabase, $proteinbegin, $proteinend, $caloriesbegin, $caloriesend, $carbohydratesbegin,
+    $carbohydratesend, $fatsbegin, $fatsend);
     $response->getBody()->write(json_encode(array("selectedFoodretrofits" => $users)));
 });
 //getting messages for a user
@@ -204,7 +231,7 @@ $app->get('/IsShared', function (Request $request, Response $response) {
          echo "daugiau";
         $responseData['error'] = true;
         $responseData['message'] = 'Some error occurred';
-    } 
+    }
     $response->getBody()->write(json_encode($responseData));
 });
 
@@ -232,7 +259,7 @@ $app->post('/addSelectedFood', function (Request $request, Response $response) {
     } elseif ($result == USER_CREATION_FAILED) {
         $responseData['error'] = true;
         $responseData['message'] = 'Some error occurred';
-    } 
+    }
 
     $response->getBody()->write(json_encode($responseData));
 });
@@ -242,15 +269,19 @@ $app->post('/addSharedList', function (Request $request, Response $response) {
     $Date = $requestData['Date'];
     $whichtime = $requestData['whichtime'];
     $SharedFoodListDatabase = $requestData['SharedFoodListDatabase'];
+    $Calories = $requestData['Calories'];
+    $Protein = $requestData['Protein'];
+    $Fat = $requestData['Fat'];
+    $Carbohydrates = $requestData['Carbohydrates'];
 
     $db = new DbOperation();
     $responseData = array();
 
     $canyoushare = $db->isShared($UserId, $whichtime, $Date);
     if(!$canyoushare){
-    $result = $db->addSharedFoodList($UserId, $Date, $SharedFoodListDatabase);
+    $result = $db->addSharedFoodList($UserId, $Date, $SharedFoodListDatabase, $Calories, $Protein, $Fat, $Carbohydrates );
     if ($result == USER_CREATED) {
-        $updateresult =  $db->updateFoods($UserId, $Date, $whichtime);
+        $updateresult =  $db->updateFoods($UserId, $Date, $whichtime, $Calories, $Protein, $Fat, $Carbohydrates );
         echo $updateresult;
         $responseData['error'] = false;
         $responseData['message'] = 'Registered successfully';
@@ -258,11 +289,11 @@ $app->post('/addSharedList', function (Request $request, Response $response) {
     } elseif ($result == USER_CREATION_FAILED) {
         $responseData['error'] = true;
         $responseData['message'] = 'Some error occurred';
-    } 
+    }
 }
 else
 {
-    $db->updateFoods($UserId, $Date, $whichtime);
+    $db->updateFoods($UserId, $Date, $whichtime, $Calories, $Protein, $Fat, $Carbohydrates);
     $responseData['error'] = false;
     $responseData['message'] = 'cantinsertmore';
 }

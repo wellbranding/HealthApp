@@ -12,7 +12,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-import udacityteam.healthapp.PHP_Retrofit_Models.SelectedFoodretrofit;
+import udacityteam.healthapp.Model.SelectedFoodretrofit;
 import udacityteam.healthapp.R;
 import udacityteam.healthapp.activities.FoodNutritiensDisplayPrieview;
 import udacityteam.healthapp.activities.CommunityActivities.CommunityFoodListsDisplayFragment0;
@@ -70,7 +70,7 @@ public class FoodListRetrofitAdapter extends RecyclerView.Adapter<FoodListRetrof
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         // Create a new view.
         View v = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.text_row_item, viewGroup, false);
+                .inflate(R.layout.food_list_item, viewGroup, false);
 
         return new ViewHolder(v);
     }

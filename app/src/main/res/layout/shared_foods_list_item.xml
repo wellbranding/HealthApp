@@ -1,19 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <variable
+            name="viewModel"
+            type="udacityteam.healthapp.activities.SharedFoodListItemViewModel" />
+    </data>
 
 <RelativeLayout android:layout_width="match_parent"
     android:layout_height="80dp"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:id="@+id/layout"
+    android:onClick="@{viewModel.onItemClick}"
+
+ >
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
+
         android:layout_alignParentRight="true"
         android:layout_marginLeft="20dp"
         android:layout_centerVertical="true"
-        android:text="Name of Food"
+        android:text="@{viewModel.name}"
         android:textSize="16sp" />
 
     <ImageView
@@ -30,3 +41,4 @@
         android:scaleType="fitXY"
         android:src="@android:drawable/divider_horizontal_dark" />
 </RelativeLayout>
+</layout>

@@ -33,6 +33,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.CalendarMode;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
@@ -48,9 +50,19 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+import udacityteam.healthapp.PHP_Retrofit_API.APIService;
+import udacityteam.healthapp.PHP_Retrofit_API.APIUrl;
+import udacityteam.healthapp.Model.Result;
+import udacityteam.healthapp.Model.UserRetrofitGood;
 import udacityteam.healthapp.R;
 import udacityteam.healthapp.activities.CommunityActivities.CommunityList;
 import udacityteam.healthapp.adapters.CustomAdapter;
+import udacityteam.healthapp.app.ApplicationController;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -84,6 +96,9 @@ public class MainActivity extends AppCompatActivity
     private Button dailybtn;
     private Button drinksbtn;
     Calendar today;
+    public static UserRetrofitGood currentUser;
+
+
 
 
     private String mUsername;
@@ -91,91 +106,12 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        // Initialize Firebase components
-     //   mFirebaseAuth = FirebaseAuth.getInstance();
-
-
-//        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-//                .requestIdToken("1025887070439-pa8ivq2h24eigj8vv8h66e43ng7fgefh.apps.googleusercontent.com")
-//                .requestEmail()
-//                .build();
-//
-//        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-//
-//        // [START initialize_auth]
-//
-//        mAuthStateListener = new FirebaseAuth.AuthStateListener() {
-//            @Override
-//            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-//                FirebaseUser user = firebaseAuth.getCurrentUser();
-//                if (user != null) {
-//                    // User is signed in
-//                    onSignedInInitialize(user.getDisplayName());
-//                    onSignedInInitialize(user.getEmail());
-//                    Log.d("newuser", user.getDisplayName());
-//                  // User newuser = new User(edtName.getText().toString(),edtPassword.getText().toString(), Breakfast, Dinner, Drinks, Lunch, Snacks);
-//                } else {
-//                    // User is signed out
-//                    onSignedOutCleanup();
-//                    startActivityForResult(
-//                            AuthUI.getInstance()
-//                                    .createSignInIntentBuilder()
-//                                    .setIsSmartLockEnabled(false)
-//                                    .setAvailableProviders(
-//                                            Arrays.asList(new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
-//                                                    new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build()))
-//
-//                                    .build(),
-//                            RC_SIGN_IN);
-//                }
-//            }
-//        };
         setContentView(R.layout.activity_main);
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         mAuth = FirebaseAuth.getInstance();
-        Map<String, Object> user = new HashMap<>();
-        user.put("first", "Ada");
-        user.put("last", "Lovelace");
-        user.put("born", 1815);
+        InitUser();
 
-    //    db.collection("users").add(user);
-        Log.d("aryra",mAuth.getCurrentUser().getUid().toString() );
-        Date date = new Date();
-        Date newDate = new Date(date.getTime());
-        SimpleDateFormat dt = new SimpleDateFormat("yyyy-MM-dd");
-       final String stringdate = dt.format(newDate);
-        mFirebaseDatabase.getReference("User").child(FirebaseAuth.getInstance().
-                getCurrentUser().getUid()).child("LastLogin").setValue(stringdate);
-        mFirebaseDatabase.getReference("User").child(FirebaseAuth.getInstance().
-                getCurrentUser().getUid()).child("LastLogin").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                String value = (String) dataSnapshot.getValue();
-                if(value!=stringdate) {
-                    mFirebaseDatabase.getReference("User").child(FirebaseAuth.getInstance().
-                            getCurrentUser().getUid()).child("Dinner"+"isshared").setValue(false);
-                    mFirebaseDatabase.getReference("User").child(FirebaseAuth.getInstance().
-                            getCurrentUser().getUid()).child("Lunch"+"isshared").setValue(false);
-                    mFirebaseDatabase.getReference("User").child(FirebaseAuth.getInstance().
-                            getCurrentUser().getUid()).child("Breakfast"+"isshared").setValue(false);
-                    mFirebaseDatabase.getReference("User").child(FirebaseAuth.getInstance().
-                            getCurrentUser().getUid()).child("Snacks"+"isshared").setValue(false);
-                    mFirebaseDatabase.getReference("User").child(FirebaseAuth.getInstance().
-                            getCurrentUser().getUid()).child("Drinks"+"isshared").setValue(false);
-
-                }
-
-                // do your stuff here with value
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-
-        });
 
         getSupportActionBar().setTitle("MainActivity");
 
@@ -201,10 +137,6 @@ public class MainActivity extends AppCompatActivity
         });
         closeSubMenusFab();
         Toolbar toolbar = findViewById(R.id.toolbar);
-       // setSupportActionBar(toolbar);
-
-
-        //  closeSubMenusFab();
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -215,11 +147,41 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         calendarinit();
-        initRecyclerview();
+    //    initRecyclerview();
         initButton();
 
 
 
+    }
+    private void InitUser()
+    {
+        Gson gson = new GsonBuilder()
+                .setLenient()
+                .create();
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(APIUrl.BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
+
+        //Defining retrofit api service
+        APIService service = retrofit.create(APIService.class);
+
+        Call<Result> call = service.getCurrentUser(
+                FirebaseAuth.getInstance().getCurrentUser().getUid()
+        );
+        call.enqueue(new Callback<Result>() {
+            @Override
+            public void onResponse(Call<Result> call, Response<Result> response) {
+                currentUser = response.body().getUser();
+                ((ApplicationController)getApplicationContext()).setId(response.body().getUser().getId());
+                Log.d("useris", currentUser.toString());
+            }
+
+            @Override
+            public void onFailure(Call<Result> call, Throwable t) {
+
+            }
+    });
     }
 
     private void initButton()
@@ -231,15 +193,6 @@ public class MainActivity extends AppCompatActivity
        snacksbtn = this.findViewById(R.id.btnscancks);
        drinksbtn = this.findViewById(R.id.btndrinks);
        dailybtn = this.findViewById(R.id.btndaily);
-//        Date datee = new Date();
-//        Calendar calendarr = Calendar.getInstance();
-//        calendarr.setTime(datee);
-//        SimpleDateFormat dateFormat = new SimpleDateFormat(
-//                "yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-//        Calendar calendar = Calendar.getInstance();
-//        calendar.set(Calendar.HOUR_OF_DAY, 6);
-//        calendar.set(Calendar.MINUTE,0);
-
         widget.getSelectedDate();
         final Calendar calendar = Calendar.getInstance();
         calendar.setTime(widget.getSelectedDate().getDate());
@@ -263,6 +216,7 @@ public class MainActivity extends AppCompatActivity
                 intent.putExtra("foodselection", "Lunch");
                 intent.putExtra("SharedFoodListDatabase", "SharedLunches");
                 intent.putExtra("requestdate", format.format(calendar.getTime()));
+
                 startActivity(intent);
             }
         });
@@ -291,6 +245,7 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, FoodList.class);
                 intent.putExtra("foodselection", "Drinks");
+                intent.putExtra("UserId", currentUser.getId());
                 intent.putExtra("SharedFoodListDatabase", "SharedDrinks");
                 intent.putExtra("requestdate", format.format(calendar.getTime()));
                 startActivity(intent);
@@ -305,65 +260,61 @@ public class MainActivity extends AppCompatActivity
 
 
     }
-    private void initRecyclerview()
-    {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference foodList = database.getReference("MainFeed").child("Breakfast").child("SharedDiets");
-
-        final RecyclerView mRecyclerView = findViewById(R.id.recyclerView);
-        final ProgressBar progressBar = findViewById(R.id.progressbar);
-
-        // LinearLayoutManager is used here, this will layout the elements in a similar fashion
-        // to the way ListView would layout elements. The RecyclerView.LayoutManager defines how
-        // elements are laid out.
-        //  listodydis.setText(foodList.orderByChild("userId").toString());
-
-        LinearLayoutManager mLayoutManager = new LinearLayoutManager(MainActivity.this);
-        mRecyclerView.setLayoutManager(mLayoutManager);
-        foodList.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                // Getting current user Id
-
-                String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-
-
-                // Filter User
-                List<String> userList = new ArrayList<>();
-//                        for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
-//                            Log.d("shhss", "ahahha");
-//                         //   listodydis.setText();
-//                            if (!dataSnapshot1.getValue(SelectedFood.class).getUserId().equals(uid)) {
-//                                userList.add(dataSnapshot1.getValue(SelectedFood.class));
-//                            }
-//                        }
-                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
-                    Log.d("shhss", dataSnapshot1.getKey().toString());
-                    progressBar.setVisibility(View.GONE);
-                    //   listodydis.setText();
-
-                    if (!dataSnapshot1.getKey().equals(uid)) {
-                        userList.add(dataSnapshot1.getKey());
-                    }
-                }
-                progressBar.setVisibility(View.GONE);
-
-
-               CustomAdapter mAdapter = new CustomAdapter(userList);
-                mRecyclerView.setAdapter(mAdapter);
-
-
-                // Setting d
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                throw databaseError.toException();
-                //listodydis.setText("errrooas");
-            }
-        });
-    }
+//    private void initRecyclerview()
+//    {
+//        FirebaseDatabase database = FirebaseDatabase.getInstance();
+//        DatabaseReference foodList = database.getReference("MainFeed").child("Breakfast").child("SharedDiets");
+//
+//        final RecyclerView mRecyclerView = findViewById(R.id.recyclerView);
+//        final ProgressBar progressBar = findViewById(R.id.progressbar);
+//
+//
+//        LinearLayoutManager mLayoutManager = new LinearLayoutManager(MainActivity.this);
+//        mRecyclerView.setLayoutManager(mLayoutManager);
+//        foodList.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                // Getting current user Id
+//
+//                String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+//
+//
+//                // Filter User
+//                List<String> userList = new ArrayList<>();
+////                        for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+////                            Log.d("shhss", "ahahha");
+////                         //   listodydis.setText();
+////                            if (!dataSnapshot1.getValue(SelectedFood.class).getUserId().equals(uid)) {
+////                                userList.add(dataSnapshot1.getValue(SelectedFood.class));
+////                            }
+////                        }
+//                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+//                    Log.d("shhss", dataSnapshot1.getKey().toString());
+//                    progressBar.setVisibility(View.GONE);
+//                    //   listodydis.setText();
+//
+//                    if (!dataSnapshot1.getKey().equals(uid)) {
+//                        userList.add(dataSnapshot1.getKey());
+//                    }
+//                }
+//                progressBar.setVisibility(View.GONE);
+//
+//
+//               CustomAdapter mAdapter = new CustomAdapter(userList);
+//                mRecyclerView.setAdapter(mAdapter);
+//
+//
+//                // Setting d
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//                throw databaseError.toException();
+//                //listodydis.setText("errrooas");
+//            }
+//        });
+//    }
 
     private void calendarinit()
     {
