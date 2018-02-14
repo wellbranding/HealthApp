@@ -89,6 +89,7 @@ public class FoodList extends AppCompatActivity implements Currentuser, FoodList
     ArrayList<SelectedFood> selectedFoods;
     private FoodListViewModel foodListViewModel;
     private ActivityFoodListBinding activityFoodListBinding;
+    List<SelectedFoodretrofit> receivedSelectedFoods;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,7 +97,7 @@ public class FoodList extends AppCompatActivity implements Currentuser, FoodList
        // setContentView(R.layout.activity_food_list);
       //  foodListViewModel = new FoodListViewModel(getApplicationContext());
         activityFoodListBinding = DataBindingUtil.setContentView(this, R.layout.activity_food_list);
-        foodListViewModel = new FoodListViewModel(this, this);
+
         activityFoodListBinding.setViewModel(foodListViewModel);
         caloriescounter = findViewById(R.id.caloriescount);
         proteincounter = findViewById(R.id.proteincount);
@@ -109,7 +110,9 @@ public class FoodList extends AppCompatActivity implements Currentuser, FoodList
         foodselection = (String) b.get("foodselection");
         requestedString = (String) b.get("requestdate");
         SharedFoodListDatabase = (String) b.get("SharedFoodListDatabase");
+        foodListViewModel = new FoodListViewModel(this, this, foodselection, SharedFoodListDatabase);
         getSupportActionBar().setTitle(foodselection);
+        share.setEnabled(false);
 
         if (requestedString != null)
             stringdate = requestedString;
@@ -135,12 +138,15 @@ public class FoodList extends AppCompatActivity implements Currentuser, FoodList
         setupRecyclerView(activityFoodListBinding.recyclerFood);
         foodListViewModel.LoadFoodList(foodselection, year, month, day);
 
+     //   Log.d("tikrinu", String.valueOf(foodListViewModel.selectedFoodretrofits.size()));
+
        // IsShared();
 
    //     RetrofitList();
 
 
     }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -326,7 +332,7 @@ public class FoodList extends AppCompatActivity implements Currentuser, FoodList
             @Override
             public void onClick(View view) {
                 if(month.equals(timestampmonth)&&day.equals(timestampday))
-               ShareFoodList();
+               foodListViewModel.ShareFoodList(foodselection, SharedFoodListDatabase);
                 else
                 {
                     Toast.makeText(FoodList.this, "Can't share earlier diet", Toast.LENGTH_SHORT).show();
@@ -381,6 +387,7 @@ public class FoodList extends AppCompatActivity implements Currentuser, FoodList
 
     @Override
     public void onRepositoriesChanged(List<SelectedFoodretrofit> repositories) {
+        receivedSelectedFoods = repositories;
         Log.d("ijunge", String.valueOf(repositories.size()));
         FoodListRetrofitAdapterNew customAdapterFoodListPrievew= new
                 FoodListRetrofitAdapterNew(repositories);
@@ -392,8 +399,16 @@ public class FoodList extends AppCompatActivity implements Currentuser, FoodList
         activityFoodListBinding.recyclerFood.setLayoutManager(new LinearLayoutManager(this));
         activityFoodListBinding.recyclerFood.setHasFixedSize(true);
         activityFoodListBinding.recyclerFood.setAdapter(customAdapterFoodListPrievew);
+        share.setEnabled(true);
+        Log.d("tikrinu", String.valueOf(foodListViewModel.selectedFoodretrofits.size()));
+        share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
+                    foodListViewModel.ShareFoodList(foodselection, SharedFoodListDatabase);
 
+            }
+        });
 
     }
 }

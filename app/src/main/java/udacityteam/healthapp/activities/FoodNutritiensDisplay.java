@@ -1,5 +1,6 @@
 package udacityteam.healthapp.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.AsyncTask;
@@ -49,6 +50,7 @@ import udacityteam.healthapp.PHP_Retrofit_API.APIService;
 import udacityteam.healthapp.PHP_Retrofit_API.APIUrl;
 import udacityteam.healthapp.Model.Result;
 import udacityteam.healthapp.R;
+import udacityteam.healthapp.app.ApplicationController;
 import udacityteam.healthapp.databases.DatabaseHelper;
 import udacityteam.healthapp.models.SelectedFood;
 import udacityteam.healthapp.models.SelectedFoodmodel;
@@ -75,6 +77,7 @@ public class FoodNutritiensDisplay extends AppCompatActivity {
     ProgressBar progressBar;
     FirebaseFirestore storage;
     String SharedFoodListDatabase;
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +85,7 @@ public class FoodNutritiensDisplay extends AppCompatActivity {
         setContentView(R.layout.food_activity);
         progressBar = findViewById(R.id.progressbar);
         productname = findViewById(R.id.ProductName);
+        context = getApplicationContext();
         nutritionaldisplay = findViewById(R.id.nutritionaldysplay);
         UserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         Textv = (TextView)findViewById(R.id.tv2);
@@ -151,10 +155,10 @@ public class FoodNutritiensDisplay extends AppCompatActivity {
                 UserId, stringdate
         );
 
-        Map<String, Object> userr = new HashMap<>();
-        userr.put("first", nutritiens.get(0));
-        DocumentReference nutritiensvalue = storage.collection("Users").document(FirebaseAuth.getInstance().getCurrentUser().getUid()).collection(foodselection).document("Calories");
-        nutritiensvalue.update(userr);
+//        Map<String, Object> userr = new HashMap<>();
+//        userr.put("first", nutritiens.get(0));
+//        DocumentReference nutritiensvalue = storage.collection("Users").document(FirebaseAuth.getInstance().getCurrentUser().getUid()).collection(foodselection).document("Calories");
+//        nutritiensvalue.update(userr);
 
 
         Gson gson = new GsonBuilder()
@@ -170,7 +174,7 @@ public class FoodNutritiensDisplay extends AppCompatActivity {
 
         Call<Result> call = service.addSelectedFood(
                 id,
-                MainActivity.currentUser.getId(), timestamp, nutritiens.get(0)
+                ((ApplicationController)context.getApplicationContext()).getId(), timestamp, nutritiens.get(0)
                 ,nutritiens.get(1),nutritiens.get(2),nutritiens.get(3),
                 foodselection,0
         );
