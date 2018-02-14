@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
  * Created by kunda on 10/4/2017.
  */
 
-public class SelectedFoodretrofit {
+public class SelectedFoodretrofit implements  Parcelable {
     private String foodId;
     private String foodName;
     private String UserId= FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -29,6 +29,30 @@ public class SelectedFoodretrofit {
     {
 
     }
+
+    protected SelectedFoodretrofit(Parcel in) {
+        foodId = in.readString();
+        foodName = in.readString();
+        UserId = in.readString();
+        SendDate = in.readString();
+        Calories = in.readFloat();
+        Protein = in.readFloat();
+        Fat = in.readFloat();
+        Carbohydrates = in.readFloat();
+    }
+
+    public static final Creator<SelectedFoodretrofit> CREATOR = new Creator<SelectedFoodretrofit>() {
+        @Override
+        public SelectedFoodretrofit createFromParcel(Parcel in) {
+            return new SelectedFoodretrofit(in);
+        }
+
+        @Override
+        public SelectedFoodretrofit[] newArray(int size) {
+            return new SelectedFoodretrofit[size];
+        }
+    };
+
     public float getProtein() {
         return Protein;
     }
@@ -93,4 +117,20 @@ public class SelectedFoodretrofit {
         this.foodName = foodName;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(foodId);
+        dest.writeString(foodName);
+        dest.writeString(UserId);
+        dest.writeString(SendDate);
+        dest.writeFloat(Calories);
+        dest.writeFloat(Protein);
+        dest.writeFloat(Fat);
+        dest.writeFloat(Carbohydrates);
+    }
 }

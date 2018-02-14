@@ -29,6 +29,7 @@ import java.util.List;
 import retrofit2.adapter.rxjava.HttpException;
 import rx.Subscriber;
 import rx.Subscription;
+import udacityteam.healthapp.Model.OneSharedFoodProductsListRetrofit;
 import udacityteam.healthapp.Model.Result;
 import udacityteam.healthapp.Model.SelectedFoodretrofit;
 import udacityteam.healthapp.Model.SelectedFoodretrofitarray;
@@ -42,7 +43,7 @@ import static udacityteam.healthapp.activities.FoodSearchActivity.foodselection;
 /**
  * View model for the MainActivity
  */
-public class FoodListViewModel implements ViewModel {
+public class FoodListPrieviewNewViewModel implements ViewModel {
 
     private static final String TAG = "MainViewModel";
 
@@ -59,7 +60,7 @@ public class FoodListViewModel implements ViewModel {
     //private List<Repository> repositories;
     private String editTextUsernameValue;
 
-    public FoodListViewModel(Context context, DataListener dataListener) {
+    public FoodListPrieviewNewViewModel(Context context, DataListener dataListener) {
         this.context = context;
         this.dataListener = dataListener;
         infoMessageVisibility = new ObservableInt(View.VISIBLE);
@@ -69,13 +70,13 @@ public class FoodListViewModel implements ViewModel {
         canshare = new ObservableField<>("message");
     }
 
-    public void LoadFoodList( String foodselection, String year, String month, String day)
+    public void LoadFoodList(Integer SharedListId,  String foodselection)
     {
         if (subscription != null && !subscription.isUnsubscribed()) subscription.unsubscribe();
         ApplicationController application = ApplicationController.get(context);
         PHPService phpService = application.getPHPService();
-        subscription = phpService.getselectedfoods(((ApplicationController)context.getApplicationContext()).getId(),
-                foodselection, year, month, day)
+        subscription = phpService.getselectedfoodsPrieview(SharedListId,
+                foodselection)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(application.defaultSubscribeScheduler())
                 .subscribe(this::handleResponse,this::handleError);
@@ -122,58 +123,23 @@ public class FoodListViewModel implements ViewModel {
         Log.d("kietass", "jauu");
 
         selectedFoodretrofits = new ArrayList<>(androidList.getUsers());
+        Log.d("kietass", String.valueOf(selectedFoodretrofits.size()));
 
         dataListener.onRepositoriesChanged(selectedFoodretrofits);
     }
     private void handleError(Throwable error) {
 
-     //   Toast.makeText(this, "Error "+error.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+        //   Toast.makeText(this, "Error "+error.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
     }
 
-    public void IsShared(String foodselection)
-    {
-        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-        Gson gson = new GsonBuilder()
-                .setLenient()
-                .create();
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(APIUrl.BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
 
-        //Defining retrofit api service
-        APIService service = retrofit.create(APIService.class);
-
-        Call<Result> call = service.getIsShared(
-                ((ApplicationController)context.getApplicationContext()).getId(),
-                timestamp, foodselection
-        );
-      //  Log.d("helomz", (((ApplicationClass)context.getApplicationContext()).getId()).toString() );
-        call.enqueue(new Callback<Result>() {
-            @Override
-            public void onResponse(Call<Result> call, Response<Result> response) {
-                //  if(response.body().getMessage().equals("notfound"));
-                if(response.body().getMessage().equals("Some error occurred"))
-                    canshare.set("UPDATE YOUR DIET");
-                else
-                    canshare.set("SHARE YOUR DIET");
-
-            }
-
-            @Override
-            public void onFailure(Call<Result> call, Throwable t) {
-                //  Log.d("resulttt", t.getMessage());
-            }
-
-        });
-    }
 
     @Override
     public void destroy() {
         if (subscription != null && !subscription.isUnsubscribed()) subscription.unsubscribe();
         subscription = null;
         context = null;
-      //  dataListener = null;
+        //  dataListener = null;
     }
 
 

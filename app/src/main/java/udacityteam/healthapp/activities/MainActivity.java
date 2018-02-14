@@ -62,6 +62,7 @@ import udacityteam.healthapp.Model.UserRetrofitGood;
 import udacityteam.healthapp.R;
 import udacityteam.healthapp.activities.CommunityActivities.CommunityList;
 import udacityteam.healthapp.adapters.CustomAdapter;
+import udacityteam.healthapp.app.ApplicationController;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -172,7 +173,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onResponse(Call<Result> call, Response<Result> response) {
                 currentUser = response.body().getUser();
-                ((ApplicationClass)getApplicationContext()).setId(response.body().getUser().getId());
+                ((ApplicationController)getApplicationContext()).setId(response.body().getUser().getId());
                 Log.d("useris", currentUser.toString());
             }
 

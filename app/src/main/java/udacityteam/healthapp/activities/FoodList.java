@@ -31,6 +31,7 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Cache;
@@ -49,11 +50,14 @@ import udacityteam.healthapp.Model.SelectedFoodretrofit;
 import udacityteam.healthapp.Model.SelectedFoodretrofitarray;
 import udacityteam.healthapp.R;
 import udacityteam.healthapp.adapters.FoodListRetrofitAdapter;
+import udacityteam.healthapp.adapters.FoodListRetrofitAdapterNew;
 import udacityteam.healthapp.adapters.FoodViewHolder;
+import udacityteam.healthapp.app.ApplicationController;
+import udacityteam.healthapp.databinding.ActivityFoodListBinding;
 import udacityteam.healthapp.models.SelectedFood;
 import okhttp3.Interceptor;
 
-public class FoodList extends AppCompatActivity implements Currentuser {
+public class FoodList extends AppCompatActivity implements Currentuser, FoodListViewModel.DataListener  {
 
     RecyclerView recyclerView;
     RecyclerView.LayoutManager layoutManager;
@@ -82,22 +86,18 @@ public class FoodList extends AppCompatActivity implements Currentuser {
 
     int cacheSize = 10 * 1024 * 1024; // 10 MiB
     ArrayList<SelectedFoodretrofit> nauji;
-
     ArrayList<SelectedFood> selectedFoods;
-
-
     private FoodListViewModel foodListViewModel;
+    private ActivityFoodListBinding activityFoodListBinding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_food_list);
-        foodListViewModel = new FoodListViewModel(getApplicationContext());
-        ViewDataBinding viewDataBinding = DataBindingUtil.setContentView(this, R.ac);
-        final SharedPreferences pref = getApplicationContext().getSharedPreferences("SharedToday", MODE_PRIVATE);
-        Boolean didsharedtoday = pref.getBoolean("didshared", false);
-        Log.d("did", didsharedtoday.toString());
-        editor = pref.edit();
+       // setContentView(R.layout.activity_food_list);
+      //  foodListViewModel = new FoodListViewModel(getApplicationContext());
+        activityFoodListBinding = DataBindingUtil.setContentView(this, R.layout.activity_food_list);
+        foodListViewModel = new FoodListViewModel(this, this);
+        activityFoodListBinding.setViewModel(foodListViewModel);
         caloriescounter = findViewById(R.id.caloriescount);
         proteincounter = findViewById(R.id.proteincount);
         carbohycounter = findViewById(R.id.carbohncount);
@@ -123,14 +123,28 @@ public class FoodList extends AppCompatActivity implements Currentuser {
         Log.d("reqss", stringdate);
 
         selectedFoods = new ArrayList<>();
-        recyclerView = (RecyclerView) findViewById(R.id.recycler_food);
-        recyclerView.setHasFixedSize(true);
-        layoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager);
-        IsShared();
-        RetrofitList();
+//        recyclerView = (RecyclerView) findViewById(R.id.recycler_food);
+//        recyclerView.setHasFixedSize(true);
+//        layoutManager = new LinearLayoutManager(this);
+//        recyclerView.setLayoutManager(layoutManager);
+        foodListViewModel.IsShared(foodselection);
+
+        String year = requestedString.substring(0, 4);
+        String month = requestedString.substring(5, 7);
+        String day = requestedString.substring(8, 10);
+        setupRecyclerView(activityFoodListBinding.recyclerFood);
+        foodListViewModel.LoadFoodList(foodselection, year, month, day);
+
+       // IsShared();
+
+   //     RetrofitList();
 
 
+    }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        foodListViewModel.destroy();
     }
 
 
@@ -161,9 +175,9 @@ public class FoodList extends AppCompatActivity implements Currentuser {
         //Defining retrofit api service
         APIService service = retrofit.create(APIService.class);
 
-        Toast.makeText(this,   ((ApplicationClass)getApplicationContext()).getId().toString(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this,   ((ApplicationController)getApplicationContext()).getId().toString(), Toast.LENGTH_SHORT).show();
         Call<SelectedFoodretrofitarray> call = service.getselectedfoods(
-                ((ApplicationClass)getApplicationContext()).getId(),
+                ((ApplicationController)getApplicationContext()).getId(),
                 foodselection, year, month, day
         );
         call.enqueue(new Callback<SelectedFoodretrofitarray>() {
@@ -358,6 +372,29 @@ public class FoodList extends AppCompatActivity implements Currentuser {
         });
 
             }
+    private void setupRecyclerView(RecyclerView recyclerView) {
+
+        FoodListRetrofitAdapterNew adapter = new  FoodListRetrofitAdapterNew();
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+    }
+
+    @Override
+    public void onRepositoriesChanged(List<SelectedFoodretrofit> repositories) {
+        Log.d("ijunge", String.valueOf(repositories.size()));
+        FoodListRetrofitAdapterNew customAdapterFoodListPrievew= new
+                FoodListRetrofitAdapterNew(repositories);
+       FoodListRetrofitAdapterNew adapter =
+                (FoodListRetrofitAdapterNew) activityFoodListBinding.recyclerFood.getAdapter();
+
+        customAdapterFoodListPrievew.setSelectedFoods(repositories);
+        customAdapterFoodListPrievew.notifyDataSetChanged();
+        activityFoodListBinding.recyclerFood.setLayoutManager(new LinearLayoutManager(this));
+        activityFoodListBinding.recyclerFood.setHasFixedSize(true);
+        activityFoodListBinding.recyclerFood.setAdapter(customAdapterFoodListPrievew);
+
+
 
     }
+}
 

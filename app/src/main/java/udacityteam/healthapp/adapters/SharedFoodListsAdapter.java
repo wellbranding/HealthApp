@@ -90,7 +90,7 @@ public class SharedFoodListsAdapter extends RecyclerView.Adapter<SharedFoodLists
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         // Create a new view.
         View v = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.text_row_item, viewGroup, false);
+                .inflate(R.layout.food_list_item, viewGroup, false);
 
         return new ViewHolder(v);
     }

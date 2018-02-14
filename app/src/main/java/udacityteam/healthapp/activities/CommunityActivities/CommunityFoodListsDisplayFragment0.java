@@ -100,7 +100,7 @@ public class CommunityFoodListsDisplayFragment0 extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.recycler_view_frag1, container, false);
+        View rootView = inflater.inflate(R.layout.community_list_fragment, container, false);
         rootView.setTag(TAG);
        // foodList = database.getReference("MainFeed").child(value).child("SharedDiets");
 

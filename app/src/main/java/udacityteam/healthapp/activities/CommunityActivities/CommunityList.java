@@ -136,9 +136,7 @@ public class CommunityList extends AppCompatActivity {
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    CommunityFoodListsDisplayFragment0 communityFoodListsDisplayFragment0 = new CommunityFoodListsDisplayFragment0();
-                    communityFoodListsDisplayFragment0.setArguments(queryParam);
-                    return communityFoodListsDisplayFragment0;
+                    return CommunityFoodListsDisplayFragment0MVVM.newInstance(queryParam);
                 case 1:
                     return new CommunityFoodListsDisplayFragment1();
                 case 2:

@@ -75,6 +75,14 @@ public interface PHPService {
             @Query("UserId") String UserId
 
     );
+//    @GET("getSelectedFoods")
+//    Observable<SelectedFoodretrofitarray> getselectedfoods(
+//            @Query("UserId") Integer UserId,
+//            @Query("whichtime") String whichtime,
+//            @Query("year") String year,
+//            @Query("month") String month,
+//            @Query("day") String day
+//    );
     @GET("getSelectedFoods")
     Observable<SelectedFoodretrofitarray> getselectedfoods(
             @Query("UserId") Integer UserId,

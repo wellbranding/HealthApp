@@ -79,7 +79,7 @@ public class FoodNutritiensDisplay extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.foodactivity);
+        setContentView(R.layout.food_activity);
         progressBar = findViewById(R.id.progressbar);
         productname = findViewById(R.id.ProductName);
         nutritionaldisplay = findViewById(R.id.nutritionaldysplay);

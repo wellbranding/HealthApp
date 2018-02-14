@@ -1,5 +1,8 @@
 package udacityteam.healthapp.Model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.sql.Timestamp;
 import java.util.ArrayList;
 
@@ -7,7 +10,7 @@ import java.util.ArrayList;
  * Created by vvost on 12/29/2017.
  */
 
-    public class OneSharedFoodProductsListRetrofit {
+    public class OneSharedFoodProductsListRetrofit implements Parcelable {
      private String UserId;
      private String Date;
     private Integer ParentSharedFoodsId;
@@ -16,6 +19,32 @@ import java.util.ArrayList;
     private float Fat;
     private float Carbohydrates;
 
+
+    protected OneSharedFoodProductsListRetrofit(Parcel in) {
+        UserId = in.readString();
+        Date = in.readString();
+        if (in.readByte() == 0) {
+            ParentSharedFoodsId = null;
+        } else {
+            ParentSharedFoodsId = in.readInt();
+        }
+        Calories = in.readFloat();
+        Protein = in.readFloat();
+        Fat = in.readFloat();
+        Carbohydrates = in.readFloat();
+    }
+
+    public static final Creator<OneSharedFoodProductsListRetrofit> CREATOR = new Creator<OneSharedFoodProductsListRetrofit>() {
+        @Override
+        public OneSharedFoodProductsListRetrofit createFromParcel(Parcel in) {
+            return new OneSharedFoodProductsListRetrofit(in);
+        }
+
+        @Override
+        public OneSharedFoodProductsListRetrofit[] newArray(int size) {
+            return new OneSharedFoodProductsListRetrofit[size];
+        }
+    };
 
     public float getCalories() {
         return Calories;
@@ -74,6 +103,25 @@ import java.util.ArrayList;
     }
 
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
 
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(UserId);
+        dest.writeString(Date);
+        if (ParentSharedFoodsId == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeInt(ParentSharedFoodsId);
+        }
+        dest.writeFloat(Calories);
+        dest.writeFloat(Protein);
+        dest.writeFloat(Fat);
+        dest.writeFloat(Carbohydrates);
+    }
 }
 
