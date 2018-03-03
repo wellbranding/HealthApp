@@ -1,29 +1,30 @@
 package udacityteam.healthapp.Model;
 
-import java.util.ArrayList;
+import android.arch.lifecycle.MutableLiveData;
 
-import udacityteam.healthapp.Model.OneSharedFoodProductsListRetrofit;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by vvost on 12/29/2017.
  */
 
     public class SharedFoodProductsRetrofit  {
-   private ArrayList<OneSharedFoodProductsListRetrofit>  selectedFoodretrofits;
+   private List<OneSharedFoodProductsListRetrofit>  selectedFoodretrofits;
     public SharedFoodProductsRetrofit()
     {
 
     }
 
-    public SharedFoodProductsRetrofit(ArrayList<OneSharedFoodProductsListRetrofit> selectedFoodretrofits) {
+    public SharedFoodProductsRetrofit(List<OneSharedFoodProductsListRetrofit> selectedFoodretrofits) {
         this.selectedFoodretrofits = selectedFoodretrofits;
     }
 
-    public ArrayList<OneSharedFoodProductsListRetrofit> getSelectedFoodretrofits() {
+    public List<OneSharedFoodProductsListRetrofit> getSelectedFoodretrofits() {
         return selectedFoodretrofits;
     }
 
-    public void setSelectedFoodretrofits(ArrayList<OneSharedFoodProductsListRetrofit> selectedFoodretrofits) {
+    public void setSelectedFoodretrofits(List<OneSharedFoodProductsListRetrofit> selectedFoodretrofits) {
         this.selectedFoodretrofits = selectedFoodretrofits;
     }
 }

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <variable
+            name="viewModel"
+            type="udacityteam.healthapp.activities.MainActivityViewModel"/>
+    </data>
+
+<RelativeLayout
+     android:layout_width="match_parent"
+
+    android:layout_height="wrap_content">
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <ProgressBar
+        android:id="@+id/progressbar"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_alignTop="@id/recyclerView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="41dp"
+        android:foregroundGravity="center_vertical" />
+
+</RelativeLayout>
+</layout>

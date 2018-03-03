@@ -1,6 +1,7 @@
 package udacityteam.healthapp.activities.CommunityActivities;
 
-import android.content.Intent;
+import android.app.FragmentManager;
+import android.arch.lifecycle.ViewModelProviders;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -23,7 +24,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -32,21 +32,16 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import udacityteam.healthapp.Model.OneSharedFoodProductsListRetrofit;
-import udacityteam.healthapp.Model.SelectedFoodretrofit;
 import udacityteam.healthapp.Model.SharedFoodProductsRetrofit;
 import udacityteam.healthapp.PHP_Retrofit_API.APIService;
 import udacityteam.healthapp.PHP_Retrofit_API.APIUrl;
 import udacityteam.healthapp.R;
 import udacityteam.healthapp.activities.ApplicationClass;
-import udacityteam.healthapp.activities.FoodListViewModel;
-import udacityteam.healthapp.activities.SharedFoodListItemViewModel;
-import udacityteam.healthapp.adapters.FoodListRetrofitAdapterNew;
 import udacityteam.healthapp.adapters.FoodViewHolder;
 import udacityteam.healthapp.adapters.SharedFoodListsAdapter;
 import udacityteam.healthapp.adapters.SharedFoodListsAdapterNew;
 import udacityteam.healthapp.databinding.CommunityListFragmentBinding;
 import udacityteam.healthapp.models.SelectedFood;
-import udacityteam.healthapp.models.SharedFoodProducts;
 
 /**
  * Created by vvost on 11/16/2017.
@@ -97,7 +92,9 @@ public class CommunityFoodListsDisplayFragment0MVVM extends Fragment implements 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        viewModel = new CommunityFoodListDisplayFragment0MVVMViewModel(getContext(), this );
+        viewModel = ViewModelProviders.of(this).
+                get(CommunityFoodListDisplayFragment0MVVMViewModel.class);
+       // viewModel = new CommunityFoodListDisplayFragment0MVVMViewModel(getContext(), this );
         Bundle bundle = getArguments();
         if (bundle != null) {
             side = bundle.getString("foodselection", null);
@@ -114,7 +111,17 @@ public class CommunityFoodListsDisplayFragment0MVVM extends Fragment implements 
 
      //  communityListFragmentBinding.setViewModel(viewModel);
         viewModel.LoadFoodList(SharedFoodListDatabase);
+        filterData =  communityListFragmentBinding.getRoot().findViewById(R.id.filterdata);
 
+        filterData.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FragmentManager ft = getActivity().getFragmentManager();
+                FilterActivity dialog = new FilterActivity();
+           //     dialog.setTargetFragment(CommunityFoodListsDisplayFragment0MVVM.this, 1);
+                dialog.show(ft, "MyCustomDialog");
+            }
+        });
         return communityListFragmentBinding.getRoot();
     }
 

@@ -1,5 +1,7 @@
 package udacityteam.healthapp.activities;
 
+import android.arch.lifecycle.MutableLiveData;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -8,10 +10,16 @@ import android.databinding.ViewDataBinding;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -49,6 +57,7 @@ import udacityteam.healthapp.Model.Result;
 import udacityteam.healthapp.Model.SelectedFoodretrofit;
 import udacityteam.healthapp.Model.SelectedFoodretrofitarray;
 import udacityteam.healthapp.R;
+import udacityteam.healthapp.activities.CommunityActivities.CommunityList;
 import udacityteam.healthapp.adapters.FoodListRetrofitAdapter;
 import udacityteam.healthapp.adapters.FoodListRetrofitAdapterNew;
 import udacityteam.healthapp.adapters.FoodViewHolder;
@@ -57,7 +66,7 @@ import udacityteam.healthapp.databinding.ActivityFoodListBinding;
 import udacityteam.healthapp.models.SelectedFood;
 import okhttp3.Interceptor;
 
-public class FoodList extends AppCompatActivity implements Currentuser, FoodListViewModel.DataListener  {
+public class FoodList extends AppCompatActivity implements Currentuser, FoodListViewModel.DataListener, NavigationView.OnNavigationItemSelectedListener  {
 
     RecyclerView recyclerView;
     RecyclerView.LayoutManager layoutManager;
@@ -94,25 +103,41 @@ public class FoodList extends AppCompatActivity implements Currentuser, FoodList
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-       // setContentView(R.layout.activity_food_list);
-      //  foodListViewModel = new FoodListViewModel(getApplicationContext());
-        activityFoodListBinding = DataBindingUtil.setContentView(this, R.layout.activity_food_list);
-
-        activityFoodListBinding.setViewModel(foodListViewModel);
-        caloriescounter = findViewById(R.id.caloriescount);
-        proteincounter = findViewById(R.id.proteincount);
-        carbohycounter = findViewById(R.id.carbohncount);
-        fatcounter = findViewById(R.id.fatcount);
         Intent iin = getIntent();
-        message = findViewById(R.id.message);
-        share = findViewById(R.id.share);
         Bundle b = iin.getExtras();
         foodselection = (String) b.get("foodselection");
         requestedString = (String) b.get("requestdate");
         SharedFoodListDatabase = (String) b.get("SharedFoodListDatabase");
+       // setContentView(R.layout.activity_food_list);
+      //  foodListViewModel = new FoodListViewModel(getApplicationContext());
+       // foodListViewModel = ViewModelProviders.of(this).get(FoodListViewModel.class);
         foodListViewModel = new FoodListViewModel(this, this, foodselection, SharedFoodListDatabase);
+        activityFoodListBinding = DataBindingUtil.setContentView(this, R.layout.activity_food_list);
+        caloriescounter = findViewById(R.id.caloriescount);
+        proteincounter = findViewById(R.id.proteincount);
+        carbohycounter = findViewById(R.id.carbohncount);
+        fatcounter = findViewById(R.id.fatcount);
+
+        message = findViewById(R.id.message);
+        share = findViewById(R.id.share);
+
+        activityFoodListBinding.setViewModel(foodListViewModel);
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("MainActivity");
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
         getSupportActionBar().setTitle(foodselection);
-        share.setEnabled(false);
+        share.setEnabled(true);
 
         if (requestedString != null)
             stringdate = requestedString;
@@ -328,19 +353,80 @@ public class FoodList extends AppCompatActivity implements Currentuser, FoodList
 
 
 
-        share.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(month.equals(timestampmonth)&&day.equals(timestampday))
-               foodListViewModel.ShareFoodList(foodselection, SharedFoodListDatabase);
-                else
-                {
-                    Toast.makeText(FoodList.this, "Can't share earlier diet", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+//        share.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                if(month.equals(timestampmonth)&&day.equals(timestampday))
+//               foodListViewModel.ShareFoodList();
+//                else
+//                {
+//                    Toast.makeText(FoodList.this, "Can't share earlier diet", Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//        });
     }
     ///
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+
+        if (id == R.id.nav_breakfasts) {
+            Intent intent = new Intent(this, CommunityList.class);
+            Bundle extras = intent.getExtras();
+            intent.putExtra("titlename", "Community Breakfasts");
+            intent.putExtra("SharedFoodListDatabase", "SharedBreakfasts");
+            intent.putExtra("foodselection", "Breakfast");
+            startActivity(intent);
+            // Handle the camera action
+        } else if (id == R.id.nav_dinners) {
+            Intent intent = new Intent(this, CommunityList.class);
+            Bundle extras = intent.getExtras();
+            intent.putExtra("titlename", "Community Dinners");
+            intent.putExtra("SharedFoodListDatabase", "SharedDinners");
+            intent.putExtra("foodselection", "Dinner");
+            startActivity(intent);
+
+
+        } else if (id == R.id.nav_lunches) {
+            Intent
+                    intent = new Intent(this, CommunityList.class);
+            Bundle extras = intent.getExtras();
+            intent.putExtra("titlename", "Community Lunches");
+            intent.putExtra("SharedFoodListDatabase", "SharedLunches");
+            intent.putExtra("foodselection", "Lunch");
+            startActivity(intent);
+
+        } else if (id == R.id.nav_community_daily_diets) {
+            Intent intent = new Intent(this, CommunityList.class);
+            Bundle extras = intent.getExtras();
+            intent.putExtra("titlename", "Community Daily Diet Plan");
+            intent.putExtra("SharedFoodListDatabase", "SharedDailyDiets");
+            Toast.makeText(this, "Currently Not Available", Toast.LENGTH_SHORT).show();
+            //startActivity(intent);
+
+        } else if (id == R.id.nav_snacks) {
+            Intent intent = new Intent(this, CommunityList.class);
+            Bundle extras = intent.getExtras();
+            intent.putExtra("titlename", "Snacks");
+            intent.putExtra("SharedFoodListDatabase", "SharedSnacks");
+            intent.putExtra("foodselection", "Snacks");
+            startActivity(intent);
+            //test
+
+        } else if (id == R.id.nav_drinks_cocktails) {
+            Intent intent = new Intent(this, CommunityList.class);
+            Bundle extras = intent.getExtras();
+            intent.putExtra("titlename", "Drinks/Coctails");
+            intent.putExtra("SharedFoodListDatabase", "SharedDrinks");
+            intent.putExtra("foodselection", "Drinks");
+            startActivity(intent);
+        }
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
 
     private void ShareFoodList() //only if today
     {
@@ -386,29 +472,21 @@ public class FoodList extends AppCompatActivity implements Currentuser, FoodList
     }
 
     @Override
-    public void onRepositoriesChanged(List<SelectedFoodretrofit> repositories) {
-        receivedSelectedFoods = repositories;
-        Log.d("ijunge", String.valueOf(repositories.size()));
+    public void onRepositoriesChanged(MutableLiveData<List<SelectedFoodretrofit>> repositories) {
+        receivedSelectedFoods = repositories.getValue();
+        Log.d("ijunge", String.valueOf(repositories.getValue().size()));
         FoodListRetrofitAdapterNew customAdapterFoodListPrievew= new
-                FoodListRetrofitAdapterNew(repositories);
+                FoodListRetrofitAdapterNew(repositories.getValue());
        FoodListRetrofitAdapterNew adapter =
                 (FoodListRetrofitAdapterNew) activityFoodListBinding.recyclerFood.getAdapter();
 
-        customAdapterFoodListPrievew.setSelectedFoods(repositories);
+        customAdapterFoodListPrievew.setSelectedFoods(repositories.getValue());
         customAdapterFoodListPrievew.notifyDataSetChanged();
         activityFoodListBinding.recyclerFood.setLayoutManager(new LinearLayoutManager(this));
         activityFoodListBinding.recyclerFood.setHasFixedSize(true);
         activityFoodListBinding.recyclerFood.setAdapter(customAdapterFoodListPrievew);
-        share.setEnabled(true);
         Log.d("tikrinu", String.valueOf(foodListViewModel.selectedFoodretrofits.size()));
-        share.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
 
-                    foodListViewModel.ShareFoodList(foodselection, SharedFoodListDatabase);
-
-            }
-        });
 
     }
 }

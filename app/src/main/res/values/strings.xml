@@ -31,5 +31,7 @@
     <string name="save">Save</string>
     <string name="update_password">Password</string>
     <string name="title_activity_filter">FilterActivity</string>
+    <string name="title_activity_main3">Main3Activity</string>
+    <string name="title_activity_main4">Main4Activity</string>
 
 </resources>

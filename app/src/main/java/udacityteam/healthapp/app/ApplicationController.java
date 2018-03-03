@@ -18,6 +18,9 @@ public class ApplicationController extends Application {
     public static ApplicationController get(Context context) {
         return (ApplicationController) context.getApplicationContext();
     }
+    public ApplicationController get() {
+        return (ApplicationController) getApplicationContext();
+    }
     private Integer id;
 
     public Integer getId() {

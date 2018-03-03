@@ -1,5 +1,6 @@
 package udacityteam.healthapp.activities;
 
+import android.arch.lifecycle.MutableLiveData;
 import android.content.Context;
 import android.databinding.ObservableField;
 import android.databinding.ObservableInt;
@@ -8,6 +9,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.util.Pair;
 import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 
@@ -44,22 +46,28 @@ import static udacityteam.healthapp.activities.FoodSearchActivity.foodselection;
 /**
  * View model for the MainActivity
  */
-public class FoodListViewModel implements ViewModel {
+public class FoodListViewModel extends android.arch.lifecycle.ViewModel implements ViewModel {
 
     private static final String TAG = "MainViewModel";
 
     public ObservableInt infoMessageVisibility;
     public ObservableInt recyclerViewVisibility;
     public ObservableInt searchButtonVisibility;
-    public ObservableField<String> sharedFoodListDatabase;
-    public ObservableField<String> foodselection;
     public ObservableField<String> infoMessage;
     public ObservableField<String> canshare;
     private DataListener dataListener;
+    public  ObservableField<Boolean> isshared;
+    public  ObservableField<String> caloriesCount;
+    public  ObservableField<String> proteinCount;
+    public  ObservableField<String> fatsCount;
+    public  ObservableField<String> carbosCount;
 
     private Context context;
     private Subscription subscription;
+    String foodselection;
+    String sharedFoodListDatabase;;
     public  List<SelectedFoodretrofit> selectedFoodretrofits;
+    public MutableLiveData<List<SelectedFoodretrofit>> mutableLiveData;
     //private List<Repository> repositories;
     private String editTextUsernameValue;
     public  Float verte;
@@ -68,10 +76,19 @@ public class FoodListViewModel implements ViewModel {
                              String SharedFoodListDatabase ) {
         this.context = context;
         this.dataListener = dataListener;
+        isshared = new ObservableField<>();
+        isshared.set(false);
+        mutableLiveData  = new MutableLiveData<>();
         infoMessageVisibility = new ObservableInt(View.VISIBLE);
         recyclerViewVisibility = new ObservableInt(View.VISIBLE);
         searchButtonVisibility = new ObservableInt(View.GONE);
-       this.foodselection.set(foodselection);
+        caloriesCount = new ObservableField<>("0.0");
+        carbosCount = new ObservableField<>("0.0");
+        fatsCount = new ObservableField<>("0.0");
+        proteinCount = new ObservableField<>("0.0");
+
+       this.foodselection = foodselection;
+       this.sharedFoodListDatabase = SharedFoodListDatabase;
 
         infoMessage = new ObservableField<>("message");
         canshare = new ObservableField<>("message");
@@ -89,21 +106,46 @@ public class FoodListViewModel implements ViewModel {
                 .subscribe(this::handleResponse,this::handleError);
 //
     }
+    public void CalculateNutritionsDisplay(List<SelectedFoodretrofit> selectedFoodretrofits)
+    {
+        float calories = 0;
+        float protein = 0;
+        float carbos = 0;
+        float fats = 0;
+        for(int i = 0; i<selectedFoodretrofits.size(); i++)
+        {
+            calories+=selectedFoodretrofits.get(i).getCalories();
+            protein+=selectedFoodretrofits.get(i).getProtein();
+            carbos+=selectedFoodretrofits.get(i).getCarbohydrates();
+            fats+=selectedFoodretrofits.get(i).getFat();
+
+
+        }
+        caloriesCount.set(String.valueOf(Math.round(calories*100.0)/100.0));
+        proteinCount.set(String.valueOf(Math.round(protein*100.0)/100.0));
+        carbosCount.set(String.valueOf(Math.round(carbos*100.0)/100.0));
+        fatsCount.set(String.valueOf(Math.round(fats*100.0)/100.0));
+
+
+
+    }
     private void handleResponse(SelectedFoodretrofitarray androidList) {
         Log.d("kietass", "jauu");
 
         selectedFoodretrofits = new ArrayList<>(androidList.getUsers());
-
-        dataListener.onRepositoriesChanged(selectedFoodretrofits);
+        mutableLiveData.setValue(selectedFoodretrofits);
+        dataListener.onRepositoriesChanged(mutableLiveData);
+        CalculateNutritionsDisplay(selectedFoodretrofits);
     }
     private void handleError(Throwable error) {
 
      // Toast.makeText(this, "Error "+error.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-        Log.d("error", "error");
+        Log.d("erroraa", "error");
 }
 
     public void IsShared(String foodselection)
     {
+        Log.d("helaalo", "haa");
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         Gson gson = new GsonBuilder()
                 .setLenient()
@@ -125,10 +167,16 @@ public class FoodListViewModel implements ViewModel {
             @Override
             public void onResponse(Call<Result> call, Response<Result> response) {
                 //  if(response.body().getMessage().equals("notfound"));
-                if(response.body().getMessage().equals("Some error occurred"))
+                if(response.body().getMessage().equals("Some error occurred")) {
                     canshare.set("UPDATE YOUR DIET");
-                else
+                    isshared.set(false);
+                }
+                else {
+                    Toast.makeText(context, "sssssssss", Toast.LENGTH_SHORT).show();
                     canshare.set("SHARE YOUR DIET");
+                    isshared.set(true);
+
+                }
 
             }
 
@@ -139,69 +187,50 @@ public class FoodListViewModel implements ViewModel {
 
         });
     }
-//    private void ShareFoodList() //only if today
-//    {
-//
-//        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-//        Gson gson = new GsonBuilder()
-//                .setLenient()
-//                .create();
-//        Retrofit retrofit = new Retrofit.Builder()
-//                .baseUrl(APIUrl.BASE_URL)
-//                .addConverterFactory(GsonConverterFactory.create(gson))
-//                .build();
-//
-//        //Defining retrofit api service
-//        APIService service = retrofit.create(APIService.class);
-//
-//        Toast.makeText(this, Float.toString(protein), Toast.LENGTH_SHORT).show();
-//        Call<Result> call = service.addSharedList(((ApplicationClass)getApplicationContext()).getId()
-//                ,
-//                timestamp,
-//                SharedFoodListDatabase, foodselection,calories, protein, fats, carbohydrates
-//        );
-//        call.enqueue(new Callback<Result>() {
-//            @Override
-//            public void onResponse(Call<Result> call, Response<Result> response) {
-//                Log.d("tavo", response.message());
-//                Toast.makeText(FoodList.this, "Shared Successfully!", Toast.LENGTH_SHORT).show();
-//            }
-//
-//            @Override
-//            public void onFailure(Call<Result> call, Throwable t) {
-//                Toast.makeText(FoodList.this, "Some error occurred...", Toast.LENGTH_SHORT).show();
-//            }
-//
-//        });
-//
-//    }
 
-    public void ShareFoodList(String foodselection, String SharedFoodListDatabase) //only if today
+    public void ShareFoodList() //only if today
     {
-       float protein=0.0f, carbohydrates=0.0f, fats=0.0f, calories = 0.0f;
-        for (SelectedFoodretrofit food:selectedFoodretrofits
-                ) {
-            protein +=food.getProtein();
-            carbohydrates+=food.getCarbohydrates();
-            fats +=food.getFat();
-            calories += food.getCalories();
-        }
-        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-        ApplicationController application = ApplicationController.get(context);
-        PHPService phpService = application.getPHPService();
-        subscription = phpService.addSharedList(((ApplicationController)context.getApplicationContext()).getId(),
-                timestamp,
-                SharedFoodListDatabase, foodselection,calories, protein, fats, carbohydrates
-        )
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(application.defaultSubscribeScheduler())
-                .subscribe(this::handleResponse,this::handleError);
+        Toast.makeText(context, "blaaaa", Toast.LENGTH_SHORT).show();
+        Log.d("ggeee", "ggee");
+
+
+            float protein = 0.0f, carbohydrates = 0.0f, fats = 0.0f, calories = 0.0f;
+            for (SelectedFoodretrofit food : selectedFoodretrofits
+                    ) {
+                protein += food.getProtein();
+                carbohydrates += food.getCarbohydrates();
+                fats += food.getFat();
+                calories += food.getCalories();
+            }
+            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+            ApplicationController application = ApplicationController.get(context);
+            PHPService phpService = application.getPHPService();
+            subscription = phpService.addSharedList(((ApplicationController) context.getApplicationContext()).getId(),
+                    timestamp,
+                    sharedFoodListDatabase, foodselection,
+
+                    calories, protein, fats, carbohydrates
+            )
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(application.defaultSubscribeScheduler())
+                    .subscribe(this::handleResponse, this::handleError);
+
+
+
+
 
     }
 
     private void handleResponse(Result result) {
 
         Log.d("pavyko", "pavyko");
+        if (isshared.get()) {
+            Toast.makeText(context, "Shared Successfuly", Toast.LENGTH_SHORT).show();
+        }
+        if (!isshared.get()) {
+            Toast.makeText(context, "Updated Successfuly", Toast.LENGTH_SHORT).show();
+        }
+        Log.d("vertee", isshared.get().toString());
     }
 
 
@@ -219,7 +248,11 @@ public class FoodListViewModel implements ViewModel {
         return error instanceof HttpException && ((HttpException) error).code() == 404;
     }
     public interface DataListener {
-        void onRepositoriesChanged(List<SelectedFoodretrofit> repositories);
+        ///
+        @SuppressWarnings("StatementWithEmptyBody")
+        boolean onNavigationItemSelected(MenuItem item);
+
+        void onRepositoriesChanged( MutableLiveData<List<SelectedFoodretrofit>> repositories);
     }
 
 

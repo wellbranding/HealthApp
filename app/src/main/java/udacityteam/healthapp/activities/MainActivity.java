@@ -1,6 +1,7 @@
 package udacityteam.healthapp.activities;
 
 import android.content.Intent;
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -9,8 +10,6 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -18,7 +17,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
@@ -27,61 +25,35 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.CalendarMode;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import butterknife.BindView;
 import butterknife.ButterKnife;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
-import udacityteam.healthapp.PHP_Retrofit_API.APIService;
-import udacityteam.healthapp.PHP_Retrofit_API.APIUrl;
-import udacityteam.healthapp.Model.Result;
+import udacityteam.healthapp.Model.SelectedFoodretrofit;
 import udacityteam.healthapp.Model.UserRetrofitGood;
 import udacityteam.healthapp.R;
 import udacityteam.healthapp.activities.CommunityActivities.CommunityList;
-import udacityteam.healthapp.adapters.CustomAdapter;
-import udacityteam.healthapp.app.ApplicationController;
+import udacityteam.healthapp.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, MainActivityViewModel.DataListener {
 
     public static final String ANONYMOUS = "anonymous";
 
     public static final int RC_SIGN_IN = 1;
 
     FloatingActionButton fabsettings;
-    @BindView(R.id.calendarView)
-    MaterialCalendarView widget;
 
 
-    // Firebase instance variables
-    private FirebaseDatabase mFirebaseDatabase;
     private ChildEventListener mChildEventListener;
-   // public static FirebaseAuth mFirebaseAuth;
     private GoogleSignInClient mGoogleSignInClient;
-    private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
     private boolean fabExpanded = false;
     private LinearLayout Snacks;
@@ -97,25 +69,27 @@ public class MainActivity extends AppCompatActivity
     private Button drinksbtn;
     Calendar today;
     public static UserRetrofitGood currentUser;
-
-
-
+    private ActivityMainBinding binding;
+    private  MainActivityViewModel mainActivityViewModel;
 
     private String mUsername;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mainActivityViewModel = new MainActivityViewModel(this, this);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+        binding.setViewModel(mainActivityViewModel);
+//        binding.appBarMain.setViewModel(mainActivityViewModel);
+        binding.appBarMain.setViewModel(mainActivityViewModel);
 
-        setContentView(R.layout.activity_main);
-        mFirebaseDatabase = FirebaseDatabase.getInstance();
-        mAuth = FirebaseAuth.getInstance();
-        InitUser();
-
-
-        getSupportActionBar().setTitle("MainActivity");
-
+        binding.appBarMain.calendarView.setViewModel(mainActivityViewModel);
+        binding.appBarMain.layoutFloatingAction.setViewModel(mainActivityViewModel);
+        binding.appBarMain.recyclerView.setViewModel(mainActivityViewModel);
+        binding.appBarMain.buttons.setViewModel(mainActivityViewModel);
+        mainActivityViewModel.InitUser();
         fabsettings = findViewById(R.id.fabSetting);
+        mainActivityViewModel.initifloatingfield(fabsettings);
         Snacks = (LinearLayout) this.findViewById(R.id.Snacks);
         Drinks = (LinearLayout) this.findViewById(R.id.Drinks);
         Breakfast = (LinearLayout) this.findViewById(R.id.Breakfast);
@@ -139,6 +113,8 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = findViewById(R.id.toolbar);
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("MainActivity");
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
@@ -149,40 +125,41 @@ public class MainActivity extends AppCompatActivity
         calendarinit();
     //    initRecyclerview();
         initButton();
+        mainActivityViewModel.GetCalendarTime();
 
 
 
     }
-    private void InitUser()
-    {
-        Gson gson = new GsonBuilder()
-                .setLenient()
-                .create();
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(APIUrl.BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
-
-        //Defining retrofit api service
-        APIService service = retrofit.create(APIService.class);
-
-        Call<Result> call = service.getCurrentUser(
-                FirebaseAuth.getInstance().getCurrentUser().getUid()
-        );
-        call.enqueue(new Callback<Result>() {
-            @Override
-            public void onResponse(Call<Result> call, Response<Result> response) {
-                currentUser = response.body().getUser();
-                ((ApplicationController)getApplicationContext()).setId(response.body().getUser().getId());
-                Log.d("useris", currentUser.toString());
-            }
-
-            @Override
-            public void onFailure(Call<Result> call, Throwable t) {
-
-            }
-    });
-    }
+//    private void InitUser()
+//    {
+//        Gson gson = new GsonBuilder()
+//                .setLenient()
+//                .create();
+//        Retrofit retrofit = new Retrofit.Builder()
+//                .baseUrl(APIUrl.BASE_URL)
+//                .addConverterFactory(GsonConverterFactory.create(gson))
+//                .build();
+//
+//        //Defining retrofit api service
+//        APIService service = retrofit.create(APIService.class);
+//
+//        Call<Result> call = service.getCurrentUser(
+//                FirebaseAuth.getInstance().getCurrentUser().getUid()
+//        );
+//        call.enqueue(new Callback<Result>() {
+//            @Override
+//            public void onResponse(Call<Result> call, Response<Result> response) {
+//                currentUser = response.body().getUser();
+//                ((ApplicationController)getApplicationContext()).setId(response.body().getUser().getId());
+//                Log.d("useris", currentUser.toString());
+//            }
+//
+//            @Override
+//            public void onFailure(Call<Result> call, Throwable t) {
+//
+//            }
+//    });
+//    }
 
     private void initButton()
     {
@@ -193,22 +170,22 @@ public class MainActivity extends AppCompatActivity
        snacksbtn = this.findViewById(R.id.btnscancks);
        drinksbtn = this.findViewById(R.id.btndrinks);
        dailybtn = this.findViewById(R.id.btndaily);
-        widget.getSelectedDate();
+        binding.appBarMain.calendarView.calendarView.getSelectedDate();
         final Calendar calendar = Calendar.getInstance();
-        calendar.setTime(widget.getSelectedDate().getDate());
+        calendar.setTime( binding.appBarMain.calendarView.calendarView.getSelectedDate().getDate());
         final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         System.out.println();
         Log.d("ajaaz", format.format(calendar.getTime()));
-        dinnerbtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, FoodList.class);
-                intent.putExtra("foodselection", "Dinner");
-                intent.putExtra("SharedFoodListDatabase", "SharedDinners");
-                intent.putExtra("requestdate", format.format(calendar.getTime()));
-                startActivity(intent);
-            }
-        });
+//        dinnerbtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent intent = new Intent(MainActivity.this, FoodList.class);
+//                intent.putExtra("foodselection", "Dinner");
+//                intent.putExtra("SharedFoodListDatabase", "SharedDinners");
+//                intent.putExtra("requestdate", format.format(calendar.getTime()));
+//                startActivity(intent);
+//            }
+//        });
         lunchbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -260,61 +237,6 @@ public class MainActivity extends AppCompatActivity
 
 
     }
-//    private void initRecyclerview()
-//    {
-//        FirebaseDatabase database = FirebaseDatabase.getInstance();
-//        DatabaseReference foodList = database.getReference("MainFeed").child("Breakfast").child("SharedDiets");
-//
-//        final RecyclerView mRecyclerView = findViewById(R.id.recyclerView);
-//        final ProgressBar progressBar = findViewById(R.id.progressbar);
-//
-//
-//        LinearLayoutManager mLayoutManager = new LinearLayoutManager(MainActivity.this);
-//        mRecyclerView.setLayoutManager(mLayoutManager);
-//        foodList.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                // Getting current user Id
-//
-//                String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-//
-//
-//                // Filter User
-//                List<String> userList = new ArrayList<>();
-////                        for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
-////                            Log.d("shhss", "ahahha");
-////                         //   listodydis.setText();
-////                            if (!dataSnapshot1.getValue(SelectedFood.class).getUserId().equals(uid)) {
-////                                userList.add(dataSnapshot1.getValue(SelectedFood.class));
-////                            }
-////                        }
-//                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
-//                    Log.d("shhss", dataSnapshot1.getKey().toString());
-//                    progressBar.setVisibility(View.GONE);
-//                    //   listodydis.setText();
-//
-//                    if (!dataSnapshot1.getKey().equals(uid)) {
-//                        userList.add(dataSnapshot1.getKey());
-//                    }
-//                }
-//                progressBar.setVisibility(View.GONE);
-//
-//
-//               CustomAdapter mAdapter = new CustomAdapter(userList);
-//                mRecyclerView.setAdapter(mAdapter);
-//
-//
-//                // Setting d
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//                throw databaseError.toException();
-//                //listodydis.setText("errrooas");
-//            }
-//        });
-//    }
 
     private void calendarinit()
     {
@@ -323,10 +245,10 @@ public class MainActivity extends AppCompatActivity
         SimpleDateFormat dt = new SimpleDateFormat("yyyy-MM-dd");
         ButterKnife.bind(this);
 
-        widget.state().edit()
+        binding.appBarMain.calendarView.calendarView.state().edit()
                 .setCalendarDisplayMode(CalendarMode.WEEKS)
                 .commit();
-        widget.setShowOtherDates(MaterialCalendarView.SHOW_OTHER_MONTHS);
+        binding.appBarMain.calendarView.calendarView.setShowOtherDates(MaterialCalendarView.SHOW_OTHER_MONTHS);
 
 
         Calendar beginning = Calendar.getInstance();
@@ -335,34 +257,37 @@ public class MainActivity extends AppCompatActivity
         Log.d("aaa", beginning.toString());
        today = Calendar.getInstance();
        today.set(today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DAY_OF_MONTH));
-        widget.setCurrentDate(today);
+        binding.appBarMain.calendarView.calendarView.setCurrentDate(today);
 
         //  widget.setSelectionMode();
         Calendar end = Calendar.getInstance();
         end.set(end.get(Calendar.YEAR),  end.get(Calendar.MONTH), end.get(Calendar.DAY_OF_MONTH)+10);
 
-        widget.setArrowColor(this.getResources().getColor(R.color.colorPrimary));
-        widget.setSelectionColor(this.getResources().getColor(R.color.colorPrimary));
-        widget.setSelectedDate(today);
-        widget.setOnDateChangedListener(new OnDateSelectedListener() {
-            @Override
-            public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
-                initButton();
-            }
-        });
-
+        binding.appBarMain.calendarView.calendarView.setArrowColor(this.getResources().getColor(R.color.colorPrimary));
+        binding.appBarMain.calendarView.calendarView.setSelectionColor(this.getResources().getColor(R.color.colorPrimary));
+        binding.appBarMain.calendarView.calendarView.setSelectedDate(today);
         Calendar minimum = Calendar.getInstance();
-       minimum.set(minimum.get(Calendar.YEAR),minimum.get(Calendar.MONTH), minimum.get(Calendar.DAY_OF_MONTH)-50);
+        minimum.set(minimum.get(Calendar.YEAR),minimum.get(Calendar.MONTH), minimum.get(Calendar.DAY_OF_MONTH)-50);
         Calendar maximum = Calendar.getInstance();
         maximum.set(maximum.get(Calendar.YEAR),maximum.get(Calendar.MONTH), maximum.get(Calendar.DAY_OF_MONTH)+50);
 
-        widget.state().edit()
+        binding.appBarMain.calendarView.calendarView.state().edit()
                 .setMinimumDate(minimum.getTime())
                 .setMaximumDate(maximum.getTime())
                 .commit();
+        mainActivityViewModel.SetCalendar(binding.appBarMain.calendarView.calendarView);
+        binding.appBarMain.calendarView.calendarView.setOnDateChangedListener(new OnDateSelectedListener() {
+            @Override
+            public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
+                mainActivityViewModel.GetCalendarTime();
     }
+});
+        //  mainActivityViewModel.SetCalendar(binding.appBarMain.contentMain.calendarView);
 
-    private void closeSubMenusFab(){
+
+        }
+
+private void closeSubMenusFab(){
         //  layoutFabSave.setVisibility(View.INVISIBLE);
         Snacks.setVisibility(View.INVISIBLE);
         Drinks.setVisibility(View.INVISIBLE);
@@ -372,6 +297,17 @@ public class MainActivity extends AppCompatActivity
         fabsettings.setImageResource(R.drawable.ic_settings_black_24dp);
         fabExpanded = false;
     }
+    public void clickbtndinner()
+    {
+        Log.d("hello123", "heaaz");
+        Toast.makeText(MainActivity.this, "hello", Toast.LENGTH_SHORT).show();
+     //   Intent intent = new Intent(context, FoodList.class);
+       // intent.putExtra("foodselection", "Dinner");
+   //    intent.putExtra("SharedFoodListDatabase", "SharedDinners");
+        // intent.putExtra("requestdate", format.format(calendar.getTime()));
+     //   context.startActivity(intent);
+    }
+
 
     //Opens FAB submenus
     private void openSubMenusFab(){
@@ -535,7 +471,8 @@ public class MainActivity extends AppCompatActivity
 
 
         } else if (id == R.id.nav_lunches) {
-            Intent intent = new Intent(this, CommunityList.class);
+            Intent
+                    intent = new Intent(this, CommunityList.class);
             Bundle extras = intent.getExtras();
             intent.putExtra("titlename", "Community Lunches");
             intent.putExtra("SharedFoodListDatabase", "SharedLunches");
@@ -570,5 +507,10 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public void onRepositoriesChanged(List<SelectedFoodretrofit> repositories) {
+
     }
 }

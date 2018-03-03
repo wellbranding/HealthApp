@@ -1,7 +1,9 @@
 package udacityteam.healthapp.activities.CommunityActivities;
 
+import android.arch.lifecycle.MutableLiveData;
 import android.content.Context;
 import android.databinding.BaseObservable;
+import android.databinding.ObservableList;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -10,6 +12,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.List;
 
+import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -27,7 +30,7 @@ import udacityteam.healthapp.models.SharedFoodProducts;
 /**
  * View model for each item in the repositories RecyclerView
  */
-public class CommunityFoodListDisplayFragment0MVVMViewModel extends BaseObservable implements ViewModel {
+public class CommunityFoodListDisplayFragment0MVVMViewModel extends android.arch.lifecycle.ViewModel implements ViewModel {
 
     private static final String TAG ="trxt" ;
     private SelectedFoodretrofit selectedFoodretrofit;
@@ -49,6 +52,10 @@ public class CommunityFoodListDisplayFragment0MVVMViewModel extends BaseObservab
         this.dataListener = dataListener;
         this.context = context;
     }
+    public  CommunityFoodListDisplayFragment0MVVMViewModel()
+    {
+
+    }
 
     public String getName() {
         return selectedFoodretrofit.getFoodid();
@@ -56,6 +63,7 @@ public class CommunityFoodListDisplayFragment0MVVMViewModel extends BaseObservab
 
     public void LoadFoodList( String SharedFoodListDatabase)
     {
+
         if (subscription != null && !subscription.isUnsubscribed()) subscription.unsubscribe();
         ApplicationController application = ApplicationController.get(context);
         PHPService phpService = application.getPHPService();
@@ -95,16 +103,20 @@ public class CommunityFoodListDisplayFragment0MVVMViewModel extends BaseObservab
                         Log.i(TAG, "Repos loaded " + repositories);
                         Log.d("aryra1", String.valueOf(repositories));
                        // CommunityFoodListsDisplayFragment0.this.selectedFoodretrofits = repositories.getUsers().getClass();
-                        CommunityFoodListDisplayFragment0MVVMViewModel.this.selectedFoodretrofits = repositories.getSelectedFoodretrofits();
+                        CommunityFoodListDisplayFragment0MVVMViewModel.this.selectedFoodretrofits =  repositories.getSelectedFoodretrofits();
                     }
                 });
     }
     public void setSelectectedFoood(SelectedFoodretrofit selectedFoodretrofit) {
         this.selectedFoodretrofit = selectedFoodretrofit;
-        notifyChange();
+      notify();
     }
     public void onItemClick(View view) {
         context.startActivity(FoodNutritiensDisplayPrieview.newIntent(context, selectedFoodretrofit));
+    }
+    public void Hello()
+    {
+        Toast.makeText(context, "heeeeeeeeee", Toast.LENGTH_LONG).show();
     }
 
     @Override
