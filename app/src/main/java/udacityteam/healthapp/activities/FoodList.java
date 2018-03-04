@@ -99,6 +99,7 @@ public class FoodList extends AppCompatActivity implements Currentuser, FoodList
     private FoodListViewModel foodListViewModel;
     private ActivityFoodListBinding activityFoodListBinding;
     List<SelectedFoodretrofit> receivedSelectedFoods;
+    FoodListRetrofitAdapterNew customAdapterFoodListPrievew;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,9 +109,6 @@ public class FoodList extends AppCompatActivity implements Currentuser, FoodList
         foodselection = (String) b.get("foodselection");
         requestedString = (String) b.get("requestdate");
         SharedFoodListDatabase = (String) b.get("SharedFoodListDatabase");
-       // setContentView(R.layout.activity_food_list);
-      //  foodListViewModel = new FoodListViewModel(getApplicationContext());
-       // foodListViewModel = ViewModelProviders.of(this).get(FoodListViewModel.class);
         foodListViewModel = new FoodListViewModel(this, this, foodselection, SharedFoodListDatabase);
         activityFoodListBinding = DataBindingUtil.setContentView(this, R.layout.activity_food_list);
         caloriescounter = findViewById(R.id.caloriescount);
@@ -143,7 +141,6 @@ public class FoodList extends AppCompatActivity implements Currentuser, FoodList
             stringdate = requestedString;
         else {
             Date date = new Date();
-
             Date newDate = new Date(date.getTime());
             SimpleDateFormat dt = new SimpleDateFormat("yyyy-MM-dd");
             stringdate = dt.format(newDate);
@@ -151,23 +148,14 @@ public class FoodList extends AppCompatActivity implements Currentuser, FoodList
         Log.d("reqss", stringdate);
 
         selectedFoods = new ArrayList<>();
-//        recyclerView = (RecyclerView) findViewById(R.id.recycler_food);
-//        recyclerView.setHasFixedSize(true);
-//        layoutManager = new LinearLayoutManager(this);
-//        recyclerView.setLayoutManager(layoutManager);
         foodListViewModel.IsShared(foodselection);
 
         String year = requestedString.substring(0, 4);
         String month = requestedString.substring(5, 7);
         String day = requestedString.substring(8, 10);
-        setupRecyclerView(activityFoodListBinding.recyclerFood);
+        setupRecyclerView();
         foodListViewModel.LoadFoodList(foodselection, year, month, day);
 
-     //   Log.d("tikrinu", String.valueOf(foodListViewModel.selectedFoodretrofits.size()));
-
-       // IsShared();
-
-   //     RetrofitList();
 
 
     }
@@ -180,66 +168,66 @@ public class FoodList extends AppCompatActivity implements Currentuser, FoodList
 
 
 
-    private void RetrofitList()
-    {
-        //rion Cacheprovided
-        OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                .addInterceptor( provideOfflineCacheInterceptor() )
-                .addNetworkInterceptor( provideCacheInterceptor() )
-                .cache( provideCache() )
-                .build();
-        //endregion
-        String year = requestedString.substring(0, 4);
-        String month = requestedString.substring(5, 7);
-        String day = requestedString.substring(8, 10);
-       Log.d("rezas",year);
-
-        Gson gson = new GsonBuilder()
-                .setLenient()
-                .create();
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(APIUrl.BASE_URL)
-                .client(okHttpClient)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
-
-        //Defining retrofit api service
-        APIService service = retrofit.create(APIService.class);
-
-        Toast.makeText(this,   ((ApplicationController)getApplicationContext()).getId().toString(), Toast.LENGTH_SHORT).show();
-        Call<SelectedFoodretrofitarray> call = service.getselectedfoods(
-                ((ApplicationController)getApplicationContext()).getId(),
-                foodselection, year, month, day
-        );
-        call.enqueue(new Callback<SelectedFoodretrofitarray>() {
-            @Override
-            public void onResponse(Call<SelectedFoodretrofitarray> call, Response<SelectedFoodretrofitarray> response) {
-                nauji = response.body().getUsers();
-                for ( SelectedFoodretrofit c:
-                        nauji) {
-                    carbohydrates += c.getCarbohydrates();
-                    protein+=c.getProtein();
-                    fats+=c.getFat();
-                    calories+=c.getCalories();
-                }
-                carbohycounter.setText(Float.toString(carbohydrates));
-                proteincounter.setText(Float.toString(protein));
-                fatcounter.setText(Float.toString(fats));
-                caloriescounter.setText(Float.toString(calories));
-                FoodListRetrofitAdapter customAdapterFoodListPrievew= new
-                        FoodListRetrofitAdapter(nauji);
-                recyclerView.setAdapter(customAdapterFoodListPrievew);
-                initSharedButton();
-            }
-            @Override
-            public void onFailure(Call<SelectedFoodretrofitarray> call, Throwable t) {
-                Toast.makeText(FoodList.this, t.getMessage().toString(), Toast.LENGTH_SHORT).show();
-                Log.d("bigerror", t.getMessage());
-
-            }
-        });
-
-    }
+//    private void RetrofitList()
+//    {
+//        //rion Cacheprovided
+//        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+//                .addInterceptor( provideOfflineCacheInterceptor() )
+//                .addNetworkInterceptor( provideCacheInterceptor() )
+//                .cache( provideCache() )
+//                .build();
+//        //endregion
+//        String year = requestedString.substring(0, 4);
+//        String month = requestedString.substring(5, 7);
+//        String day = requestedString.substring(8, 10);
+//       Log.d("rezas",year);
+//
+//        Gson gson = new GsonBuilder()
+//                .setLenient()
+//                .create();
+//        Retrofit retrofit = new Retrofit.Builder()
+//                .baseUrl(APIUrl.BASE_URL)
+//                .client(okHttpClient)
+//                .addConverterFactory(GsonConverterFactory.create(gson))
+//                .build();
+//
+//        //Defining retrofit api service
+//        APIService service = retrofit.create(APIService.class);
+//
+//        Toast.makeText(this,   ((ApplicationController)getApplicationContext()).getId().toString(), Toast.LENGTH_SHORT).show();
+//        Call<SelectedFoodretrofitarray> call = service.getselectedfoods(
+//                ((ApplicationController)getApplicationContext()).getId(),
+//                foodselection, year, month, day
+//        );
+//        call.enqueue(new Callback<SelectedFoodretrofitarray>() {
+//            @Override
+//            public void onResponse(Call<SelectedFoodretrofitarray> call, Response<SelectedFoodretrofitarray> response) {
+//                nauji = response.body().getUsers();
+//                for ( SelectedFoodretrofit c:
+//                        nauji) {
+//                    carbohydrates += c.getCarbohydrates();
+//                    protein+=c.getProtein();
+//                    fats+=c.getFat();
+//                    calories+=c.getCalories();
+//                }
+//                carbohycounter.setText(Float.toString(carbohydrates));
+//                proteincounter.setText(Float.toString(protein));
+//                fatcounter.setText(Float.toString(fats));
+//                caloriescounter.setText(Float.toString(calories));
+//                FoodListRetrofitAdapter customAdapterFoodListPrievew= new
+//                        FoodListRetrofitAdapter(nauji);
+//                recyclerView.setAdapter(customAdapterFoodListPrievew);
+//                initSharedButton();
+//            }
+//            @Override
+//            public void onFailure(Call<SelectedFoodretrofitarray> call, Throwable t) {
+//                Toast.makeText(FoodList.this, t.getMessage().toString(), Toast.LENGTH_SHORT).show();
+//                Log.d("bigerror", t.getMessage());
+//
+//            }
+//        });
+//
+//    }
     public static Interceptor provideCacheInterceptor ()
     {
         return new Interceptor()
@@ -343,28 +331,7 @@ public class FoodList extends AppCompatActivity implements Currentuser, FoodList
         });
     }
 
-    private void initSharedButton(){
 
-        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-        String month = requestedString.substring(5, 7);
-        String day = requestedString.substring(8, 10);
-        String timestampmonth = timestamp.toString().substring(5,7);
-        String timestampday = timestamp.toString().substring(8,10);
-
-
-
-//        share.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                if(month.equals(timestampmonth)&&day.equals(timestampday))
-//               foodListViewModel.ShareFoodList();
-//                else
-//                {
-//                    Toast.makeText(FoodList.this, "Can't share earlier diet", Toast.LENGTH_SHORT).show();
-//                }
-//            }
-//        });
-    }
     ///
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -464,28 +431,23 @@ public class FoodList extends AppCompatActivity implements Currentuser, FoodList
         });
 
             }
-    private void setupRecyclerView(RecyclerView recyclerView) {
+    private void setupRecyclerView() {
 
-        FoodListRetrofitAdapterNew adapter = new  FoodListRetrofitAdapterNew();
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+      customAdapterFoodListPrievew= new
+                FoodListRetrofitAdapterNew();
+        activityFoodListBinding.recyclerFood.setLayoutManager(new LinearLayoutManager(this));
+        activityFoodListBinding.recyclerFood.setHasFixedSize(true);
+        activityFoodListBinding.recyclerFood.setAdapter(customAdapterFoodListPrievew);
+      //  Log.d("tikrinu", String.valueOf(foodListViewModel.selectedFoodretrofits.size()));
+
     }
 
     @Override
     public void onRepositoriesChanged(MutableLiveData<List<SelectedFoodretrofit>> repositories) {
         receivedSelectedFoods = repositories.getValue();
         Log.d("ijunge", String.valueOf(repositories.getValue().size()));
-        FoodListRetrofitAdapterNew customAdapterFoodListPrievew= new
-                FoodListRetrofitAdapterNew(repositories.getValue());
-       FoodListRetrofitAdapterNew adapter =
-                (FoodListRetrofitAdapterNew) activityFoodListBinding.recyclerFood.getAdapter();
-
-        customAdapterFoodListPrievew.setSelectedFoods(repositories.getValue());
+        customAdapterFoodListPrievew.setSelectedFoodretrofits(repositories.getValue());
         customAdapterFoodListPrievew.notifyDataSetChanged();
-        activityFoodListBinding.recyclerFood.setLayoutManager(new LinearLayoutManager(this));
-        activityFoodListBinding.recyclerFood.setHasFixedSize(true);
-        activityFoodListBinding.recyclerFood.setAdapter(customAdapterFoodListPrievew);
-        Log.d("tikrinu", String.valueOf(foodListViewModel.selectedFoodretrofits.size()));
 
 
     }

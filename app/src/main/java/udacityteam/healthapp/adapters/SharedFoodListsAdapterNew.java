@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -29,8 +30,8 @@ public class SharedFoodListsAdapterNew extends RecyclerView.Adapter<SharedFoodLi
     public SharedFoodListsAdapterNew() {
         this.oneSharedFoodProductsListRetrofits = Collections.emptyList();
     }
-    public SharedFoodListsAdapterNew(List<OneSharedFoodProductsListRetrofit> repositories, String foodselection) {
-        this.oneSharedFoodProductsListRetrofits = repositories;
+    public SharedFoodListsAdapterNew(String foodselection) {
+        this.oneSharedFoodProductsListRetrofits = new ArrayList<OneSharedFoodProductsListRetrofit>();
         this.foodselection = foodselection;
     }
     public void setSelectedFoods(List<OneSharedFoodProductsListRetrofit> repositories) {

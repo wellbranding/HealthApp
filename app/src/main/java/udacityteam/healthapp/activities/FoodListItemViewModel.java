@@ -55,7 +55,7 @@ public class FoodListItemViewModel extends BaseObservable implements ViewModel {
     // Allows recycling ItemRepoViewModels within the recyclerview adapter
     public void setSelectectedFoood(SelectedFoodretrofit selectedFoodretrofit) {
         this.selectedFoodretrofit = selectedFoodretrofit;
-        notify();
+//        notify();
     }
     public void onItemClick(View view) {
         context.startActivity(FoodNutritiensDisplayPrieview.newIntent(context, selectedFoodretrofit));

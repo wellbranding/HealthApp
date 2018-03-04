@@ -92,7 +92,7 @@ public class CommunityFoodListsDisplayFragment0MVVM extends Fragment implements 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        viewModel = ViewModelProviders.of(this).
+        viewModel = ViewModelProviders.of(getActivity()).
                 get(CommunityFoodListDisplayFragment0MVVMViewModel.class);
        // viewModel = new CommunityFoodListDisplayFragment0MVVMViewModel(getContext(), this );
         Bundle bundle = getArguments();
@@ -107,10 +107,12 @@ public class CommunityFoodListsDisplayFragment0MVVM extends Fragment implements 
     @Override
     public View onCreateView(LayoutInflater inflater,  ViewGroup container, Bundle savedInstanceState) {
         communityListFragmentBinding = DataBindingUtil.inflate(inflater, R.layout.community_list_fragment, container, false);
-        InitializeRecyclerView();
+
 
      //  communityListFragmentBinding.setViewModel(viewModel);
         viewModel.LoadFoodList(SharedFoodListDatabase);
+        InitializeRecyclerView();
+       // LoadFoodListMutable();
         filterData =  communityListFragmentBinding.getRoot().findViewById(R.id.filterdata);
 
         filterData.setOnClickListener(new View.OnClickListener() {
@@ -156,11 +158,16 @@ public class CommunityFoodListsDisplayFragment0MVVM extends Fragment implements 
 //
 //        return rootView;
 //    }
+    public void LoadFoodListMutable()
+    {
+        communityListFragmentBinding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        communityListFragmentBinding.recyclerView.setHasFixedSize(true);
+    }
 @Override
 public void onRepositoriesChanged(List<OneSharedFoodProductsListRetrofit> repositories) {
     Log.d("ijunge", String.valueOf(repositories.size()));
     SharedFoodListsAdapterNew customAdapterFoodListPrievew= new
-            SharedFoodListsAdapterNew(repositories, side);
+            SharedFoodListsAdapterNew(side);
 
     customAdapterFoodListPrievew.setSelectedFoods(repositories);
     customAdapterFoodListPrievew.notifyDataSetChanged();
@@ -172,9 +179,17 @@ public void onRepositoriesChanged(List<OneSharedFoodProductsListRetrofit> reposi
 
     private void InitializeRecyclerView()
     {
+       // List<OneSharedFoodProductsListRetrofit> repositories;
+        SharedFoodListsAdapterNew customAdapterFoodListPrievew= new
+                SharedFoodListsAdapterNew(side);
+        viewModel.mutableLiveData.observe(getActivity(), (selectedfoods)->{
+            customAdapterFoodListPrievew.setSelectedFoods(selectedfoods);
+            customAdapterFoodListPrievew.notifyDataSetChanged();
 
+        } );
         mLayoutManager = new LinearLayoutManager(getActivity());
         communityListFragmentBinding.recyclerView.setLayoutManager(mLayoutManager);
+        communityListFragmentBinding.recyclerView.setAdapter(customAdapterFoodListPrievew);
 
     }
     private void RetrofitList()

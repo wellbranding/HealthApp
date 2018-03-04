@@ -239,6 +239,7 @@ public class FoodListViewModel extends android.arch.lifecycle.ViewModel implemen
         if (subscription != null && !subscription.isUnsubscribed()) subscription.unsubscribe();
         subscription = null;
         context = null;
+        dataListener = null;
       //  dataListener = null;
     }
 
