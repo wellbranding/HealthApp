@@ -9,70 +9,106 @@
             type="udacityteam.healthapp.activities.FoodListViewModel"/>
     </data>
 
-<RelativeLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#ffffff"
-   >
+
+    <android.support.v4.widget.DrawerLayout
+        android:id="@+id/drawer_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+        tools:openDrawer="start">
+
 
 
     <RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff"
+
+   >
+
+    <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:id="@+id/foodlistinformation"
-        android:background="@color/colorPrimary"
-        android:layout_height="100dp">
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:id="@+id/toolbars"
+        android:theme="@style/AppTheme.AppBarOverlay">
 
-        <TextView
-            android:id="@+id/caloriescount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/fatcount"
-            android:layout_alignStart="@+id/fatcount"
-            android:layout_below="@+id/fatcount"
-            android:layout_marginTop="16dp"
-            android:text="Calories"
-            android:textColor="#ffffff"
-            android:textSize="16sp" />
 
-        <TextView
-            android:id="@+id/fatcount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/proteincount"
-            android:layout_alignBottom="@+id/proteincount"
-            android:layout_marginLeft="55dp"
-            android:layout_marginStart="55dp"
-            android:layout_toEndOf="@+id/proteincount"
-            android:layout_toRightOf="@+id/proteincount"
-            android:text="Calories"
-            android:textColor="#ffffff"
-            android:textSize="16sp" />
-        <TextView
-            android:id="@+id/proteincount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginLeft="72dp"
-            android:layout_marginStart="72dp"
-            android:layout_marginTop="21dp"
-            android:text="Calories"
-            android:textColor="#ffffff"
-            android:textSize="16sp" />
 
-        <TextView
-            android:id="@+id/carbohncount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/caloriescount"
-            android:layout_alignBottom="@+id/caloriescount"
-            android:layout_alignLeft="@+id/proteincount"
-            android:layout_alignStart="@+id/proteincount"
-            android:text="Calories"
-            android:textColor="#ffffff"
-            android:textSize="16sp" />
-    </RelativeLayout>
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_alignParentTop="true"
+        android:layout_width="match_parent"
+        app:popupTheme="@style/AppTheme.PopupOverlay"
+        android:layout_height="56dp" />
+    </android.support.design.widget.AppBarLayout>
+
+
+        <RelativeLayout
+            android:id="@+id/foodlistinformation"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerInParent="true"
+            android:foregroundGravity="center_horizontal"
+            android:layout_below="@+id/toolbars"
+            android:background="@color/colorPrimary"
+            android:gravity="center_horizontal">
+
+
+            <TextView
+                android:id="@+id/caloriescount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+              android:layout_alignParentTop="true"
+                android:layout_marginTop="15dp"
+                android:text="@{viewModel.caloriesCount}"
+                android:textColor="#ffffff"
+                android:textStyle="bold"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/fatcount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="40dp"
+                android:textStyle="bold"
+
+                android:layout_alignTop="@id/caloriescount"
+                android:layout_alignBottom="@id/caloriescount"
+                android:layout_toEndOf="@+id/caloriescount"
+                android:layout_toRightOf="@+id/caloriescount"
+                android:text="@{viewModel.fatsCount}"
+                android:textColor="#ffffff"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/proteincount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:layout_marginBottom="15dp"
+                android:layout_alignParentBottom="true"
+                android:text="@{viewModel.proteinCount}"
+
+                android:textColor="#ffffff"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/carbohncount"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@id/proteincount"
+                android:layout_alignBottom="@id/proteincount"
+                android:layout_width="wrap_content"
+                android:textStyle="bold"
+                android:layout_toEndOf="@+id/proteincount"
+                android:layout_toRightOf="@+id/proteincount"
+                android:layout_marginLeft="40dp"
+                android:text="@{viewModel.carbosCount}"
+                android:textColor="#ffffff"
+                android:textSize="16sp" />
+        </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -98,9 +134,20 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
+        android:onClick="@{()->viewModel.ShareFoodList()}"
         android:text="@{viewModel.canshare}"
         android:layout_alignParentStart="true"
         android:background="@color/colorPrimary" />
 
 </RelativeLayout>
+        <android.support.design.widget.NavigationView
+            android:id="@+id/nav_view"
+            android:layout_width="wrap_content"
+
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            android:fitsSystemWindows="true"
+            app:headerLayout="@layout/nav_header_main"
+            app:menu="@menu/activity_main_drawer" />
+    </android.support.v4.widget.DrawerLayout>
 </layout>

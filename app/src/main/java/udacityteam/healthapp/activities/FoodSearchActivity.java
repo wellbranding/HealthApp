@@ -7,10 +7,13 @@ import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -41,6 +44,7 @@ import java.net.URL;
 import java.util.ArrayList;
 
 import udacityteam.healthapp.R;
+import udacityteam.healthapp.activities.CommunityActivities.CommunityList;
 import udacityteam.healthapp.adapters.SearchFoodsAdapter;
 import udacityteam.healthapp.models.Model;
 
@@ -79,9 +83,12 @@ public class FoodSearchActivity extends AppCompatActivity implements SearchView.
         Intent iin = getIntent();
         Bundle b = iin.getExtras();
         foodselection = (String) b.get("foodselection");
-        getSupportActionBar().setTitle(foodselection);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         main = findViewById(R.id.main);
         noresultsdisplay = findViewById(R.id.noresultsdisplay);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         SharedFoodListDatabase = (String) b.get("SharedFoodListDatabase");
         buffer = new StringBuffer();
@@ -98,6 +105,12 @@ public class FoodSearchActivity extends AppCompatActivity implements SearchView.
 //
     }
 
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
     @Override
     public boolean onCreateOptionsMenu(final Menu menu) {
         getMenuInflater().inflate(R.menu.menu_search, menu);
@@ -136,7 +149,7 @@ public class FoodSearchActivity extends AppCompatActivity implements SearchView.
         main.setVisibility(View.VISIBLE);
         lv.setVisibility(View.INVISIBLE);
         searchView.setQuery("", false);
-        lv.setVisibility(View.INVISIBLE);
+        models1.clear();
         new FoodSearchActivity.JSONTask1().execute(amm.toString(), query);
         // TODO Auto-generated method stub
         return false;
@@ -368,19 +381,19 @@ public class FoodSearchActivity extends AppCompatActivity implements SearchView.
                     models1.add(model);
                     Log.e("aaa", String.valueOf(models1.size()));
                 }
-                if(models.size()==0)
-                {
-                    StringBuilder amm = new StringBuilder();
-                    amm.append("https://api.nal.usda.gov/ndb/search/?format=json&q=");
-                    amm.append(query);
-                    amm.append("&sort=n&max=50&offset=0&ds=Standard+Reference&api_key=HXLecTDsMqy1Y6jNoYPw2n3DQ30FeGXxD2XBZqJh");
-                    //   amm.append("&type=f&format=json&api_key=HXLecTDsMqy1Y6jNoYPw2n3DQ30FeGXxD2XBZqJh");
-                    main.setVisibility(View.VISIBLE);
-                    lv.setVisibility(View.INVISIBLE);
-                    searchView.setQuery("", false);
-                    lv.setVisibility(View.INVISIBLE);
-                    new FoodSearchActivity.JSONTask1().execute(amm.toString());
-                }
+//                if(models.size()==0)
+//                {
+//                    StringBuilder amm = new StringBuilder();
+//                    amm.append("https://api.nal.usda.gov/ndb/search/?format=json&q=");
+//                    amm.append(query);
+//                    amm.append("&sort=n&max=50&offset=0&ds=Standard+Reference&api_key=HXLecTDsMqy1Y6jNoYPw2n3DQ30FeGXxD2XBZqJh");
+//                    //   amm.append("&type=f&format=json&api_key=HXLecTDsMqy1Y6jNoYPw2n3DQ30FeGXxD2XBZqJh");
+//                    main.setVisibility(View.VISIBLE);
+//                    lv.setVisibility(View.INVISIBLE);
+//                    searchView.setQuery("", false);
+//                    lv.setVisibility(View.INVISIBLE);
+//                    new FoodSearchActivity.JSONTask1().execute(amm.toString());
+//                }
                 return finalobjectt.getString("ndbno");
             } catch (MalformedURLException e) {
                 e.printStackTrace();
@@ -411,24 +424,32 @@ public class FoodSearchActivity extends AppCompatActivity implements SearchView.
                     LinearLayoutManager liner = new LinearLayoutManager(FoodSearchActivity.this);
                     DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(main.getContext(),
                             liner.getOrientation());
-                    main.addItemDecoration(dividerItemDecoration);
-                    main.setLayoutManager(liner);
-                    adapter = new SearchFoodsAdapter(models1);
-                    main.setAdapter(adapter);
-                    main.setVisibility(View.VISIBLE);
-                    noresultsdisplay.setVisibility(View.GONE);
-                    // aki.setText(String.valueOf(models.size()));
-                } catch (Exception e) {
+                    // main.addItemDecoration(dividerItemDecoration);
+                    Log.d("sizeee",String.valueOf(models1.size()));
+                    if (models1.size() != 0) {
+                        main.setLayoutManager(liner);
+                        SearchFoodsAdapter adapter = new SearchFoodsAdapter(models1);
+                        main.setAdapter(adapter);
+                        main.setVisibility(View.VISIBLE);
+
+                        noresultsdisplay.setVisibility(View.GONE);
+                        // aki.setText(String.valueOf(models.size()));
+                    }
+
+
+                }
+                catch (Exception e) {
                     // aki.setText(s);
                 }
             }
             else
             {
-
+                noresultsdisplay.setVisibility(View.VISIBLE);
             }
 
         }
     }
+
 
 
     }

@@ -1,22 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
-    <data>
-
-        <variable
-            name="viewModel"
-            type="udacityteam.healthapp.activities.MainActivityViewModel"/>
-    </data>
-
-
-<RelativeLayout
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="20dp"
-    android:layout_gravity="center_horizontal"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="udacityteam.healthapp.MainActivity"
     tools:showIn="@layout/app_bar_main">
+
 
     <include
         layout="@layout/app_bar_main"
@@ -34,15 +25,12 @@
     <include
         android:id="@+id/recyclerView"
         layout="@layout/layout_main_recyclerview"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true" />
 
-        />
+    <include layout="@layout/layout_floating_action"
+        android:id="@+id/layout_floating_action"/>
 
-    <include
-        android:id="@+id/layout_floating_action"
-        layout="@layout/layout_floating_action"
-        />
 
 </RelativeLayout>
-</layout>
-
-

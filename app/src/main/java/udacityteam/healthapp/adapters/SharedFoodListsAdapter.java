@@ -11,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import udacityteam.healthapp.Model.OneSharedFoodProductsListRetrofit;
 import udacityteam.healthapp.R;
@@ -23,7 +24,7 @@ import udacityteam.healthapp.activities.FoodListPrieview;
 public class SharedFoodListsAdapter extends RecyclerView.Adapter<SharedFoodListsAdapter.ViewHolder> {
     private static final String TAG = "CustomAdapter";
 
-    private ArrayList<OneSharedFoodProductsListRetrofit> mDataSet = new ArrayList<>();
+    private List<OneSharedFoodProductsListRetrofit> mDataSet = new ArrayList<>();
     private String DatabaseStorage;
     Context context;
 
@@ -79,7 +80,7 @@ public class SharedFoodListsAdapter extends RecyclerView.Adapter<SharedFoodLists
      *
      * @param dataSet String[] containing the data to populate views to be used by RecyclerView.
      */
-    public SharedFoodListsAdapter(ArrayList<OneSharedFoodProductsListRetrofit> dataSet,
+    public SharedFoodListsAdapter(List<OneSharedFoodProductsListRetrofit> dataSet,
                                   String databaseStorage) {
         mDataSet = dataSet;
         DatabaseStorage = databaseStorage;

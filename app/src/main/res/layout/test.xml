@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
+    <data>
+
+        <variable
+            name="viewModel"
+            type="udacityteam.healthapp.activities.MainActivityViewModel"/>
+    </data>
+
+<android.support.constraint.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <android.support.v4.widget.DrawerLayout
+        android:id="@+id/drawer_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+        tools:openDrawer="start">
+        <include
+            layout="@layout/app_bar_main"
+            android:id="@+id/app_bar_main"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+
+        <include
+        android:id="@+id/recyclerView"
+        layout="@layout/layout_main_recyclerview"
+
+        />
+    </android.support.v4.widget.DrawerLayout>
+</android.support.constraint.ConstraintLayout>
+</layout>

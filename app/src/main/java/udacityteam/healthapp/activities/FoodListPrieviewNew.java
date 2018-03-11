@@ -94,7 +94,7 @@ public class FoodListPrieviewNew extends AppCompatActivity implements FoodListPr
                 FoodListRetrofitAdapterNew(repositories);
 
 
-        customAdapterFoodListPrievew.setSelectedFoods(repositories);
+        customAdapterFoodListPrievew.setSelectedFoodretrofits(repositories);
         customAdapterFoodListPrievew.notifyDataSetChanged();
        binding.recyclerFood.setLayoutManager(new LinearLayoutManager(this));
         binding.recyclerFood.setHasFixedSize(true);

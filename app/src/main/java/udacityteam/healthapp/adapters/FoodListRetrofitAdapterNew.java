@@ -22,6 +22,9 @@ public class FoodListRetrofitAdapterNew extends RecyclerView.Adapter<FoodListRet
 
     private List<SelectedFoodretrofit> selectedFoodretrofits;
 
+    public void setSelectedFoodretrofits(List<SelectedFoodretrofit> selectedFoodretrofits) {
+        this.selectedFoodretrofits = selectedFoodretrofits;
+    }
 
     public FoodListRetrofitAdapterNew() {
         this.selectedFoodretrofits = Collections.emptyList();
@@ -32,9 +35,7 @@ public class FoodListRetrofitAdapterNew extends RecyclerView.Adapter<FoodListRet
     }
 
 
-    public void setSelectedFoods(List<SelectedFoodretrofit> repositories) {
-        this.selectedFoodretrofits = repositories;
-    }
+
 
 
 

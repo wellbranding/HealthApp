@@ -29,6 +29,11 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.android.support:appcompat-v7:26.1.0'
+    implementation "android.arch.lifecycle:extensions:1.1.0"
+    // alternatively, just ViewModel
+    implementation "android.arch.lifecycle:viewmodel:1.1.0"
+    // alternatively, just LiveData
+    implementation "android.arch.lifecycle:livedata:1.1.0"
     implementation 'com.android.support:design:26.1.0'
     compile 'com.rengwuxian.materialedittext:library:2.1.4'
     compile 'com.jakewharton:butterknife:8.8.1'
@@ -66,6 +71,8 @@ dependencies {
     compile 'io.reactivex.rxjava2:rxjava:2.1.8'
     compile 'com.squareup.retrofit2:adapter-rxjava:2.1.0'
 }
+
+
 
 
 

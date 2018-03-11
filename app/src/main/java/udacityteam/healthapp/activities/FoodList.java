@@ -1,5 +1,7 @@
 package udacityteam.healthapp.activities;
 
+import android.arch.lifecycle.MutableLiveData;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -8,10 +10,16 @@ import android.databinding.ViewDataBinding;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -49,6 +57,7 @@ import udacityteam.healthapp.Model.Result;
 import udacityteam.healthapp.Model.SelectedFoodretrofit;
 import udacityteam.healthapp.Model.SelectedFoodretrofitarray;
 import udacityteam.healthapp.R;
+import udacityteam.healthapp.activities.CommunityActivities.CommunityList;
 import udacityteam.healthapp.adapters.FoodListRetrofitAdapter;
 import udacityteam.healthapp.adapters.FoodListRetrofitAdapterNew;
 import udacityteam.healthapp.adapters.FoodViewHolder;
@@ -57,7 +66,7 @@ import udacityteam.healthapp.databinding.ActivityFoodListBinding;
 import udacityteam.healthapp.models.SelectedFood;
 import okhttp3.Interceptor;
 
-public class FoodList extends AppCompatActivity implements Currentuser, FoodListViewModel.DataListener  {
+public class FoodList extends AppCompatActivity implements Currentuser, FoodListViewModel.DataListener, NavigationView.OnNavigationItemSelectedListener  {
 
     RecyclerView recyclerView;
     RecyclerView.LayoutManager layoutManager;
@@ -90,35 +99,48 @@ public class FoodList extends AppCompatActivity implements Currentuser, FoodList
     private FoodListViewModel foodListViewModel;
     private ActivityFoodListBinding activityFoodListBinding;
     List<SelectedFoodretrofit> receivedSelectedFoods;
+    FoodListRetrofitAdapterNew customAdapterFoodListPrievew;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-       // setContentView(R.layout.activity_food_list);
-      //  foodListViewModel = new FoodListViewModel(getApplicationContext());
-        activityFoodListBinding = DataBindingUtil.setContentView(this, R.layout.activity_food_list);
-
-        activityFoodListBinding.setViewModel(foodListViewModel);
-        caloriescounter = findViewById(R.id.caloriescount);
-        proteincounter = findViewById(R.id.proteincount);
-        carbohycounter = findViewById(R.id.carbohncount);
-        fatcounter = findViewById(R.id.fatcount);
         Intent iin = getIntent();
-        message = findViewById(R.id.message);
-        share = findViewById(R.id.share);
         Bundle b = iin.getExtras();
         foodselection = (String) b.get("foodselection");
         requestedString = (String) b.get("requestdate");
         SharedFoodListDatabase = (String) b.get("SharedFoodListDatabase");
         foodListViewModel = new FoodListViewModel(this, this, foodselection, SharedFoodListDatabase);
+        activityFoodListBinding = DataBindingUtil.setContentView(this, R.layout.activity_food_list);
+        caloriescounter = findViewById(R.id.caloriescount);
+        proteincounter = findViewById(R.id.proteincount);
+        carbohycounter = findViewById(R.id.carbohncount);
+        fatcounter = findViewById(R.id.fatcount);
+
+        message = findViewById(R.id.message);
+        share = findViewById(R.id.share);
+
+        activityFoodListBinding.setViewModel(foodListViewModel);
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("MainActivity");
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
         getSupportActionBar().setTitle(foodselection);
-        share.setEnabled(false);
+        share.setEnabled(true);
 
         if (requestedString != null)
             stringdate = requestedString;
         else {
             Date date = new Date();
-
             Date newDate = new Date(date.getTime());
             SimpleDateFormat dt = new SimpleDateFormat("yyyy-MM-dd");
             stringdate = dt.format(newDate);
@@ -126,23 +148,14 @@ public class FoodList extends AppCompatActivity implements Currentuser, FoodList
         Log.d("reqss", stringdate);
 
         selectedFoods = new ArrayList<>();
-//        recyclerView = (RecyclerView) findViewById(R.id.recycler_food);
-//        recyclerView.setHasFixedSize(true);
-//        layoutManager = new LinearLayoutManager(this);
-//        recyclerView.setLayoutManager(layoutManager);
         foodListViewModel.IsShared(foodselection);
 
         String year = requestedString.substring(0, 4);
         String month = requestedString.substring(5, 7);
         String day = requestedString.substring(8, 10);
-        setupRecyclerView(activityFoodListBinding.recyclerFood);
+        setupRecyclerView();
         foodListViewModel.LoadFoodList(foodselection, year, month, day);
 
-     //   Log.d("tikrinu", String.valueOf(foodListViewModel.selectedFoodretrofits.size()));
-
-       // IsShared();
-
-   //     RetrofitList();
 
 
     }
@@ -155,66 +168,66 @@ public class FoodList extends AppCompatActivity implements Currentuser, FoodList
 
 
 
-    private void RetrofitList()
-    {
-        //rion Cacheprovided
-        OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                .addInterceptor( provideOfflineCacheInterceptor() )
-                .addNetworkInterceptor( provideCacheInterceptor() )
-                .cache( provideCache() )
-                .build();
-        //endregion
-        String year = requestedString.substring(0, 4);
-        String month = requestedString.substring(5, 7);
-        String day = requestedString.substring(8, 10);
-       Log.d("rezas",year);
-
-        Gson gson = new GsonBuilder()
-                .setLenient()
-                .create();
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(APIUrl.BASE_URL)
-                .client(okHttpClient)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
-
-        //Defining retrofit api service
-        APIService service = retrofit.create(APIService.class);
-
-        Toast.makeText(this,   ((ApplicationController)getApplicationContext()).getId().toString(), Toast.LENGTH_SHORT).show();
-        Call<SelectedFoodretrofitarray> call = service.getselectedfoods(
-                ((ApplicationController)getApplicationContext()).getId(),
-                foodselection, year, month, day
-        );
-        call.enqueue(new Callback<SelectedFoodretrofitarray>() {
-            @Override
-            public void onResponse(Call<SelectedFoodretrofitarray> call, Response<SelectedFoodretrofitarray> response) {
-                nauji = response.body().getUsers();
-                for ( SelectedFoodretrofit c:
-                        nauji) {
-                    carbohydrates += c.getCarbohydrates();
-                    protein+=c.getProtein();
-                    fats+=c.getFat();
-                    calories+=c.getCalories();
-                }
-                carbohycounter.setText(Float.toString(carbohydrates));
-                proteincounter.setText(Float.toString(protein));
-                fatcounter.setText(Float.toString(fats));
-                caloriescounter.setText(Float.toString(calories));
-                FoodListRetrofitAdapter customAdapterFoodListPrievew= new
-                        FoodListRetrofitAdapter(nauji);
-                recyclerView.setAdapter(customAdapterFoodListPrievew);
-                initSharedButton();
-            }
-            @Override
-            public void onFailure(Call<SelectedFoodretrofitarray> call, Throwable t) {
-                Toast.makeText(FoodList.this, t.getMessage().toString(), Toast.LENGTH_SHORT).show();
-                Log.d("bigerror", t.getMessage());
-
-            }
-        });
-
-    }
+//    private void RetrofitList()
+//    {
+//        //rion Cacheprovided
+//        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+//                .addInterceptor( provideOfflineCacheInterceptor() )
+//                .addNetworkInterceptor( provideCacheInterceptor() )
+//                .cache( provideCache() )
+//                .build();
+//        //endregion
+//        String year = requestedString.substring(0, 4);
+//        String month = requestedString.substring(5, 7);
+//        String day = requestedString.substring(8, 10);
+//       Log.d("rezas",year);
+//
+//        Gson gson = new GsonBuilder()
+//                .setLenient()
+//                .create();
+//        Retrofit retrofit = new Retrofit.Builder()
+//                .baseUrl(APIUrl.BASE_URL)
+//                .client(okHttpClient)
+//                .addConverterFactory(GsonConverterFactory.create(gson))
+//                .build();
+//
+//        //Defining retrofit api service
+//        APIService service = retrofit.create(APIService.class);
+//
+//        Toast.makeText(this,   ((ApplicationController)getApplicationContext()).getId().toString(), Toast.LENGTH_SHORT).show();
+//        Call<SelectedFoodretrofitarray> call = service.getselectedfoods(
+//                ((ApplicationController)getApplicationContext()).getId(),
+//                foodselection, year, month, day
+//        );
+//        call.enqueue(new Callback<SelectedFoodretrofitarray>() {
+//            @Override
+//            public void onResponse(Call<SelectedFoodretrofitarray> call, Response<SelectedFoodretrofitarray> response) {
+//                nauji = response.body().getUsers();
+//                for ( SelectedFoodretrofit c:
+//                        nauji) {
+//                    carbohydrates += c.getCarbohydrates();
+//                    protein+=c.getProtein();
+//                    fats+=c.getFat();
+//                    calories+=c.getCalories();
+//                }
+//                carbohycounter.setText(Float.toString(carbohydrates));
+//                proteincounter.setText(Float.toString(protein));
+//                fatcounter.setText(Float.toString(fats));
+//                caloriescounter.setText(Float.toString(calories));
+//                FoodListRetrofitAdapter customAdapterFoodListPrievew= new
+//                        FoodListRetrofitAdapter(nauji);
+//                recyclerView.setAdapter(customAdapterFoodListPrievew);
+//                initSharedButton();
+//            }
+//            @Override
+//            public void onFailure(Call<SelectedFoodretrofitarray> call, Throwable t) {
+//                Toast.makeText(FoodList.this, t.getMessage().toString(), Toast.LENGTH_SHORT).show();
+//                Log.d("bigerror", t.getMessage());
+//
+//            }
+//        });
+//
+//    }
     public static Interceptor provideCacheInterceptor ()
     {
         return new Interceptor()
@@ -318,29 +331,69 @@ public class FoodList extends AppCompatActivity implements Currentuser, FoodList
         });
     }
 
-    private void initSharedButton(){
 
-        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-        String month = requestedString.substring(5, 7);
-        String day = requestedString.substring(8, 10);
-        String timestampmonth = timestamp.toString().substring(5,7);
-        String timestampday = timestamp.toString().substring(8,10);
-
-
-
-        share.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(month.equals(timestampmonth)&&day.equals(timestampday))
-               foodListViewModel.ShareFoodList(foodselection, SharedFoodListDatabase);
-                else
-                {
-                    Toast.makeText(FoodList.this, "Can't share earlier diet", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-    }
     ///
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+
+        if (id == R.id.nav_breakfasts) {
+            Intent intent = new Intent(this, CommunityList.class);
+            Bundle extras = intent.getExtras();
+            intent.putExtra("titlename", "Community Breakfasts");
+            intent.putExtra("SharedFoodListDatabase", "SharedBreakfasts");
+            intent.putExtra("foodselection", "Breakfast");
+            startActivity(intent);
+            // Handle the camera action
+        } else if (id == R.id.nav_dinners) {
+            Intent intent = new Intent(this, CommunityList.class);
+            Bundle extras = intent.getExtras();
+            intent.putExtra("titlename", "Community Dinners");
+            intent.putExtra("SharedFoodListDatabase", "SharedDinners");
+            intent.putExtra("foodselection", "Dinner");
+            startActivity(intent);
+
+
+        } else if (id == R.id.nav_lunches) {
+            Intent
+                    intent = new Intent(this, CommunityList.class);
+            Bundle extras = intent.getExtras();
+            intent.putExtra("titlename", "Community Lunches");
+            intent.putExtra("SharedFoodListDatabase", "SharedLunches");
+            intent.putExtra("foodselection", "Lunch");
+            startActivity(intent);
+
+        } else if (id == R.id.nav_community_daily_diets) {
+            Intent intent = new Intent(this, CommunityList.class);
+            Bundle extras = intent.getExtras();
+            intent.putExtra("titlename", "Community Daily Diet Plan");
+            intent.putExtra("SharedFoodListDatabase", "SharedDailyDiets");
+            Toast.makeText(this, "Currently Not Available", Toast.LENGTH_SHORT).show();
+            //startActivity(intent);
+
+        } else if (id == R.id.nav_snacks) {
+            Intent intent = new Intent(this, CommunityList.class);
+            Bundle extras = intent.getExtras();
+            intent.putExtra("titlename", "Snacks");
+            intent.putExtra("SharedFoodListDatabase", "SharedSnacks");
+            intent.putExtra("foodselection", "Snacks");
+            startActivity(intent);
+            //test
+
+        } else if (id == R.id.nav_drinks_cocktails) {
+            Intent intent = new Intent(this, CommunityList.class);
+            Bundle extras = intent.getExtras();
+            intent.putExtra("titlename", "Drinks/Coctails");
+            intent.putExtra("SharedFoodListDatabase", "SharedDrinks");
+            intent.putExtra("foodselection", "Drinks");
+            startActivity(intent);
+        }
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
 
     private void ShareFoodList() //only if today
     {
@@ -378,37 +431,24 @@ public class FoodList extends AppCompatActivity implements Currentuser, FoodList
         });
 
             }
-    private void setupRecyclerView(RecyclerView recyclerView) {
+    private void setupRecyclerView() {
 
-        FoodListRetrofitAdapterNew adapter = new  FoodListRetrofitAdapterNew();
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-    }
-
-    @Override
-    public void onRepositoriesChanged(List<SelectedFoodretrofit> repositories) {
-        receivedSelectedFoods = repositories;
-        Log.d("ijunge", String.valueOf(repositories.size()));
-        FoodListRetrofitAdapterNew customAdapterFoodListPrievew= new
-                FoodListRetrofitAdapterNew(repositories);
-       FoodListRetrofitAdapterNew adapter =
-                (FoodListRetrofitAdapterNew) activityFoodListBinding.recyclerFood.getAdapter();
-
-        customAdapterFoodListPrievew.setSelectedFoods(repositories);
-        customAdapterFoodListPrievew.notifyDataSetChanged();
+      customAdapterFoodListPrievew= new
+                FoodListRetrofitAdapterNew();
         activityFoodListBinding.recyclerFood.setLayoutManager(new LinearLayoutManager(this));
         activityFoodListBinding.recyclerFood.setHasFixedSize(true);
         activityFoodListBinding.recyclerFood.setAdapter(customAdapterFoodListPrievew);
-        share.setEnabled(true);
-        Log.d("tikrinu", String.valueOf(foodListViewModel.selectedFoodretrofits.size()));
-        share.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+      //  Log.d("tikrinu", String.valueOf(foodListViewModel.selectedFoodretrofits.size()));
 
-                    foodListViewModel.ShareFoodList(foodselection, SharedFoodListDatabase);
+    }
 
-            }
-        });
+    @Override
+    public void onRepositoriesChanged(MutableLiveData<List<SelectedFoodretrofit>> repositories) {
+        receivedSelectedFoods = repositories.getValue();
+        Log.d("ijunge", String.valueOf(repositories.getValue().size()));
+        customAdapterFoodListPrievew.setSelectedFoodretrofits(repositories.getValue());
+        customAdapterFoodListPrievew.notifyDataSetChanged();
+
 
     }
 }
