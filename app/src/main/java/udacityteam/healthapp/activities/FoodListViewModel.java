@@ -96,8 +96,10 @@ public class FoodListViewModel extends android.arch.lifecycle.ViewModel implemen
 
     public void LoadFoodList( String foodselection, String year, String month, String day)
     {
+
         if (subscription != null && !subscription.isUnsubscribed()) subscription.unsubscribe();
         ApplicationController application = ApplicationController.get(context);
+        Toast.makeText(context, ((ApplicationController)context.getApplicationContext()).getId().toString(), Toast.LENGTH_LONG).show();
         PHPService phpService = application.getPHPService();
         subscription = phpService.getselectedfoods(((ApplicationController)context.getApplicationContext()).getId(),
                 foodselection, year, month, day)

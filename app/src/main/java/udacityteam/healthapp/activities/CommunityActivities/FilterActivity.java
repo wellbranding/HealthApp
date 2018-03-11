@@ -43,18 +43,18 @@ public class FilterActivity extends DialogFragment {
 //        this.onDismissListener = onDismissListener;
 //    }
 
-    TextView carbohydratesbegin, carbohydratesend, proteinbegin, proteinend, caloriesbegin, caloriesend,
+    TextView  carbohydratesend, proteinbegin, proteinend, caloriesbegin, caloriesend,
             fatsbegin, fatsend;
     MultiSlider carbohydrates, protein, calories, fats;
     String SharedFoodListDatabase;
     Button confirm;
+
     CommunityFoodListDisplayFragment0MVVMViewModel viewModel;
 
     @Nullable
     @Override
     public View onCreateView(final LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.content_filter, container, false);
-        carbohydratesbegin =view.findViewById(R.id.carbobegin);
         carbohydratesend = view.findViewById(R.id.carboend);
         proteinbegin = view.findViewById(R.id.proteinbegin);
         proteinend = view.findViewById(R.id.proteinend);
@@ -78,7 +78,7 @@ public class FilterActivity extends DialogFragment {
         protein = view.findViewById(R.id.protein);
         calories = view.findViewById(R.id.calories);
         fats = view.findViewById(R.id.fat);
-    carbohydrates.setMax(10000);
+        carbohydrates.setMax(10000);
         protein.setMax(10000);
         fats.setMax(10000);
         calories.setMax(10000);
@@ -91,14 +91,15 @@ public class FilterActivity extends DialogFragment {
         fats.getThumb(1).setValue(10000);
         calories.getThumb(0).setValue(0);
         calories.getThumb(1).setValue(10000);
-        carbohydratesbegin.setText(String.valueOf(carbohydrates.getThumb(0).getValue()));
-        carbohydratesend.setText(String.valueOf(carbohydrates.getThumb(1).getValue()));
-        proteinbegin.setText(String.valueOf(protein.getThumb(0).getValue()));
-        proteinend.setText(String.valueOf(protein.getThumb(1).getValue()));
-        caloriesbegin.setText(String.valueOf(calories.getThumb(0).getValue()));
-        caloriesend.setText(String.valueOf(calories.getThumb(1).getValue()));
-        fatsbegin.setText(String.valueOf(fats.getThumb(0).getValue()));
-        fatsend.setText(String.valueOf(fats.getThumb(1).getValue()));
+        carbohydratesend.setText("Any");
+//        carbohydratesbegin.setText(String.valueOf(carbohydrates.getThumb(0).getValue()));
+//        carbohydratesend.setText(String.valueOf(carbohydrates.getThumb(1).getValue()));
+//        proteinbegin.setText(String.valueOf(protein.getThumb(0).getValue()));
+//        proteinend.setText(String.valueOf(protein.getThumb(1).getValue()));
+//        caloriesbegin.setText(String.valueOf(calories.getThumb(0).getValue()));
+//        caloriesend.setText(String.valueOf(calories.getThumb(1).getValue()));
+//        fatsbegin.setText(String.valueOf(fats.getThumb(0).getValue()));
+//        fatsend.setText(String.valueOf(fats.getThumb(1).getValue()));
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -114,8 +115,21 @@ public class FilterActivity extends DialogFragment {
                                        MultiSlider.Thumb thumb,
                                        int thumbIndex,
                                        int value) {
-                carbohydratesbegin.setText(String.valueOf(carbohydrates.getThumb(0).getValue()));
-                carbohydratesend.setText(String.valueOf(carbohydrates.getThumb(1).getValue()));
+                if(carbohydrates.getThumb(0).getValue() == 0) {
+                    // carbohydratesbegin.setText(String.valueOf(carbohydrates.getThumb(0).getValue()));
+                    carbohydratesend.setText("Up to " + String.valueOf(carbohydrates.getThumb(1).getValue()));
+                }
+                if(carbohydrates.getThumb(1).getValue()==10000)
+                {
+                    carbohydratesend.setText("From  " + String.valueOf(carbohydrates.getThumb(0).getValue()));
+                }
+                if(carbohydrates.getThumb(0).getValue()!=0 && carbohydrates.getThumb(1).getValue()!=10000)
+                    carbohydratesend.setText(String.valueOf(carbohydrates.getThumb(0).getValue()) +  " - " +
+                String.valueOf(carbohydrates.getThumb(1).getValue()));
+                if(carbohydrates.getThumb(0).getValue()==0 &&
+                        carbohydrates.getThumb(1).getValue()==10000)
+                   carbohydratesend.setText("Any");
+
             }
         });
         protein.setOnThumbValueChangeListener(new MultiSlider.OnThumbValueChangeListener() {

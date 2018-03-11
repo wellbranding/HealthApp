@@ -72,7 +72,7 @@ public class CommunityFoodListDisplayFragment0MVVMViewModel extends AndroidViewM
     public CommunityFoodListDisplayFragment0MVVMViewModel(Application application)
     {
         super(application);
-        this.application = ApplicationController.get(application.getApplicationContext());
+        this.application = ApplicationController.get(application.getBaseContext());
 
     }
 

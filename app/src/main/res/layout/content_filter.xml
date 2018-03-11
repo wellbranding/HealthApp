@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="8dp"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="udacityteam.healthapp.Activities.FilterActivity"
     tools:showIn="@layout/activity_filter">
@@ -13,8 +14,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:text="CONFIRM"
+        android:layout_alignParentEnd="true"
+        android:background="@color/colorPrimary"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="71dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:text="FILTER"
         tools:layout_editor_absoluteX="116dp"
         tools:layout_editor_absoluteY="327dp" />
 
@@ -27,7 +33,10 @@
         android:id="@+id/carbohydrates"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-
+        app:trackColor="@color/maindark"
+        app:rangeColor="@color/maindark"
+        app:range1Color="@color/maindark"
+        app:range2Color="@color/maindark"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
@@ -38,19 +47,11 @@
         app:thumbNumber="2" />
 
     <TextView
-        android:id="@+id/carbobegin"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
-        android:layout_marginTop="26dp"
-
-        android:text="TextView" />
-
-    <TextView
         android:id="@+id/carboend"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
+        android:textStyle="bold"
         android:layout_alignBaseline="@+id/carbobegin"
         android:layout_alignBottom="@+id/carbobegin"
         android:layout_alignParentEnd="true"
@@ -61,9 +62,11 @@
         android:id="@+id/textView4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/carboend"
-        android:layout_centerHorizontal="true"
-        android:text="Carbohydrates" />
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:text="Carbohydrates"
+        android:textStyle="bold" />
 </RelativeLayout>
 
     <RelativeLayout
@@ -75,7 +78,10 @@
             android:id="@+id/protein"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
+            app:trackColor="@color/maindark"
+            app:rangeColor="@color/maindark"
+            app:range1Color="@color/maindark"
+            app:range2Color="@color/maindark"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
@@ -121,7 +127,10 @@
             android:id="@+id/fat"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
+            app:trackColor="@color/maindark"
+            app:rangeColor="@color/maindark"
+            app:range1Color="@color/maindark"
+            app:range2Color="@color/maindark"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
@@ -133,6 +142,7 @@
         <TextView
             android:id="@+id/fatbegin"
             android:layout_width="wrap_content"
+            android:textStyle="bold"
             android:layout_height="wrap_content"
 
             android:layout_marginTop="26dp"
@@ -143,7 +153,7 @@
             android:id="@+id/fatnend"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-
+            android:textStyle="bold"
             android:layout_alignBaseline="@+id/fatbegin"
             android:layout_alignBottom="@+id/fatbegin"
             android:layout_alignParentEnd="true"
@@ -152,6 +162,7 @@
 
         <TextView
             android:id="@+id/textView5"
+            android:textStyle="bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/fatnend"
@@ -167,7 +178,10 @@
             android:id="@+id/calories"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
+            app:trackColor="@color/maindark"
+            app:rangeColor="@color/maindark"
+            app:range1Color="@color/maindark"
+            app:range2Color="@color/maindark"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
@@ -180,7 +194,8 @@
             android:id="@+id/caloriesbegin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-
+            android:textColor="@color/maindark"
+            android:textStyle="bold"
             android:layout_marginTop="26dp"
 
             android:text="TextView" />
@@ -189,7 +204,8 @@
             android:id="@+id/caloriesnend"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-
+            android:textStyle="bold"
+            android:textColor="@color/maindark"
             android:layout_alignBaseline="@+id/caloriesbegin"
             android:layout_alignBottom="@+id/caloriesbegin"
             android:layout_alignParentEnd="true"
@@ -199,7 +215,9 @@
         <TextView
             android:id="@+id/textView6"
             android:layout_width="wrap_content"
+            android:textColor="@color/maindark"
             android:layout_height="wrap_content"
+            android:textStyle="bold"
             android:layout_alignBottom="@+id/caloriesnend"
             android:layout_centerHorizontal="true"
             android:text="Calories" />
