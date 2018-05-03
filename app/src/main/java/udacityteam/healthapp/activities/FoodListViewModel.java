@@ -132,7 +132,7 @@ public class FoodListViewModel extends android.arch.lifecycle.ViewModel implemen
 
     }
     private void handleResponse(SelectedFoodretrofitarray androidList) {
-        Log.d("kietass", "jauu");
+        Log.d("works", "works");
 
         selectedFoodretrofits = new ArrayList<>(androidList.getUsers());
         mutableLiveData.setValue(selectedFoodretrofits);
@@ -142,12 +142,12 @@ public class FoodListViewModel extends android.arch.lifecycle.ViewModel implemen
     private void handleError(Throwable error) {
 
      // Toast.makeText(this, "Error "+error.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-        Log.d("erroraa", "error");
+        Log.d("error", "error");
 }
 
     public void IsShared(String foodselection)
     {
-        Log.d("helaalo", "haa");
+        Log.d("works", "works");
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         Gson gson = new GsonBuilder()
                 .setLenient()
@@ -192,8 +192,8 @@ public class FoodListViewModel extends android.arch.lifecycle.ViewModel implemen
 
     public void ShareFoodList() //only if today
     {
-        Toast.makeText(context, "blaaaa", Toast.LENGTH_SHORT).show();
-        Log.d("ggeee", "ggee");
+        Toast.makeText(context, "Shared", Toast.LENGTH_SHORT).show();
+        Log.d("works", "works");
 
 
             float protein = 0.0f, carbohydrates = 0.0f, fats = 0.0f, calories = 0.0f;
@@ -225,7 +225,7 @@ public class FoodListViewModel extends android.arch.lifecycle.ViewModel implemen
 
     private void handleResponse(Result result) {
 
-        Log.d("pavyko", "pavyko");
+        Log.d("Works", "works");
         if (isshared.get()) {
             Toast.makeText(context, "Shared Successfuly", Toast.LENGTH_SHORT).show();
         }

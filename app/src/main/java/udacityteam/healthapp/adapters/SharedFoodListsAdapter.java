@@ -44,7 +44,7 @@ public class SharedFoodListsAdapter extends RecyclerView.Adapter<SharedFoodLists
                 public void onClick(View v) {
                     Intent intent = new Intent(context, FoodListPrieview.class);
                     intent.putExtra("date",mDataSet.get(getAdapterPosition()).getDate());
-                    Toast.makeText(context, mDataSet.get(getAdapterPosition()).getDate().toString(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, mDataSet.get(getAdapterPosition()).getDate(), Toast.LENGTH_SHORT).show();
                     intent.putExtra("getParentSharedFoodsId", mDataSet.get(getAdapterPosition()).getParentSharedFoodsId());
                     intent.putExtra("getUserId", mDataSet.get(getAdapterPosition()).getUserId());
                     intent.putExtra("foodselection", DatabaseStorage);

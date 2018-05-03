@@ -108,7 +108,7 @@ public class CommunityFoodListDisplayFragment0MVVMViewModel extends AndroidViewM
 
                     @Override
                     public void onError(Throwable error) {
-                        Log.e(TAG, "Error loading GitHub repos ", error);
+                        Log.e(TAG, "Error loading  repos ", error);
 //                        if (isHttp404(error)) {
 //                            infoMessage.set("notfound");
 //                        } else {

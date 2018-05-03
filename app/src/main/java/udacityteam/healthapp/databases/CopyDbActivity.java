@@ -60,22 +60,7 @@ public class CopyDbActivity extends AppCompatActivity {
 //            }
 //        });
 //
-//        EditText good  = (EditText) findViewById(R.id.good);
-//        ContentValues ai = new ContentValues();
-//      //  ai.put("_id", 3);
-//        ai.put("E_NAME", "ahahhaha");
-//        ai.put("E_AGE", "hahaaa");
-//        ai.put("E_DEPT", "aaa");
 //
-//        ContentValues a1 = new ContentValues();
-//        a1.put("Name", "bybys");
-//        a1.put("Name1", "aaaaz");
-//        a1.put("Name2", "aaazz");
-//
-//
-//          SQLiteDatabase aa = myDbHelper.myDataBase;
-//          aa.insert("EMP_TABLE", null, ai);
-//          aa.insert("Ha", null, a1);
 
     }
 

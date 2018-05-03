@@ -17,6 +17,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import java.util.Objects;
+
 import udacityteam.healthapp.R;
 
 public class CommunityList extends AppCompatActivity {
@@ -59,7 +61,7 @@ public class CommunityList extends AppCompatActivity {
             foodselection = (String) b.get("foodselection");
             SharedFoodListDatabase = (String) b.get("SharedFoodListDatabase");
 
-            getSupportActionBar().setTitle(value);
+            Objects.requireNonNull(getSupportActionBar()).setTitle(value);
             //  Textv.setText(j);
         }
         Bundle tofragment = new Bundle();

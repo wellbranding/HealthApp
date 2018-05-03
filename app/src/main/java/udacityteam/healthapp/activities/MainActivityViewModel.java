@@ -134,7 +134,7 @@ public class MainActivityViewModel implements ViewModel {
     }
     public void clickbtndinner(View view)
     {
-        Log.d("hello123", "heaaz");
+        Log.d("works", "works");
         Toast.makeText(context, "hello", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(context, FoodList.class);
         intent.putExtra("foodselection", "Dinner");
@@ -150,7 +150,7 @@ public class MainActivityViewModel implements ViewModel {
     }
     public void initfloatingbutton(View view)
     {
-        Log.d("neeee", "neeee");
+        Log.d("error", "error");
         if (initfloating.get()) {
             closeSubMenusFab();
         } else {
@@ -240,7 +240,7 @@ public class MainActivityViewModel implements ViewModel {
        String aki = String.valueOf(calendar.get().getSelectedDate().getDate());
         final Calendar calendar = Calendar.getInstance();
         calendar.setTime(this.calendar.get().getSelectedDate().getDate());
-        Log.d("ajaaz", format.format(calendar.getTime()));
+        Log.d("error", format.format(calendar.getTime()));
   //      Log.d("calendarrr", format.format(this.calendar.get().getSelectedDate().getDate()));
 //        calendar.setTime(binding.appBarMain.contentMain.calendarView.getSelectedDate().getDate());
 //        final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
@@ -336,7 +336,7 @@ public class MainActivityViewModel implements ViewModel {
     private void handleResponse(Result result) {
         ((ApplicationController)context.getApplicationContext()).setId(result.getUser().getId());
 
-        Log.d("pavyko", "pavyko");
+        Log.d("works", "works");
     }
 
 

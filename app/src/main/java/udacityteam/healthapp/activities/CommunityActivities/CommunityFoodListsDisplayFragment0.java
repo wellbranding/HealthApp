@@ -111,7 +111,7 @@ public class CommunityFoodListsDisplayFragment0 extends Fragment {
         test = rootView.findViewById(R.id.test);
         if(side!=null)
         {
-            Log.d("pabvyko", "paby");
+            Log.d("works", "works");
         }
         filterData.setOnClickListener(new View.OnClickListener() {
             @Override

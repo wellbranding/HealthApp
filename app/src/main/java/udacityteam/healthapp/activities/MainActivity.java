@@ -299,7 +299,7 @@ private void closeSubMenusFab(){
     }
     public void clickbtndinner()
     {
-        Log.d("hello123", "heaaz");
+        Log.d("works", "works");
         Toast.makeText(MainActivity.this, "hello", Toast.LENGTH_SHORT).show();
      //   Intent intent = new Intent(context, FoodList.class);
        // intent.putExtra("foodselection", "Dinner");

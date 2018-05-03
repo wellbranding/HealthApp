@@ -120,10 +120,10 @@ public class FoodListPrieviewNewViewModel implements ViewModel {
 //                });
     }
     private void handleResponse(SelectedFoodretrofitarray androidList) {
-        Log.d("kietass", "jauu");
+        Log.d("works", "works");
 
         selectedFoodretrofits = new ArrayList<>(androidList.getUsers());
-        Log.d("kietass", String.valueOf(selectedFoodretrofits.size()));
+        Log.d("works", String.valueOf(selectedFoodretrofits.size()));
 
         dataListener.onRepositoriesChanged(selectedFoodretrofits);
     }
