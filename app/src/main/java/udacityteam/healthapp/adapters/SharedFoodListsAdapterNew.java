@@ -60,7 +60,9 @@ public class SharedFoodListsAdapterNew extends RecyclerView.Adapter<SharedFoodLi
 
     @Override
     public int getItemCount() {
+        if(oneSharedFoodProductsListRetrofits!=null)
         return oneSharedFoodProductsListRetrofits.size();
+        else return 0;
     }
 
     public static class RepositoryViewHolder extends RecyclerView.ViewHolder {

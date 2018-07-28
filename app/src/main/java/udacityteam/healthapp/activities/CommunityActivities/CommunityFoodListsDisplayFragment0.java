@@ -157,6 +157,7 @@ if(side!=null)
             public void onResponse(Call<SharedFoodProductsRetrofit> call, Response<SharedFoodProductsRetrofit> response) {
                 mAdapter = new SharedFoodListsAdapter(response.body().
                         getSelectedFoodretrofits(), side);
+                Log.d("important", response.body().getSelectedFoodretrofits().get(0).getUserProfile().getDisplayname());
                mRecyclerView.setAdapter(mAdapter);
 
             }

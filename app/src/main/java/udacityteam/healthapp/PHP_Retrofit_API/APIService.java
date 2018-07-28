@@ -47,13 +47,14 @@ public interface APIService {
     @POST("addSelectedFood")
     Call<Result> addSelectedFood(
             @Field("foodId") String foodId,
+            @Field("foodName") String foodName,
             @Field("UserId") Integer UserId,
             @Field("Date") Timestamp Date,
             @Field("Calories") Float Calories,
             @Field("Protein") Float Protein,
             @Field("Fat") Float Fat,
             @Field("Carbohydrates") Float Carbohyrates,
-             @Field("whichtime") String whichtime,
+            @Field("whichtime") String whichtime,
             @Field("sharedfoodId") Integer sharedFoodId
     );
     @FormUrlEncoded

@@ -1,19 +1,30 @@
 package udacityteam.healthapp.Model;
 
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
+
 /**
  * Created by vvost on 1/27/2018.
  */
-
+@Entity
 public class UserRetrofitGood {
-
+    @PrimaryKey(autoGenerate = true)
+    private int roomId;
     private  Integer id;
     private String mail;
     private String uid;
     private String displayname;
 
+    public int getRoomId() {
+        return roomId;
+    }
 
 
-        public UserRetrofitGood(int id, String mail, String uid, String displayname) {
+    public void setRoomId(int roomId) {
+        this.roomId = roomId;
+    }
+
+    public UserRetrofitGood(int id, String mail, String uid, String displayname) {
         this.id = id;
         this.mail = mail;
         this.uid = uid;

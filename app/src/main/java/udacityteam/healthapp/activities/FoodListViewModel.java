@@ -142,7 +142,8 @@ public class FoodListViewModel extends android.arch.lifecycle.ViewModel implemen
     private void handleError(Throwable error) {
 
      // Toast.makeText(this, "Error "+error.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-        Log.d("erroraa", "error");
+
+        Log.d("erroraa", error.getMessage());
 }
 
     public void IsShared(String foodselection)

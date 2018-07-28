@@ -439,7 +439,7 @@ private void closeSubMenusFab(){
             .addOnCompleteListener(new OnCompleteListener<Void>() {
                 public void onComplete(@NonNull Task<Void> task) {
                     // user is now signed out
-                      Intent intent = new Intent(MainActivity.this, RegisterActivityHome.class);
+                      Intent intent = new Intent(MainActivity.this, BaseActivity.class);
                     intent.putExtra("offline", true);
                     startActivity(intent);
                     finish();

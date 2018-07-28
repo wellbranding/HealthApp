@@ -1,16 +1,26 @@
 package udacityteam.healthapp.Model;
 
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
+import android.arch.persistence.room.TypeConverters;
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import com.google.gson.annotations.SerializedName;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
 
+import udacityteam.healthapp.completeRedesign.DataConverterStep;
+import udacityteam.healthapp.models.User;
+
 /**
  * Created by vvost on 12/29/2017.
  */
-
+@Entity
     public class OneSharedFoodProductsListRetrofit implements Parcelable {
+    @PrimaryKey(autoGenerate = true)
+    private int roomId;
      private String UserId;
      private String Date;
     private Integer ParentSharedFoodsId;
@@ -18,7 +28,45 @@ import java.util.ArrayList;
     private float Protein;
     private float Fat;
     private float Carbohydrates;
+    private String displayname;
+    private String mail;
+    @TypeConverters(DataConverterStep.class)
+    private UserProfile userProfile;
 
+    public OneSharedFoodProductsListRetrofit() {
+    }
+
+    public int getRoomId() {
+        return roomId;
+    }
+
+    public void setRoomId(int roomId) {
+        this.roomId = roomId;
+    }
+
+    public UserProfile getUserProfile() {
+        return userProfile;
+    }
+
+    public void setUserProfile(UserProfile userProfile) {
+        this.userProfile = userProfile;
+    }
+
+    public String getDisplayname() {
+        return displayname;
+    }
+
+    public void setDisplayname(String displayname) {
+        this.displayname = displayname;
+    }
+
+    public String getMail() {
+        return mail;
+    }
+
+    public void setMail(String mail) {
+        this.mail = mail;
+    }
 
     protected OneSharedFoodProductsListRetrofit(Parcel in) {
         UserId = in.readString();
@@ -101,6 +149,7 @@ import java.util.ArrayList;
     public void setUserId(String userId) {
         UserId = userId;
     }
+
 
 
     @Override

@@ -73,7 +73,6 @@ public class RegisterWithMailPasword extends AppCompatActivity implements
     @Override
     public void onStart() {
         super.onStart();
-        // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
         updateUI(currentUser);
     }
@@ -84,10 +83,6 @@ public class RegisterWithMailPasword extends AppCompatActivity implements
         if (!validateForm()) {
             return;
         }
-
-    //    showProgressDialog();
-
-        // [START create_user_with_email]
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -96,7 +91,6 @@ public class RegisterWithMailPasword extends AppCompatActivity implements
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "createUserWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
-                            Log.d("ahahag", user.getUid().toString());
 
 
                             //check if email exist
@@ -136,96 +130,6 @@ public class RegisterWithMailPasword extends AppCompatActivity implements
         // [END create_user_with_email]
     }
 
-    private void signIn(final String email, final String password) {
-        Log.d(TAG, "signIn:" + email);
-        if (!validateForm()) {
-            return;
-        }
-
-     //   showProgressDialog();
-
-        // [START sign_in_with_email]
-        mAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "signInWithEmail:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            mStatusTextView.setText(user.getUid());
-                            if (user!=null && user.isEmailVerified()) {
-                                Gson gson = new GsonBuilder()
-                                        .setLenient()
-                                        .create();
-                                Retrofit retrofit = new Retrofit.Builder()
-                                        .baseUrl(APIUrl.BASE_URL)
-                                        .addConverterFactory(GsonConverterFactory.create(gson))
-                                        .build();
-
-                                //Defining retrofit api service
-                                APIService service = retrofit.create(APIService.class);
-
-                                //Defining the user object as we need to pass it with the call
-                                Userretrofit retrofituser = new Userretrofit(user.getDisplayName(), user.getEmail(), mAuth.getCurrentUser().getUid());
-
-                                //defining the call
-                                Call<Result> call = service.createUser(
-                                        password,
-                                        email,
-                                        retrofituser.getUid()
-
-                                );
-                                Intent intent = new Intent(RegisterWithMailPasword.this, MainActivity.class);
-                                startActivity(intent);
-                                finish();
-                                Log.d(TAG, mAuth.getCurrentUser().getUid());
-                                call.enqueue(new Callback<Result>() {
-                                    @Override
-                                    public void onResponse(Call<Result> call, Response<Result> response) {
-
-
-                                    }
-
-                                    @Override
-                                    public void onFailure(Call<Result> call, Throwable t) {
-                                        // progressDialog.dismiss();
-                                        Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_LONG).show();
-                                    }
-                                });
-
-                            } else
-                            {
-                                Toast.makeText(RegisterWithMailPasword.this, "not verified", Toast.LENGTH_LONG).show();
-                            }
-
-
-
-                            updateUI(user);
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Log.w(TAG, "signInWithEmail:failure", task.getException());
-                         //   Toast.makeText(EmailPasswordActivity.this, "Authentication failed.",
-                                 //   Toast.LENGTH_SHORT).show();
-                            updateUI(null);
-                        }
-
-                        // [START_EXCLUDE]
-                        if (!task.isSuccessful()) {
-                            mStatusTextView.setText("failed");
-                        }
-                     //   hideProgressDialog();
-                        // [END_EXCLUDE]
-                    }
-                });
-        // [END sign_in_with_email]
-    }
-
-    private void signOut() {
-        mAuth.signOut();
-        updateUI(null);
-    }
 
     private void sendEmailVerification() {
         // Disable button
@@ -288,9 +192,6 @@ public class RegisterWithMailPasword extends AppCompatActivity implements
     private void updateUI(FirebaseUser user) {
        // hideProgressDialog();
         if (user != null) {
-//            mStatusTextView.setText(
-//                    user.getEmail(), user.isEmailVerified()));
-//            mDetailTextView.setText(getString(R.string.firebase_status_fmt, user.getUid()));
 
             findViewById(R.id.email_password_buttons).setVisibility(View.GONE);
             findViewById(R.id.email_password_fields).setVisibility(View.GONE);

@@ -46,6 +46,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import udacityteam.healthapp.Network.PHPService;
 import udacityteam.healthapp.PHP_Retrofit_API.APIService;
 import udacityteam.healthapp.PHP_Retrofit_API.APIUrl;
 import udacityteam.healthapp.Model.Result;
@@ -172,8 +173,8 @@ public class FoodNutritiensDisplay extends AppCompatActivity {
         //Defining retrofit api service
         APIService service = retrofit.create(APIService.class);
 
-        Call<Result> call = service.addSelectedFood(
-                id,
+        Call<Result> call = PHPService.Factory.create().addSelectedFood(
+                id,"shshshshs",
                 ((ApplicationController)context.getApplicationContext()).getId(), timestamp, nutritiens.get(0)
                 ,nutritiens.get(1),nutritiens.get(2),nutritiens.get(3),
                 foodselection,0

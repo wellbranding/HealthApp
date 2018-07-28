@@ -31,6 +31,7 @@ import udacityteam.healthapp.Model.OneSharedFoodProductsListRetrofit;
 import udacityteam.healthapp.Model.SelectedFoodretrofit;
 import udacityteam.healthapp.Model.SelectedFoodretrofitarray;
 import udacityteam.healthapp.Model.SharedFoodProductsRetrofit;
+import udacityteam.healthapp.Model.UserProfile;
 import udacityteam.healthapp.Network.PHPService;
 import udacityteam.healthapp.PHP_Retrofit_API.APIService;
 import udacityteam.healthapp.PHP_Retrofit_API.APIUrl;
@@ -64,11 +65,6 @@ public class CommunityFoodListDisplayFragment0MVVMViewModel extends AndroidViewM
     public MutableLiveData<List<OneSharedFoodProductsListRetrofit>> mutableLiveData = new MutableLiveData<>();
     ApplicationController application = null;
 
-//    public CommunityFoodListDisplayFragment0MVVMViewModel(Context context, DataListener dataListener) {
-//     //  this.selectedFoodretrofit = repository;
-//        this.dataListener = dataListener;
-//        this.context = context;
-//    }
     public CommunityFoodListDisplayFragment0MVVMViewModel(Application application)
     {
         super(application);
@@ -93,6 +89,12 @@ public class CommunityFoodListDisplayFragment0MVVMViewModel extends AndroidViewM
                 .subscribe(new Subscriber<SharedFoodProductsRetrofit>() {
                     @Override
                     public void onCompleted() {
+                       for(int i=0;i< selectedFoodretrofits.size(); i++)
+                       {
+                           selectedFoodretrofits.get(i).setUserProfile(new UserProfile(
+                                   selectedFoodretrofits.get(i).getMail(), selectedFoodretrofits.get(i).getDisplayname()
+                           ));
+                       }
                         Log.d("aryra", String.valueOf(selectedFoodretrofits.size()));
                         InitSelectedfoods(selectedFoodretrofits);
                      //   dataListener.onRepositoriesChanged(selectedFoodretrofits);

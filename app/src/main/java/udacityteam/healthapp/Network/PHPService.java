@@ -1,7 +1,13 @@
 package udacityteam.healthapp.Network;
 
-import java.sql.Timestamp;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
+import java.sql.Timestamp;
+import java.util.concurrent.TimeUnit;
+
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
@@ -17,46 +23,29 @@ import udacityteam.healthapp.Model.Result;
 import udacityteam.healthapp.Model.SelectedFoodretrofitarray;
 import udacityteam.healthapp.Model.SharedFoodProductsRetrofit;
 import udacityteam.healthapp.Model.Usersretrofit;
+import udacityteam.healthapp.completeRedesign.Data.Networking.API.LiveDataCallAdapterFactory;
 
 import static udacityteam.healthapp.PHP_Retrofit_API.APIUrl.BASE_URL;
 
 public interface PHPService {
 
-    @FormUrlEncoded
-    @POST("register")
-    Observable<Result> createUser(
-            @Field("name") String name,
-            @Field("email") String email,
-            @Field("uid") String uid);
+    public static final String BASE_URL = "http://app.wellbranding.com/";
 
 
-    @FormUrlEncoded
-    @POST("login")
-    Observable<Result> userLogin(
-            @Field("email") String email,
-            @Field("password") String password
-    );
-    @FormUrlEncoded
-    @POST("loginwithmail")
-    Observable<Result> userLoginwithmail(
-            @Field("email") String email,
-            @Field("password") String password,
-            @Field("uid") String uid
-    );
-
-    @FormUrlEncoded
-    @POST("addSelectedFood")
-    Observable<Result> addSelectedFood(
-            @Field("foodId") String foodId,
-            @Field("UserId") Integer UserId,
-            @Field("Date") Timestamp Date,
-            @Field("Calories") Float Calories,
-            @Field("Protein") Float Protein,
-            @Field("Fat") Float Fat,
-            @Field("Carbohydrates") Float Carbohyrates,
-            @Field("whichtime") String whichtime,
-            @Field("sharedfoodId") Integer sharedFoodId
-    );
+@FormUrlEncoded
+@POST("addSelectedFood")
+Call<Result> addSelectedFood(
+        @Field("foodId") String foodId,
+        @Field("foodName") String foodName,
+        @Field("UserId") Integer UserId,
+        @Field("Date") Timestamp Date,
+        @Field("Calories") Float Calories,
+        @Field("Protein") Float Protein,
+        @Field("Fat") Float Fat,
+        @Field("Carbohydrates") Float Carbohyrates,
+        @Field("whichtime") String whichtime,
+        @Field("sharedfoodId") Integer sharedFoodId
+);
     @FormUrlEncoded
     @POST("addSharedList")
    Observable<Result> addSharedList(
@@ -75,14 +64,6 @@ public interface PHPService {
             @Query("UserId") String UserId
 
     );
-//    @GET("getSelectedFoods")
-//    Observable<SelectedFoodretrofitarray> getselectedfoods(
-//            @Query("UserId") Integer UserId,
-//            @Query("whichtime") String whichtime,
-//            @Query("year") String year,
-//            @Query("month") String month,
-//            @Query("day") String day
-//    );
     @GET("getSelectedFoods")
     Observable<SelectedFoodretrofitarray> getselectedfoods(
             @Query("UserId") Integer UserId,
@@ -142,12 +123,26 @@ public interface PHPService {
 
     class Factory {
         public static PHPService create() {
+            Gson gson = new GsonBuilder()
+                    .setLenient()
+                    .create();
+            HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+            interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+            OkHttpClient client = new OkHttpClient.Builder()
+                    .addInterceptor(interceptor)
+                    .connectTimeout(30, TimeUnit.SECONDS)
+                    .writeTimeout(30, TimeUnit.SECONDS)
+                    .readTimeout(10, TimeUnit.SECONDS)
+                    .build();
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl(BASE_URL)
-                    .addConverterFactory(GsonConverterFactory.create())
+                    .addConverterFactory(GsonConverterFactory.create(gson))
+                    .addCallAdapterFactory(new LiveDataCallAdapterFactory())
                     .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                    .client(client)
                     .build();
             return retrofit.create(PHPService.class);
+
         }
     }
 }

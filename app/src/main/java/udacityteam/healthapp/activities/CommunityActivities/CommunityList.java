@@ -17,12 +17,25 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import javax.inject.Inject;
+
+import dagger.android.AndroidInjection;
+import dagger.android.AndroidInjector;
+import dagger.android.DispatchingAndroidInjector;
+import dagger.android.support.HasSupportFragmentInjector;
 import udacityteam.healthapp.R;
 
-public class CommunityList extends AppCompatActivity {
+public class CommunityList extends AppCompatActivity implements HasSupportFragmentInjector {
 
     // Resources
     Resources res;
+
+    @Inject
+    DispatchingAndroidInjector<Fragment> dispatchingAndroidInjector;
+    @Override
+    public AndroidInjector<Fragment> supportFragmentInjector() {
+        return dispatchingAndroidInjector;
+    }
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -43,6 +56,7 @@ public class CommunityList extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        AndroidInjection.inject(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
         res = getResources();
@@ -136,7 +150,7 @@ public class CommunityList extends AppCompatActivity {
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    return CommunityFoodListsDisplayFragment0MVVM.newInstance(queryParam);
+                    return SharedFoodListFragmentNetwork.newInstance(queryParam);
                 case 1:
                     return new CommunityFoodListsDisplayFragment1();
                 case 2:

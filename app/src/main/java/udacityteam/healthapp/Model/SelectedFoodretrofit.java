@@ -22,6 +22,11 @@ public class SelectedFoodretrofit implements  Parcelable {
     private float Protein;
     private float Fat;
     private float Carbohydrates;
+   //  private String mail;
+   //  private String
+
+
+
 
 
 

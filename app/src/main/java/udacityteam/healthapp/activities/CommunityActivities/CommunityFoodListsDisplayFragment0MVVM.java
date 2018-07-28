@@ -128,36 +128,6 @@ public class CommunityFoodListsDisplayFragment0MVVM extends Fragment implements 
     }
 
 
-//    @Override
-//    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-//                             Bundle savedInstanceState) {
-//        View rootView = inflater.inflate(R.layout.community_list_fragment, container, false);
-//        rootView.setTag(TAG);
-//       // foodList = database.getReference("MainFeed").child(value).child("SharedDiets");
-//
-//        mRecyclerView = rootView.findViewById(R.id.recyclerView);
-//        listodydis = (TextView) rootView.findViewById(R.id.listodydis);
-//        progressBar = rootView.findViewById(R.id.progressbar);
-//        filterData = rootView.findViewById(R.id.filterdata);
-//        test = rootView.findViewById(R.id.test);
-//        if(side!=null)
-//        {
-//            Log.d("pabvyko", "paby");
-//        }
-//        filterData.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Intent intent = new Intent(getActivity(), FilterActivity.class);
-//                intent.putExtra("SharedFoodListDatabase", SharedFoodListDatabase);
-//                startActivity(intent);
-//            }
-//        });
-//
-//        RetrofitList();
-//
-//
-//        return rootView;
-//    }
     public void LoadFoodListMutable()
     {
         communityListFragmentBinding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
